@@ -105,6 +105,10 @@ const start = async () => {
       console.log(`   Port        : ${appConfig.port}`);
       console.log(`   URL         : ${appConfig.appUrl}`);
       console.log(`   Health      : ${appConfig.appUrl}/health\n`);
+
+      // Start cleanup scheduler — deletes invitations 4h after event
+      const { startCleanupScheduler } = require('./jobs/cleanupExpired');
+      startCleanupScheduler();
     });
   } catch (error) {
     console.error('❌ Unable to start server:', error.message);
