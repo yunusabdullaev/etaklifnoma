@@ -8,7 +8,8 @@ import Step4Preview from './components/Step4Preview';
 import Step5Generate from './components/Step5Generate';
 import AuthPage from './components/AuthPage';
 import Dashboard from './components/Dashboard';
-import { Sparkles, LogOut, User, LayoutGrid, PlusCircle } from 'lucide-react';
+import { useLang } from './i18n';
+import { Sparkles, LogOut, User, LayoutGrid, PlusCircle, Globe } from 'lucide-react';
 
 const INITIAL_DATA = {
   eventType: null,
@@ -105,6 +106,7 @@ export default function App() {
   }
 
   const showDashboard = view === 'dashboard';
+  const { lang, toggleLang, t } = useLang();
 
   return (
     <div className="min-h-screen bg-surface-950 relative overflow-hidden">
@@ -126,18 +128,29 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-lg font-display font-bold text-white leading-none">
-                  Taklifnoma
+                  {t('header.title')}
                 </h1>
                 <p className="text-[10px] text-surface-500 leading-none mt-0.5">
-                  Premium taklifnomalar
+                  {t('header.subtitle')}
                 </p>
               </div>
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            {/* Language toggle */}
+            <button
+              onClick={toggleLang}
+              className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold
+                bg-white/5 border border-white/10 text-surface-300 hover:text-white hover:bg-white/10 transition-all"
+              title={lang === 'uz' ? 'Русский' : "O'zbekcha"}
+            >
+              <Globe size={11} />
+              {lang === 'uz' ? 'RU' : 'UZ'}
+            </button>
+
             {/* Navigation tabs */}
-            <div className="flex items-center gap-1 bg-white/5 rounded-lg p-0.5 mr-2">
+            <div className="flex items-center gap-1 bg-white/5 rounded-lg p-0.5">
               <button
                 onClick={() => setView('dashboard')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
@@ -147,7 +160,7 @@ export default function App() {
                 }`}
               >
                 <LayoutGrid size={12} />
-                <span className="hidden sm:inline">Kabinet</span>
+                <span className="hidden sm:inline">{t('header.cabinet')}</span>
               </button>
               <button
                 onClick={startWizard}
@@ -158,13 +171,13 @@ export default function App() {
                 }`}
               >
                 <PlusCircle size={12} />
-                <span className="hidden sm:inline">Yaratish</span>
+                <span className="hidden sm:inline">{t('header.create')}</span>
               </button>
             </div>
 
             {!showDashboard && step < 5 && (
-              <div className="text-xs text-surface-500 hidden sm:block mr-2">
-                Qadam <span className="text-white font-semibold">{step}</span>/5
+              <div className="text-xs text-surface-500 hidden sm:block">
+                {t('header.step')} <span className="text-white font-semibold">{step}</span>/5
               </div>
             )}
             
@@ -177,7 +190,7 @@ export default function App() {
               <button
                 onClick={handleLogout}
                 className="text-surface-500 hover:text-rose-400 transition-colors p-1"
-                title="Chiqish"
+                title={t('header.logout')}
               >
                 <LogOut size={14} />
               </button>
@@ -224,7 +237,7 @@ export default function App() {
       <footer className={`relative z-10 border-t border-white/5 mt-auto ${!showDashboard ? 'hidden sm:block' : ''}`}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-center">
           <p className="text-xs text-surface-600">
-            © 2026 Taklifnoma — Barcha huquqlar himoyalangan
+            {t('footer.copyright')}
           </p>
         </div>
       </footer>

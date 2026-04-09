@@ -1,15 +1,27 @@
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { useLang } from '../i18n';
 
-const steps = [
-  { id: 1, title: 'Tur', short: 'Tur' },
-  { id: 2, title: 'Shablon', short: 'Shablon' },
-  { id: 3, title: 'Mazmun', short: 'Mazmun' },
-  { id: 4, title: 'Ko\'rish', short: 'Ko\'rish' },
-  { id: 5, title: 'Havola', short: 'Havola' },
-];
+const stepsConfig = {
+  uz: [
+    { id: 1, short: 'Tur' },
+    { id: 2, short: 'Shablon' },
+    { id: 3, short: 'Mazmun' },
+    { id: 4, short: "Ko'rish" },
+    { id: 5, short: 'Havola' },
+  ],
+  ru: [
+    { id: 1, short: 'Тип' },
+    { id: 2, short: 'Шаблон' },
+    { id: 3, short: 'Данные' },
+    { id: 4, short: 'Просмотр' },
+    { id: 5, short: 'Ссылка' },
+  ],
+};
 
 export default function StepIndicator({ currentStep }) {
+  const { lang } = useLang();
+  const steps = stepsConfig[lang] || stepsConfig.uz;
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
       <div className="flex items-center justify-between relative">

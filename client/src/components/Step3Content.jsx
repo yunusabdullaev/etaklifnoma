@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff } from 'lucide-react';
 import LivePreview from './LivePreview';
+import { useLang } from '../i18n';
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [showPreview, setShowPreview] = useState(true);
+  const { t } = useLang();
 
   const handleChange = (field, value) => {
     onUpdate({ [field]: value });
@@ -23,24 +25,24 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {/* Core fields */}
       <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <User size={13} /> Asosiy ma'lumotlar
+          <User size={13} /> {t('step3.basicInfo')}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="label">Mezbon ismi *</label>
+            <label className="label">{t('step3.host')} *</label>
             <input type="text" placeholder="Abdullayev Yunus"
               value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
               className="input-field" />
           </div>
           <div>
-            <label className="label">Mehmon ismi</label>
+            <label className="label">{t('step3.guest')}</label>
             <input type="text" placeholder="Hurmatli mehmon"
               value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
               className="input-field" />
           </div>
         </div>
         <div>
-          <label className="label flex items-center gap-1.5"><Type size={13} /> Tadbir nomi</label>
+          <label className="label flex items-center gap-1.5"><Type size={13} /> {t('step3.eventTitle')}</label>
           <input type="text" placeholder="Nikoh marosimi"
             value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
             className="input-field" />
@@ -50,30 +52,30 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {/* Date & location */}
       <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <Calendar size={13} /> Sana va joy
+          <Calendar size={13} /> {t('step3.dateLocation')}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="label">Sana *</label>
+            <label className="label">{t('step3.date')} *</label>
             <input type="date" value={data.eventDate || ''}
               onChange={(e) => handleChange('eventDate', e.target.value)}
               className="input-field" />
           </div>
           <div>
-            <label className="label flex items-center gap-1.5"><Clock size={13} /> Vaqt</label>
+            <label className="label flex items-center gap-1.5"><Clock size={13} /> {t('step3.time')}</label>
             <input type="time" value={data.eventTime || ''}
               onChange={(e) => handleChange('eventTime', e.target.value)}
               className="input-field" />
           </div>
         </div>
         <div>
-          <label className="label flex items-center gap-1.5"><MapPin size={13} /> Manzil *</label>
+          <label className="label flex items-center gap-1.5"><MapPin size={13} /> {t('step3.location')} *</label>
           <input type="text" placeholder="Navruz to'yxonasi, Toshkent"
             value={data.location || ''} onChange={(e) => handleChange('location', e.target.value)}
             className="input-field" />
         </div>
         <div>
-          <label className="label flex items-center gap-1.5"><Link2 size={13} /> Xarita havolasi</label>
+          <label className="label flex items-center gap-1.5"><Link2 size={13} /> {t('step3.mapLink')}</label>
           <input type="url" placeholder="https://maps.google.com/..."
             value={data.locationUrl || ''} onChange={(e) => handleChange('locationUrl', e.target.value)}
             className="input-field" />
@@ -83,9 +85,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {/* Message */}
       <div className="glass p-5 space-y-3">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <MessageSquare size={13} /> Xabar
+          <MessageSquare size={13} /> {t('step3.message')}
         </h3>
-        <textarea rows={3} placeholder="Sizni marosimimizga taklif qilamiz..."
+        <textarea rows={3} placeholder={t('step3.messagePlaceholder')}
           value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
           className="input-field resize-none" />
       </div>
@@ -94,7 +96,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {templateFields.length > 0 && (
         <div className="glass p-5 space-y-4">
           <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-            <span className="text-base">{data.eventType?.icon}</span> Shablon maydonlari
+            <span className="text-base">{data.eventType?.icon}</span> {t('step3.templateFields')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {templateFields.map((field) => (
@@ -134,7 +136,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           <p className="text-[11px] text-surface-500 mt-1">MP3 faylga to'g'ridan-to'g'ri havola</p>
         </div>
         <div>
-          <label className="label flex items-center gap-1.5">📱 Telegram Bot (tilaklar uchun)</label>
+          <label className="label flex items-center gap-1.5">📱 {t('step3.telegram')}</label>
           <input type="text" placeholder="BOT_TOKEN:CHAT_ID"
             value={data.customFields?.telegramBot || ''}
             onChange={(e) => handleCustomFieldChange('telegramBot', e.target.value)}
@@ -165,7 +167,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             transition-colors bg-white/5 px-3 py-1.5 rounded-lg border border-white/10"
         >
           {showPreview ? <EyeOff size={14} /> : <Eye size={14} />}
-          {showPreview ? "Yashirish" : "Ko'rish"}
+          {showPreview ? t('step3.hide') : t('step3.show')}
         </button>
       </div>
 
@@ -182,7 +184,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs text-surface-400 uppercase tracking-wider font-medium">
-                  Jonli ko'rinish
+                  {t('step3.preview')}
                 </span>
               </div>
               <LivePreview
@@ -197,11 +199,11 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       <div className="sticky bottom-0 z-20 bg-surface-950/90 backdrop-blur-lg border-t border-white/5 
         -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
         <div className="flex justify-between items-center gap-3">
-          <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">← Orqaga</button>
+          <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">{t('step3.back')}</button>
           <button onClick={onNext}
             disabled={!data.hostName || !data.eventDate || !data.location}
             className="btn-primary flex-1 sm:flex-none min-w-[160px] text-center py-3.5">
-            Ko'rish →
+            {t('step3.next')}
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, Lock, User, ArrowRight, Sparkles, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { Phone, Lock, User, ArrowRight, Sparkles, ShieldCheck, ArrowLeft, Globe } from 'lucide-react';
+import { useLang } from '../i18n';
 
 export default function AuthPage({ onLogin }) {
   const [mode, setMode] = useState('login'); // 'login' | 'register' | 'verify'
@@ -14,6 +15,7 @@ export default function AuthPage({ onLogin }) {
 
   const otpRefs = useRef([]);
   const API = import.meta.env.VITE_API_URL || '';
+  const { lang, toggleLang, t } = useLang();
 
   // Countdown timer for resend
   useEffect(() => {
@@ -206,12 +208,23 @@ export default function AuthPage({ onLogin }) {
           </motion.div>
           <h1 className="text-3xl font-display font-bold text-white mb-1">Taklifnoma</h1>
           <p className="text-surface-400 text-sm">
-            {mode === 'verify' ? 'Tasdiqlash kodini kiriting' : 'Premium onlayn taklifnomalar platformasi'}
+            {mode === 'verify' ? t('auth.otpTitle') : t('header.subtitle')}
           </p>
         </div>
 
         {/* Auth card */}
         <div className="glass p-6 md:p-8 space-y-6">
+          {/* Language toggle in auth */}
+          <div className="flex justify-end">
+            <button
+              onClick={toggleLang}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold
+                bg-white/5 border border-white/10 text-surface-300 hover:text-white hover:bg-white/10 transition-all"
+            >
+              <Globe size={11} />
+              {lang === 'uz' ? 'RU' : 'UZ'}
+            </button>
+          </div>
           <AnimatePresence mode="wait">
             {/* ── VERIFY OTP ── */}
             {mode === 'verify' && (
@@ -225,7 +238,7 @@ export default function AuthPage({ onLogin }) {
               >
                 <div className="text-center">
                   <p className="text-surface-300 text-sm">
-                    Telegram botga yuborilgan <span className="text-white font-semibold">6 raqamli</span> kodni kiriting
+                    {t('auth.otpDesc')}
                   </p>
                   <p className="text-primary-400 text-xs mt-1 font-mono">{phone}</p>
                 </div>
@@ -255,7 +268,7 @@ export default function AuthPage({ onLogin }) {
                 <div className="text-center">
                   {countdown > 0 ? (
                     <p className="text-surface-500 text-xs">
-                      Qayta yuborish: <span className="text-white font-mono">{formatCountdown(countdown)}</span>
+                      {t('auth.otpExpires')}: <span className="text-white font-mono">{formatCountdown(countdown)}</span>
                     </p>
                   ) : (
                     <button
@@ -263,7 +276,7 @@ export default function AuthPage({ onLogin }) {
                       disabled={loading}
                       className="text-primary-400 text-xs hover:text-primary-300 transition-colors"
                     >
-                      Qayta yuborish
+                      {t('auth.otpResend')}
                     </button>
                   )}
                 </div>
@@ -282,7 +295,7 @@ export default function AuthPage({ onLogin }) {
                   onClick={() => { setMode('register'); setError(''); }}
                   className="flex items-center justify-center gap-1.5 text-surface-500 text-xs hover:text-white transition-colors mx-auto"
                 >
-                  <ArrowLeft size={12} /> Orqaga
+                  <ArrowLeft size={12} /> {t('auth.otpBack')}
                 </button>
               </motion.div>
             )}
@@ -307,7 +320,7 @@ export default function AuthPage({ onLogin }) {
                         : 'text-surface-400 hover:text-white'
                     }`}
                   >
-                    Kirish
+                    {t('auth.login')}
                   </button>
                   <button
                     onClick={() => { setMode('register'); setError(''); }}
@@ -317,7 +330,7 @@ export default function AuthPage({ onLogin }) {
                         : 'text-surface-400 hover:text-white'
                     }`}
                   >
-                    Ro'yxatdan o'tish
+                    {t('auth.register')}
                   </button>
                 </div>
 
@@ -332,7 +345,7 @@ export default function AuthPage({ onLogin }) {
                         transition={{ duration: 0.3 }}
                       >
                         <label className="label flex items-center gap-1.5">
-                          <User size={13} /> Ismingiz
+                          <User size={13} /> {t('auth.name')}
                         </label>
                         <input
                           type="text"
@@ -348,7 +361,7 @@ export default function AuthPage({ onLogin }) {
 
                   <div>
                     <label className="label flex items-center gap-1.5">
-                      <Phone size={13} /> Telefon raqam
+                      <Phone size={13} /> {t('auth.phone')}
                     </label>
                     <input
                       type="tel"
@@ -362,7 +375,7 @@ export default function AuthPage({ onLogin }) {
 
                   <div>
                     <label className="label flex items-center gap-1.5">
-                      <Lock size={13} /> Parol
+                      <Lock size={13} /> {t('auth.password')}
                     </label>
                     <input
                       type="password"
@@ -394,7 +407,7 @@ export default function AuthPage({ onLogin }) {
                       <span className="inline-block w-5 h-5 border-2 border-[#0b0d17] border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        {mode === 'login' ? 'Kirish' : "Ro'yxatdan o'tish"}
+                        {mode === 'login' ? t('auth.loginBtn') : t('auth.registerBtn')}
                         <ArrowRight size={16} />
                       </>
                     )}
@@ -406,7 +419,7 @@ export default function AuthPage({ onLogin }) {
         </div>
 
         <p className="text-center text-surface-500 text-xs mt-6">
-          © 2026 Taklifnoma — Barcha huquqlar himoyalangan
+          {t('footer.copyright')}
         </p>
       </motion.div>
     </div>

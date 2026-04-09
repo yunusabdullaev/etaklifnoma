@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Cake, PartyPopper, GraduationCap, Loader2 } from 'lucide-react';
 import { getEventTypes } from '../api';
+import { useLang } from '../i18n';
 
 const iconMap = {
   wedding: Heart,
@@ -35,6 +36,7 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
   const [eventTypes, setEventTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useLang();
 
   useEffect(() => {
     getEventTypes()
@@ -57,7 +59,7 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
   if (error) {
     return (
       <div className="text-center py-20">
-        <p className="text-red-400 mb-2">Xatolik yuz berdi</p>
+        <p className="text-red-400 mb-2">{t('common.error')}</p>
         <p className="text-surface-400 text-sm">{error}</p>
       </div>
     );
@@ -72,9 +74,9 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
     >
       <div className="text-center space-y-2">
         <h2 className="text-2xl md:text-3xl font-display font-bold">
-          Tadbir turini tanlang
+          {t('step1.title')}
         </h2>
-        <p className="text-surface-400">Qanday marosim uchun taklif yaratmoqchisiz?</p>
+        <p className="text-surface-400">{t('step1.desc')}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
@@ -130,7 +132,7 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
             disabled={!data.eventTypeId}
             className="btn-primary w-full sm:w-auto min-w-[200px] text-center py-3.5"
           >
-            Davom etish →
+            {t('step1.next')}
           </button>
         </div>
       </div>

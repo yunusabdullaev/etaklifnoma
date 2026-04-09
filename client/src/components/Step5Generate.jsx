@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, Copy, Check, ExternalLink, PartyPopper, RotateCcw } from 'lucide-react';
 import { createInvitation } from '../api';
+import { useLang } from '../i18n';
 
 export default function Step5Generate({ data, onReset }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const { t } = useLang();
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -31,7 +33,7 @@ export default function Step5Generate({ data, onReset }) {
       setResult(res.data);
     } catch (err) {
       const errData = err.response?.data?.error;
-      setError(errData?.message || 'Xatolik yuz berdi');
+      setError(errData?.message || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -76,7 +78,7 @@ export default function Step5Generate({ data, onReset }) {
             Havola yaratishga tayyormisiz?
           </h2>
           <p className="text-surface-400">
-            Taklifnomangiz saqlanadi va noyob havola yaratiladi
+            {t('step5.desc')}
           </p>
         </div>
 
@@ -104,7 +106,7 @@ export default function Step5Generate({ data, onReset }) {
           className="btn-accent text-lg px-10 py-4 inline-flex items-center gap-2"
         >
           <PartyPopper size={20} />
-          Havola yaratish
+          {t('step4.generate')}
         </button>
       </motion.div>
     );
@@ -120,7 +122,7 @@ export default function Step5Generate({ data, onReset }) {
         >
           <Loader2 className="w-10 h-10 text-primary-400" />
         </motion.div>
-        <p className="text-surface-400 animate-pulse-soft">Taklifnoma yaratilmoqda...</p>
+        <p className="text-surface-400 animate-pulse-soft">{t('common.loading')}</p>
       </div>
     );
   }
@@ -153,9 +155,9 @@ export default function Step5Generate({ data, onReset }) {
 
         <div>
           <h2 className="text-2xl md:text-3xl font-display font-bold text-white mb-2">
-            Taklifnoma tayyor! 🎉
+            {t('step5.title')}
           </h2>
-          <p className="text-surface-400">Havolani do'stlaringiz bilan ulashing</p>
+          <p className="text-surface-400">{t('step5.desc')}</p>
         </div>
       </div>
 
@@ -167,7 +169,7 @@ export default function Step5Generate({ data, onReset }) {
         className="max-w-lg mx-auto glass-strong p-6 space-y-4"
       >
         <p className="text-xs text-surface-500 uppercase tracking-wider font-medium">
-          Noyob havola
+          {t('step5.link')}
         </p>
         <div className="flex items-center gap-2">
           <div className="flex-1 bg-surface-900/80 border border-white/10 rounded-xl px-4 py-3 
@@ -192,7 +194,7 @@ export default function Step5Generate({ data, onReset }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-xs text-emerald-400 font-medium"
           >
-            ✓ Nusxalandi!
+            ✓ {t('step5.copied')}
           </motion.p>
         )}
 
@@ -204,7 +206,7 @@ export default function Step5Generate({ data, onReset }) {
             className="btn-primary flex-1 flex items-center justify-center gap-2 text-sm"
           >
             <ExternalLink size={14} />
-            Ochib ko'rish
+            {t('step5.open')}
           </a>
           <button
             onClick={() => {
@@ -242,7 +244,7 @@ export default function Step5Generate({ data, onReset }) {
         className="inline-flex items-center gap-2 text-surface-400 hover:text-white transition-colors text-sm"
       >
         <RotateCcw size={14} />
-        Yangi taklif yaratish
+        {t('step5.createAnother')}
       </button>
     </motion.div>
   );

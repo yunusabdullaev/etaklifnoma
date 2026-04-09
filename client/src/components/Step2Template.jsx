@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, Crown, Sparkles, Check } from 'lucide-react';
 import { getTemplates } from '../api';
+import { useLang } from '../i18n';
 
 /**
  * Mini iframe preview — renders scaled-down template HTML/CSS inside an iframe
@@ -134,6 +135,7 @@ function TemplateThumbnail({ template }) {
 export default function Step2Template({ data, onUpdate, onNext, onBack }) {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLang();
 
   useEffect(() => {
     if (!data.eventTypeId) return;
@@ -164,17 +166,17 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
     >
       <div className="text-center space-y-2">
         <h2 className="text-2xl md:text-3xl font-display font-bold">
-          Shablon tanlang
+          {t('step2.title')}
         </h2>
         <p className="text-surface-400">
-          {data.eventType?.label} uchun {templates.length} ta shablon mavjud
+          {data.eventType?.label} — {templates.length} {t('step2.count')}
         </p>
       </div>
 
       {templates.length === 0 ? (
         <div className="text-center py-10">
           <Sparkles className="w-12 h-12 text-surface-500 mx-auto mb-3" />
-          <p className="text-surface-400">Bu tur uchun shablon topilmadi</p>
+          <p className="text-surface-400">{t('step2.empty')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 max-w-6xl mx-auto">
@@ -228,14 +230,14 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
         -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
         <div className="flex justify-between items-center gap-3 max-w-6xl mx-auto">
           <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">
-            ← Orqaga
+            {t('step2.back')}
           </button>
           <button
             onClick={onNext}
             disabled={!data.templateId}
             className="btn-primary flex-1 sm:flex-none min-w-[160px] text-center py-3.5"
           >
-            Davom etish →
+            {t('step2.next')}
           </button>
         </div>
       </div>

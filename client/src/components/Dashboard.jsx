@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ExternalLink, Copy, Eye, Calendar, MapPin, Clock, Trash2, Check, LayoutGrid } from 'lucide-react';
+import { useLang } from '../i18n';
 
 export default function Dashboard({ token, onCreateNew }) {
   const [invitations, setInvitations] = useState([]);
@@ -9,6 +10,7 @@ export default function Dashboard({ token, onCreateNew }) {
 
   const API = import.meta.env.VITE_API_URL || '';
   const APP_URL = window.location.origin.replace(':5173', ':3000');
+  const { t } = useLang();
 
   useEffect(() => {
     fetchInvitations();
@@ -38,7 +40,7 @@ export default function Dashboard({ token, onCreateNew }) {
   };
 
   const deleteInvitation = async (id) => {
-    if (!confirm('Bu taklifnomani o\'chirmoqchimisiz?')) return;
+    if (!confirm(t('dashboard.deleteConfirm'))) return;
     try {
       await fetch(`${API}/api/invitations/${id}`, {
         method: 'DELETE',
@@ -78,12 +80,12 @@ export default function Dashboard({ token, onCreateNew }) {
         <div>
           <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
             <LayoutGrid size={24} className="text-primary-400" />
-            Mening taklifnomalarim
+            {t('dashboard.title')}
           </h2>
           <p className="text-surface-400 text-sm mt-1">
             {invitations.length > 0
-              ? `Jami: ${invitations.length} ta taklifnoma`
-              : 'Hali taklifnoma yaratilmagan'}
+              ? `${invitations.length} ${t('dashboard.total')}`
+              : t('dashboard.empty')}
           </p>
         </div>
         <button
@@ -91,7 +93,7 @@ export default function Dashboard({ token, onCreateNew }) {
           className="btn-primary flex items-center gap-2 px-5 py-2.5"
         >
           <Plus size={16} />
-          Yangi yaratish
+          {t('dashboard.newBtn')}
         </button>
       </div>
 
@@ -104,17 +106,17 @@ export default function Dashboard({ token, onCreateNew }) {
         >
           <div className="text-6xl mb-4">📨</div>
           <h3 className="text-xl font-display font-semibold text-white mb-2">
-            Hali taklifnoma yo'q
+            {t('dashboard.emptyTitle')}
           </h3>
           <p className="text-surface-400 text-sm mb-6 max-w-md mx-auto">
-            Birinchi premium taklifnomangizni yarating — to'y, tug'ilgan kun, yubiley yoki bitiruvchilar kechasi uchun!
+            {t('dashboard.emptyDesc')}
           </p>
           <button
             onClick={onCreateNew}
             className="btn-primary inline-flex items-center gap-2 px-6 py-3"
           >
             <Plus size={18} />
-            Taklifnoma yaratish
+            {t('dashboard.createBtn')}
           </button>
         </motion.div>
       )}
@@ -192,7 +194,7 @@ export default function Dashboard({ token, onCreateNew }) {
                     hover:bg-primary-500/20 transition-colors"
                 >
                   <ExternalLink size={12} />
-                  Ko'rish
+                  {t('dashboard.view')}
                 </a>
                 <button
                   onClick={() => copyLink(inv.slug)}
@@ -203,12 +205,12 @@ export default function Dashboard({ token, onCreateNew }) {
                   }`}
                 >
                   {copiedSlug === inv.slug ? <Check size={12} /> : <Copy size={12} />}
-                  {copiedSlug === inv.slug ? 'Nusxalandi!' : 'Link nusxalash'}
+                  {copiedSlug === inv.slug ? t('dashboard.copied') : t('dashboard.copyLink')}
                 </button>
                 <button
                   onClick={() => deleteInvitation(inv.id)}
                   className="p-2 rounded-lg text-surface-500 hover:text-rose-400 hover:bg-rose-400/10 transition-all"
-                  title="O'chirish"
+                  title={t('dashboard.delete')}
                 >
                   <Trash2 size={13} />
                 </button>

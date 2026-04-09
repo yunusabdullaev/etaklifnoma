@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Smartphone, Monitor, Maximize2, Minimize2, Loader2 } from 'lucide-react';
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useLang } from '../i18n';
 
 export default function Step4Preview({ data, onNext, onBack }) {
   const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'mobile'
@@ -10,6 +11,7 @@ export default function Step4Preview({ data, onNext, onBack }) {
   const debounceRef = useRef(null);
 
   const API = import.meta.env.VITE_API_URL || '';
+  const { t } = useLang();
 
   const fetchFullPreview = useCallback(async () => {
     if (!data.templateId) return;
@@ -68,7 +70,7 @@ export default function Step4Preview({ data, onNext, onBack }) {
         {/* Fullscreen header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-surface-900/80 backdrop-blur">
           <div className="flex items-center gap-3">
-            <h3 className="text-white font-semibold text-sm">To'liq ko'rish</h3>
+            <h3 className="text-white font-semibold text-sm">{t('step4.fullscreenTitle')}</h3>
             <div className="flex gap-1">
               <button
                 onClick={() => setViewMode('desktop')}
@@ -113,11 +115,11 @@ export default function Step4Preview({ data, onNext, onBack }) {
         {/* Fullscreen footer */}
         <div className="flex items-center justify-between px-6 py-3 border-t border-white/10 bg-surface-900/80">
           <button onClick={() => { setFullscreen(false); onBack(); }} className="btn-secondary text-sm">
-            ← Tahrirlash
+            {t('step4.back')}
           </button>
           <button onClick={() => { setFullscreen(false); onNext(); }} className="btn-accent flex items-center gap-2 text-sm">
             <Sparkles size={14} />
-            Havola yaratish
+            {t('step4.generate')}
           </button>
         </div>
       </div>
@@ -133,9 +135,9 @@ export default function Step4Preview({ data, onNext, onBack }) {
     >
       <div className="text-center space-y-2">
         <h2 className="text-2xl md:text-3xl font-display font-bold">
-          To'liq ko'rib chiqing
+          {t('step4.title')}
         </h2>
-        <p className="text-surface-400">Taklifnoma xuddi shu ko'rinishda bo'ladi — musiqa, animatsiyalar, til almashtirish bilan</p>
+        <p className="text-surface-400">{t('step4.desc')}</p>
       </div>
 
       {/* Controls */}
@@ -147,7 +149,7 @@ export default function Step4Preview({ data, onNext, onBack }) {
               ? 'bg-primary-500/20 text-primary-300 border border-primary-500/30'
               : 'bg-white/5 text-surface-400 border border-white/10 hover:bg-white/10'}`}
         >
-          <Monitor size={14} /> Desktop
+          <Monitor size={14} /> {t('step4.desktop')}
         </button>
         <button
           onClick={() => setViewMode('mobile')}
@@ -156,14 +158,14 @@ export default function Step4Preview({ data, onNext, onBack }) {
               ? 'bg-primary-500/20 text-primary-300 border border-primary-500/30'
               : 'bg-white/5 text-surface-400 border border-white/10 hover:bg-white/10'}`}
         >
-          <Smartphone size={14} /> Mobil
+          <Smartphone size={14} /> {t('step4.mobile')}
         </button>
         <button
           onClick={toggleFullscreen}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium
             bg-accent-500/10 text-accent-300 border border-accent-500/20 hover:bg-accent-500/20 transition-all"
         >
-          <Maximize2 size={14} /> To'liq ekran
+          <Maximize2 size={14} /> {t('step4.fullscreen')}
         </button>
       </div>
 
@@ -207,11 +209,11 @@ export default function Step4Preview({ data, onNext, onBack }) {
         -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
         <div className="flex justify-between items-center gap-3 max-w-[700px] mx-auto">
           <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">
-            ← Tahrirlash
+            {t('step4.back')}
           </button>
           <button onClick={onNext} className="btn-accent flex-1 sm:flex-none min-w-[160px] text-center flex items-center justify-center gap-2 py-3.5">
             <Sparkles size={16} />
-            Havola yaratish
+            {t('step4.generate')}
           </button>
         </div>
       </div>
