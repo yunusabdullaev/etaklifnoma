@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings as SettingsIcon, Sun, Moon, Globe, Check, X } from 'lucide-react';
+import { Settings as SettingsIcon, Sun, Moon, Check, X } from 'lucide-react';
 import { useLang } from '../i18n';
 import { useTheme } from '../theme';
 
@@ -8,8 +8,8 @@ const settingsLabels = {
   uz: {
     title: 'Sozlamalar',
     theme: 'Mavzu',
-    dark: 'Qorong\'u',
-    light: 'Yorug\'',
+    dark: "Qorong'u",
+    light: "Yorug'",
     language: 'Til',
   },
   ru: {
@@ -25,23 +25,42 @@ export default function SettingsDropdown() {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const { lang, setLang } = useLang();
-  const { theme, setTheme, isDark } = useTheme();
+  const { setTheme, isDark } = useTheme();
   const labels = settingsLabels[lang] || settingsLabels.uz;
 
-  // Close on outside click
+  // Close on outside click — use setTimeout to avoid race condition
+  const handleClickOutside = useCallback((e) => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      setOpen(false);
+    }
+  }, []);
+
   useEffect(() => {
-    const handler = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    if (open) document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
+    if (open) {
+      // Delay adding listener to avoid capturing the opening click
+      const id = setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+      }, 10);
+      return () => {
+        clearTimeout(id);
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [open, handleClickOutside]);
+
+  const handleSetTheme = (newTheme) => {
+    setTheme(newTheme);
+  };
+
+  const handleSetLang = (newLang) => {
+    setLang(newLang);
+  };
 
   return (
     <div className="relative" ref={ref}>
       {/* Settings button */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
         className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all
           ${open
             ? 'bg-primary-500/20 text-primary-400'
@@ -66,6 +85,7 @@ export default function SettingsDropdown() {
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             className="settings-dropdown"
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
@@ -87,7 +107,7 @@ export default function SettingsDropdown() {
               </p>
               <div className="flex gap-1.5">
                 <button
-                  onClick={() => setTheme('dark')}
+                  onClick={() => handleSetTheme('dark')}
                   className={`settings-option ${isDark ? 'active' : ''}`}
                 >
                   <Moon size={12} />
@@ -95,7 +115,7 @@ export default function SettingsDropdown() {
                   {isDark && <Check size={10} className="ml-auto text-primary-400" />}
                 </button>
                 <button
-                  onClick={() => setTheme('light')}
+                  onClick={() => handleSetTheme('light')}
                   className={`settings-option ${!isDark ? 'active' : ''}`}
                 >
                   <Sun size={12} />
@@ -112,7 +132,7 @@ export default function SettingsDropdown() {
               </p>
               <div className="flex gap-1.5">
                 <button
-                  onClick={() => setLang('uz')}
+                  onClick={() => handleSetLang('uz')}
                   className={`settings-option ${lang === 'uz' ? 'active' : ''}`}
                 >
                   <span className="text-xs">🇺🇿</span>
@@ -120,7 +140,7 @@ export default function SettingsDropdown() {
                   {lang === 'uz' && <Check size={10} className="ml-auto text-primary-400" />}
                 </button>
                 <button
-                  onClick={() => setLang('ru')}
+                  onClick={() => handleSetLang('ru')}
                   className={`settings-option ${lang === 'ru' ? 'active' : ''}`}
                 >
                   <span className="text-xs">🇷🇺</span>
