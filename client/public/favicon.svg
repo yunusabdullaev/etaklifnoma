@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Envelope body -->
+  <rect x="40" y="140" width="432" height="280" rx="24" fill="#c8d3e0" stroke="#3d4f6a" stroke-width="14"/>
+  <!-- Envelope flap -->
+  <path d="M54 154 L256 310 L458 154" fill="none" stroke="#3d4f6a" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bottom fold lines -->
+  <path d="M54 406 L200 290" fill="none" stroke="#3d4f6a" stroke-width="10" stroke-linecap="round" opacity="0.4"/>
+  <path d="M458 406 L312 290" fill="none" stroke="#3d4f6a" stroke-width="10" stroke-linecap="round" opacity="0.4"/>
+  <!-- Heart -->
+  <path d="M256 340 
+    C256 340 196 280 196 248 
+    C196 220 220 204 244 216 
+    C252 220 256 228 256 228 
+    C256 228 260 220 268 216 
+    C292 204 316 220 316 248 
+    C316 280 256 340 256 340Z" 
+    fill="#e63946" stroke="#c1121f" stroke-width="6"/>
+  <!-- Heart shine -->
+  <ellipse cx="228" cy="240" rx="12" ry="16" fill="rgba(255,255,255,0.35)" transform="rotate(-20 228 240)"/>
+</svg>
