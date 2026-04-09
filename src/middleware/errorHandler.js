@@ -14,7 +14,8 @@ const errorHandler = (err, req, res, _next) => {
   // Sequelize validation errors
   if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
     statusCode = 400;
-    message = 'Validation error';
+    const fieldMessages = err.errors?.map((e) => e.message) || [];
+    message = fieldMessages.length > 0 ? fieldMessages.join('. ') : 'Validation error';
     details = err.errors?.map((e) => ({
       field: e.path,
       message: e.message,

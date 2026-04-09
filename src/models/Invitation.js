@@ -74,7 +74,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       field: 'location_url',
       validate: {
-        isUrl: true,
+        isUrlOrEmpty(value) {
+          if (value && value.trim() !== '' && !/^https?:\/\/.+/i.test(value)) {
+            throw new Error('Invalid URL format');
+          }
+        },
       },
     },
     message: {

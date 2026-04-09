@@ -90,12 +90,40 @@ exports.create = catchAsync(async (req, res) => {
     }
   }
 
-  // Slug is auto-generated in model hook
-  // Attach user if logged in
-  const createData = { ...req.body };
-  if (req.user) createData.userId = req.user.id;
+  // Clean empty strings to null and strip invalid fields
+  const cleanData = { ...req.body };
+  if (req.user) cleanData.userId = req.user.id;
 
-  const invitation = await Invitation.create(createData);
+  // Remove empty strings → null (prevents validation errors)
+  ['guestName', 'eventTitle', 'eventTime', 'locationUrl', 'message'].forEach(key => {
+    if (cleanData[key] === '' || cleanData[key] === undefined) {
+      cleanData[key] = null;
+    }
+  });
+
+  // Clean customFields — remove empty values
+  if (cleanData.customFields && typeof cleanData.customFields === 'object') {
+    Object.keys(cleanData.customFields).forEach(key => {
+      if (cleanData.customFields[key] === '' || cleanData.customFields[key] === undefined) {
+        delete cleanData.customFields[key];
+      }
+    });
+    if (Object.keys(cleanData.customFields).length === 0) {
+      cleanData.customFields = null;
+    }
+  }
+
+  let invitation;
+  try {
+    invitation = await Invitation.create(cleanData);
+  } catch (err) {
+    // Sequelize validation errors — extract readable messages
+    if (err.name === 'SequelizeValidationError') {
+      const messages = err.errors.map(e => e.message).join(', ');
+      throw AppError.badRequest(messages);
+    }
+    throw err;
+  }
 
   // Re-fetch with associations
   const fullInvitation = await Invitation.findByPk(invitation.id, {
