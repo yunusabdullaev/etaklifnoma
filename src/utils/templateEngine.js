@@ -6,7 +6,7 @@
  * and safe HTML escaping.
  */
 
-// ── Uzbek month names ───────────────────────────────────
+// ── Uzbek month names ───────────────────────────────────────
 const UZ_MONTHS = [
   'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
   'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr',
@@ -15,6 +15,17 @@ const UZ_MONTHS = [
 const UZ_DAYS = [
   'Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba',
   'Payshanba', 'Juma', 'Shanba',
+];
+
+// ── Russian month/day names ───────────────────────────────────
+const RU_MONTHS = [
+  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+];
+
+const RU_DAYS = [
+  'Воскресенье', 'Понедельник', 'Вторник', 'Среда',
+  'Четверг', 'Пятница', 'Суббота',
 ];
 
 /**
@@ -40,6 +51,21 @@ function formatDateUz(dateStr) {
     const d = new Date(year, month - 1, day);
     const dayName = UZ_DAYS[d.getDay()];
     return `${day} ${UZ_MONTHS[month - 1]} ${year}-yil, ${dayName}`;
+  } catch {
+    return dateStr;
+  }
+}
+
+/**
+ * Formats a date string (YYYY-MM-DD) into Russian human-readable format.
+ */
+function formatDateRu(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
+    const dayName = RU_DAYS[d.getDay()];
+    return `${day} ${RU_MONTHS[month - 1]} ${year} г., ${dayName}`;
   } catch {
     return dateStr;
   }
@@ -72,6 +98,8 @@ function buildContext(invitation, eventType, template) {
   ctx['eventDateFormatted'] = formatDateUz(invitation.eventDate);
   ctx['event_date_formatted'] = formatDateUz(invitation.eventDate);
   ctx['date'] = formatDateUz(invitation.eventDate);
+  ctx['dateRu'] = formatDateRu(invitation.eventDate);
+  ctx['date_ru'] = formatDateRu(invitation.eventDate);
   ctx['eventTime'] = formatTime(invitation.eventTime);
   ctx['event_time'] = formatTime(invitation.eventTime);
   ctx['time'] = formatTime(invitation.eventTime);
@@ -212,6 +240,16 @@ function renderInvitation(invitation, eventType, template) {
   ${renderedBody}
   ${wishesForm}
   ${musicPlayer}
+  <script>window.__INVITE_DATA__=${JSON.stringify({
+    dateUz: context['date'] || '',
+    dateRu: context['dateRu'] || '',
+    message: context['message'] || '',
+    location: context['location'] || '',
+    hostName: context['hostName'] || '',
+    guestName: context['guestName'] || '',
+    eventTitle: context['eventTitle'] || '',
+    eventTime: context['time'] || '',
+  })};</script>
   ${buildLanguageToggle()}
 </body>
 </html>`;
@@ -484,12 +522,13 @@ function buildLanguageToggle() {
       var t = translations[lang];
       if(!t) return;
 
+      // 1. Translate data-i18n elements (template strings)
       document.querySelectorAll('[data-i18n]').forEach(function(el){
         var key = el.getAttribute('data-i18n');
         if(t[key]) el.textContent = t[key];
       });
 
-      // Update wishes form placeholders
+      // 2. Update wishes form placeholders
       var nameInput = document.querySelector('.wishes-input[name="name"]');
       var msgInput = document.querySelector('.wishes-textarea[name="message"]');
       var wishesBtn = document.getElementById('wishesBtnText');
@@ -502,7 +541,15 @@ function buildLanguageToggle() {
       if(wishesTitle) wishesTitle.textContent = t.wishesTitle || '';
       if(wishesSub) wishesSub.textContent = t.wishesSubtitle || '';
 
-      // Toggle active button
+      // 3. Swap user-entered dates (UZ ↔ RU)
+      var d = window.__INVITE_DATA__;
+      if(d && d.dateUz && d.dateRu) {
+        var fromDate = lang === 'ru' ? d.dateUz : d.dateRu;
+        var toDate = lang === 'ru' ? d.dateRu : d.dateUz;
+        swapTextInPage(fromDate, toDate);
+      }
+
+      // 4. Toggle active button
       var uzBtn = document.getElementById('langUz');
       var ruBtn = document.getElementById('langRu');
       if(uzBtn) uzBtn.classList.toggle('active', lang === 'uz');
@@ -511,6 +558,20 @@ function buildLanguageToggle() {
       document.documentElement.lang = lang;
       try { localStorage.setItem('taklifnoma-lang', lang); } catch(e){}
     }
+
+    // Helper: walk all text nodes and replace text
+    function swapTextInPage(from, to) {
+      if(!from || !to || from === to) return;
+      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+      while(walker.nextNode()) {
+        var node = walker.currentNode;
+        if(node.nodeValue && node.nodeValue.indexOf(from) !== -1) {
+          node.nodeValue = node.nodeValue.replace(new RegExp(escapeRegex(from), 'g'), to);
+        }
+      }
+    }
+    function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'); }
+
     window.switchLang = switchLang;
 
     // Restore saved language
