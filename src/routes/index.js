@@ -4,6 +4,7 @@ const templateRoutes = require('./templateRoutes');
 const invitationRoutes = require('./invitationRoutes');
 const invitationController = require('../controllers/invitationController');
 const renderController = require('../controllers/renderController');
+const wishesController = require('../controllers/wishesController');
 const validators = require('../validators');
 const validate = require('../middleware/validate');
 
@@ -16,6 +17,9 @@ router.use('/api/invitations', invitationRoutes);
 
 // ── Preview endpoint (no auth, POST) ────────────────────
 router.post('/api/preview', renderController.preview);
+
+// ── Wishes endpoint (Telegram bot) ──────────────────────
+router.post('/api/wishes', wishesController.send);
 
 // ── Render endpoints ────────────────────────────────────
 router.get(

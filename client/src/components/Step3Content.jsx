@@ -119,6 +119,29 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </div>
         </div>
       )}
+
+      {/* Extra features: music + telegram */}
+      <div className="glass p-5 space-y-4">
+        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+          ⚙️ Qo'shimcha sozlamalar
+        </h3>
+        <div>
+          <label className="label flex items-center gap-1.5">🎵 Fon musiqasi (MP3 havola)</label>
+          <input type="url" placeholder="https://example.com/music.mp3"
+            value={data.customFields?.musicUrl || ''}
+            onChange={(e) => handleCustomFieldChange('musicUrl', e.target.value)}
+            className="input-field" />
+          <p className="text-[11px] text-surface-500 mt-1">MP3 faylga to'g'ridan-to'g'ri havola</p>
+        </div>
+        <div>
+          <label className="label flex items-center gap-1.5">📱 Telegram Bot (tilaklar uchun)</label>
+          <input type="text" placeholder="BOT_TOKEN:CHAT_ID"
+            value={data.customFields?.telegramBot || ''}
+            onChange={(e) => handleCustomFieldChange('telegramBot', e.target.value)}
+            className="input-field" />
+          <p className="text-[11px] text-surface-500 mt-1">Format: BOT_TOKEN:CHAT_ID — @BotFather dan oling</p>
+        </div>
+      </div>
     </div>
   );
 
