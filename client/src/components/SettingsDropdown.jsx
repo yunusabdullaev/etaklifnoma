@@ -122,8 +122,8 @@ export default function SettingsDropdown() {
         {/* Language section */}
         <SectionLabel text={t.language} />
         <div style={{ display: 'flex', gap: 6 }}>
-          <OptBtn active={lang === 'uz'} onClick={() => setLang('uz')} icon="🇺🇿" label="O'zbekcha" />
-          <OptBtn active={lang === 'ru'} onClick={() => setLang('ru')} icon="🇷🇺" label="Русский" />
+          <OptBtn active={lang === 'uz'} onClick={() => setLang('uz')} label="O'zbekcha" />
+          <OptBtn active={lang === 'ru'} onClick={() => setLang('ru')} label="Русский" />
         </div>
       </div>
 
