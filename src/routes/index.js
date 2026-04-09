@@ -25,6 +25,7 @@ router.use('/api/invitations', optionalAuth, invitationRoutes);
 
 // ── Preview endpoint (no auth, POST) ────────────────────
 router.post('/api/preview', renderController.preview);
+router.post('/api/preview/full', renderController.fullPreview);
 
 // ── Wishes endpoint (Telegram bot) ──────────────────────
 router.post('/api/wishes', wishesController.send);

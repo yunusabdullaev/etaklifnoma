@@ -77,3 +77,46 @@ exports.preview = catchAsync(async (req, res) => {
   const { html, css } = renderPreviewFragment(req.body, eventType, template);
   ApiResponse.success(res, { html, css });
 });
+
+/**
+ * POST /api/preview/full
+ * Full page preview — renders COMPLETE HTML page (like /invite/slug/view)
+ * Returns rendered HTML as text/html for direct iframe use.
+ */
+exports.fullPreview = catchAsync(async (req, res) => {
+  const { templateId } = req.body;
+
+  let template = null;
+  let eventType = null;
+
+  if (templateId) {
+    template = await Template.findByPk(templateId, {
+      include: [{ association: 'eventType' }],
+    });
+    if (template) eventType = template.eventType;
+  }
+
+  if (!eventType && req.body.eventTypeId) {
+    eventType = await EventType.findByPk(req.body.eventTypeId);
+  }
+
+  // Build a fake invitation object for renderInvitation
+  const fakeInvitation = {
+    slug: 'preview',
+    eventTitle: req.body.eventTitle || '',
+    hostName: req.body.hostName || '',
+    guestName: req.body.guestName || '',
+    eventDate: req.body.eventDate || '',
+    eventTime: req.body.eventTime || '',
+    location: req.body.location || '',
+    locationUrl: req.body.locationUrl || '',
+    message: req.body.message || '',
+    customFields: req.body.customFields || {},
+    brideName: req.body.customFields?.brideName || '',
+    groomName: req.body.customFields?.groomName || '',
+  };
+
+  const html = renderInvitation(fakeInvitation, eventType, template);
+  res.set('Content-Type', 'text/html');
+  res.send(html);
+});

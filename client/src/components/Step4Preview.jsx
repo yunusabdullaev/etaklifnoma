@@ -1,10 +1,128 @@
 import { motion } from 'framer-motion';
-import { Sparkles, Smartphone, Monitor } from 'lucide-react';
-import { useState } from 'react';
-import LivePreview from './LivePreview';
+import { Sparkles, Smartphone, Monitor, Maximize2, Minimize2, Loader2 } from 'lucide-react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 export default function Step4Preview({ data, onNext, onBack }) {
   const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'mobile'
+  const [fullscreen, setFullscreen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const iframeRef = useRef(null);
+  const debounceRef = useRef(null);
+
+  const API = import.meta.env.VITE_API_URL || '';
+
+  const fetchFullPreview = useCallback(async () => {
+    if (!data.templateId) return;
+    setLoading(true);
+    try {
+      const payload = {
+        templateId: data.templateId,
+        eventTypeId: data.eventTypeId,
+        hostName: data.hostName || '',
+        guestName: data.guestName || '',
+        eventTitle: data.eventTitle || '',
+        eventDate: data.eventDate || '',
+        eventTime: data.eventTime || '',
+        location: data.location || '',
+        locationUrl: data.locationUrl || '',
+        message: data.message || '',
+        customFields: data.customFields || {},
+      };
+
+      const res = await fetch(`${API}/api/preview/full`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const html = await res.text();
+      const iframe = iframeRef.current;
+      if (iframe) {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+      }
+    } catch (err) {
+      console.error('Full preview error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [data, API]);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchFullPreview(), 300);
+    return () => clearTimeout(debounceRef.current);
+  }, [
+    data.templateId, data.hostName, data.guestName, data.eventTitle,
+    data.eventDate, data.eventTime, data.location, data.locationUrl,
+    data.message, JSON.stringify(data.customFields), fetchFullPreview,
+  ]);
+
+  const toggleFullscreen = () => setFullscreen(!fullscreen);
+
+  if (fullscreen) {
+    return (
+      <div className="fixed inset-0 z-50 bg-surface-950 flex flex-col">
+        {/* Fullscreen header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-surface-900/80 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <h3 className="text-white font-semibold text-sm">To'liq ko'rish</h3>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setViewMode('desktop')}
+                className={`p-1.5 rounded-md transition-all ${viewMode === 'desktop' ? 'bg-primary-500/20 text-primary-400' : 'text-surface-500 hover:text-white'}`}
+              >
+                <Monitor size={14} />
+              </button>
+              <button
+                onClick={() => setViewMode('mobile')}
+                className={`p-1.5 rounded-md transition-all ${viewMode === 'mobile' ? 'bg-primary-500/20 text-primary-400' : 'text-surface-500 hover:text-white'}`}
+              >
+                <Smartphone size={14} />
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={toggleFullscreen} className="text-surface-400 hover:text-white p-1.5 rounded-md hover:bg-white/5 transition-all">
+              <Minimize2 size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Fullscreen iframe */}
+        <div className="flex-1 flex justify-center bg-surface-950 overflow-auto p-4">
+          <div className={`relative transition-all duration-300 ${
+            viewMode === 'mobile' ? 'w-[390px]' : 'w-full max-w-[900px]'
+          } h-full`}>
+            {viewMode === 'mobile' && (
+              <div className="absolute -inset-4 rounded-[2.5rem] border-2 border-white/10 bg-surface-900/30 pointer-events-none z-0">
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-1.5 rounded-full bg-white/10" />
+              </div>
+            )}
+            <iframe
+              ref={iframeRef}
+              title="Full Preview"
+              className="w-full h-full border-0 rounded-2xl bg-[#0a0a12] relative z-10"
+              sandbox="allow-same-origin allow-scripts"
+            />
+          </div>
+        </div>
+
+        {/* Fullscreen footer */}
+        <div className="flex items-center justify-between px-6 py-3 border-t border-white/10 bg-surface-900/80">
+          <button onClick={() => { setFullscreen(false); onBack(); }} className="btn-secondary text-sm">
+            ← Tahrirlash
+          </button>
+          <button onClick={() => { setFullscreen(false); onNext(); }} className="btn-accent flex items-center gap-2 text-sm">
+            <Sparkles size={14} />
+            Havola yaratish
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -15,12 +133,12 @@ export default function Step4Preview({ data, onNext, onBack }) {
     >
       <div className="text-center space-y-2">
         <h2 className="text-2xl md:text-3xl font-display font-bold">
-          Taklifnomani ko'rib chiqing
+          To'liq ko'rib chiqing
         </h2>
-        <p className="text-surface-400">Hamma narsa to'g'ri ekanligiga ishonch hosil qiling</p>
+        <p className="text-surface-400">Taklifnoma xuddi shu ko'rinishda bo'ladi — musiqa, animatsiyalar, til almashtirish bilan</p>
       </div>
 
-      {/* View mode toggle */}
+      {/* Controls */}
       <div className="flex justify-center gap-2">
         <button
           onClick={() => setViewMode('desktop')}
@@ -40,6 +158,13 @@ export default function Step4Preview({ data, onNext, onBack }) {
         >
           <Smartphone size={14} /> Mobil
         </button>
+        <button
+          onClick={toggleFullscreen}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium
+            bg-accent-500/10 text-accent-300 border border-accent-500/20 hover:bg-accent-500/20 transition-all"
+        >
+          <Maximize2 size={14} /> To'liq ekran
+        </button>
       </div>
 
       {/* Preview container */}
@@ -49,7 +174,7 @@ export default function Step4Preview({ data, onNext, onBack }) {
           className={`relative transition-all duration-500 ease-out ${
             viewMode === 'mobile'
               ? 'w-[375px]'
-              : 'w-full max-w-[520px]'
+              : 'w-full max-w-[700px]'
           }`}
         >
           {/* Device frame for mobile */}
@@ -61,17 +186,24 @@ export default function Step4Preview({ data, onNext, onBack }) {
           )}
 
           <div className="relative z-10">
-            <LivePreview
-              data={data}
-              className={`rounded-2xl border border-white/10 overflow-hidden ${
+            {loading && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-surface-950/60 backdrop-blur-sm rounded-2xl">
+                <Loader2 className="w-6 h-6 text-primary-400 animate-spin" />
+              </div>
+            )}
+            <iframe
+              ref={iframeRef}
+              title="Full Invitation Preview"
+              className={`w-full border-0 rounded-2xl bg-[#0a0a12] ${
                 viewMode === 'mobile' ? 'h-[667px]' : 'h-[700px]'
-              }`}
+              } border border-white/10`}
+              sandbox="allow-same-origin allow-scripts"
             />
           </div>
         </motion.div>
       </div>
 
-      <div className="flex justify-between items-center max-w-[520px] mx-auto pt-4">
+      <div className="flex justify-between items-center max-w-[700px] mx-auto pt-4">
         <button onClick={onBack} className="btn-secondary">
           ← Tahrirlash
         </button>
