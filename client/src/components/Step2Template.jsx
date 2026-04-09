@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Crown, Sparkles, Check } from 'lucide-react';
+import { Loader2, Crown, Sparkles, Check, Eye, X } from 'lucide-react';
 import { getTemplates } from '../api';
 import { useLang } from '../i18n';
 
@@ -135,6 +135,7 @@ function TemplateThumbnail({ template }) {
 export default function Step2Template({ data, onUpdate, onNext, onBack }) {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [previewTemplate, setPreviewTemplate] = useState(null);
   const { t } = useLang();
 
   useEffect(() => {
@@ -158,6 +159,7 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
   }
 
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -198,7 +200,7 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
               >
                 {/* Selection check */}
                 {isSelected && (
-                  <div className="absolute top-2 right-2 z-20 w-6 h-6 bg-primary-500 rounded-full 
+                  <div className="absolute bottom-14 right-2 z-20 w-6 h-6 bg-primary-500 rounded-full 
                     flex items-center justify-center shadow-lg">
                     <Check size={14} className="text-white" />
                   </div>
@@ -211,6 +213,17 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
                     Premium
                   </div>
                 )}
+
+                {/* Preview eye button */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setPreviewTemplate(tmpl); }}
+                  className="absolute top-2 right-2 z-20 w-7 h-7 rounded-full flex items-center justify-center
+                    bg-black/50 backdrop-blur-md border border-white/20 text-white/70
+                    hover:bg-black/70 hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                  title="Ko'rish"
+                >
+                  <Eye size={13} />
+                </button>
 
                 {/* Live template preview thumbnail */}
                 <TemplateThumbnail template={tmpl} />
@@ -242,5 +255,148 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
         </div>
       </div>
     </motion.div>
+
+    {/* Fullscreen Preview Modal */}
+    {previewTemplate && (
+      <div
+        style={{
+          position: 'fixed', inset: 0, zIndex: 9999,
+          background: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 16,
+        }}
+        onClick={() => setPreviewTemplate(null)}
+      >
+        {/* Close button */}
+        <button
+          onClick={() => setPreviewTemplate(null)}
+          style={{
+            position: 'absolute', top: 16, right: 16, zIndex: 10,
+            width: 40, height: 40, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+            color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', backdropFilter: 'blur(8px)',
+          }}
+        >
+          <X size={18} />
+        </button>
+
+        {/* Template name */}
+        <div style={{
+          position: 'absolute', top: 16, left: 16, zIndex: 10,
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <span style={{ color: '#fff', fontSize: 14, fontWeight: 600 }}>{previewTemplate.name}</span>
+          <button
+            onClick={(e) => { e.stopPropagation(); handleSelect(previewTemplate); setPreviewTemplate(null); }}
+            style={{
+              padding: '6px 16px', borderRadius: 20,
+              background: 'linear-gradient(135deg, #5c7cfa, #4263eb)',
+              color: '#fff', fontSize: 12, fontWeight: 600,
+              border: 'none', cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(92,124,250,0.3)',
+            }}
+          >
+            Tanlash ✓
+          </button>
+        </div>
+
+        {/* Preview iframe */}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            width: '100%', maxWidth: 420, height: '85vh',
+            borderRadius: 16, overflow: 'hidden',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+            border: '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
+          <FullPreview template={previewTemplate} />
+        </div>
+      </div>
+    )}
+    </>
+  );
+}
+
+/**
+ * Full-height scrollable preview inside modal
+ */
+function FullPreview({ template }) {
+  const iframeRef = useRef(null);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe || !template.htmlContent || !template.cssContent) return;
+
+    const sampleReplacements = {
+      '{{brideName|Kelin}}': 'Madina',
+      '{{groomName|Kuyov}}': 'Sardor',
+      '{{eventTypeLabel|Nikoh taklifi}}': 'Nikoh taklifi',
+      "{{eventTypeLabel|Tug'ilgan kun}}": "Tug'ilgan kun",
+      "{{eventTitle|Tug'ilgan kun bayrami}}": "Tug'ilgan kun bayrami",
+      '{{age}}': '25',
+      '{{eventTypeLabel|Bitiruv kechasi}}': 'Bitiruv kechasi',
+      '{{eventTitle|Bitiruv kechasi}}': 'Bitiruv kechasi',
+      '{{graduationYear}}': '2026',
+      '{{eventTypeLabel|Yubiley}}': 'Yubiley',
+      '{{eventTitle|Yubiley bayramiga taklif}}': 'Yubiley bayramiga taklif',
+      '{{years}}': '50',
+      '{{eventDateFormatted}}': '15 Avgust, 2026',
+      '{{hostName}}': 'Karimov oilasi',
+      '{{guestName|Hurmatli mehmonlar!}}': 'Hurmatli mehmonlar!',
+      "{{message|Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz.}}":
+        "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz.",
+      '{{message|Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!}}':
+        'Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!',
+      '{{message|Bizning bitiruv kechamizga marhamat qiling!}}':
+        'Bizning bitiruv kechamizga marhamat qiling!',
+      '{{message|Yubiley bayramimizga marhamat qiling!}}':
+        'Yubiley bayramimizga marhamat qiling!',
+      '{{eventTime|18:00}}': '18:00',
+      '{{location}}': 'Grand Palace',
+      '{{eventDate}}': '2026-08-15',
+    };
+
+    let html = template.htmlContent;
+    for (const [key, val] of Object.entries(sampleReplacements)) {
+      html = html.replaceAll(key, val);
+    }
+    html = html.replace(/\{\{[^}]+\}\}/g, '');
+    html = html.replace(/\{\{#if\s+\w+\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+    html = html.replace(/\{\{#unless\s+\w+\}\}([\s\S]*?)\{\{\/unless\}\}/g, '$1');
+
+    const timer = setTimeout(() => {
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!doc) return;
+      doc.open();
+      doc.write(`<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    ${template.cssContent}
+    body { margin: 0 !important; }
+    .scroll-cue { display: none !important; }
+  </style>
+</head>
+<body>${html}</body>
+</html>`);
+      doc.close();
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [template]);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      title={`Preview: ${template.name}`}
+      style={{ width: '100%', height: '100%', border: 'none' }}
+      sandbox="allow-same-origin allow-scripts"
+    />
   );
 }
