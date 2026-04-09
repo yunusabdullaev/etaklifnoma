@@ -80,141 +80,270 @@
   }
 }
 
-/* ── Light Mode Overrides ─────────────────────────────────── */
-.light-mode body {
-  background: #f5f5f7;
-  color: #1a1a2e;
+/* ══════════════════════════════════════════════════════════════
+   LIGHT MODE — Complete Override 
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Base ──────────────────────────────────────────────────── */
+.light-mode body,
+.light-mode .min-h-screen {
+  background: #f0f2f5 !important;
+  color: #1a1a2e !important;
 }
 
-.light-mode .glass {
-  background: rgba(255,255,255,0.7);
-  border-color: rgba(0,0,0,0.08);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-}
-.light-mode .glass-strong {
-  background: rgba(255,255,255,0.85);
-  border-color: rgba(0,0,0,0.1);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-.light-mode .glass-card {
-  background: rgba(255,255,255,0.65);
-  border-color: rgba(0,0,0,0.08);
-}
-.light-mode .glass-card:hover {
-  background: rgba(255,255,255,0.85);
-  border-color: rgba(92,124,250,0.3);
+/* ── Background decorative blobs ───────────────────────────── */
+.light-mode .bg-primary-500\/\[0\.03\],
+.light-mode .bg-accent-500\/\[0\.03\],
+.light-mode .bg-primary-500\/\[0\.015\] {
+  opacity: 0.3;
 }
 
-.light-mode .input-field {
-  background: rgba(0,0,0,0.03);
-  border-color: rgba(0,0,0,0.1);
-  color: #1a1a2e;
-}
-.light-mode .input-field::placeholder {
-  color: #999;
-}
-.light-mode .input-field:focus {
-  background: white;
-  border-color: rgba(92,124,250,0.4);
-  box-shadow: 0 0 0 3px rgba(92,124,250,0.1);
+/* ── Header ────────────────────────────────────────────────── */
+.light-mode header,
+.light-mode .bg-surface-950\/80 {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(0,0,0,0.06) !important;
+  backdrop-filter: blur(20px);
 }
 
-.light-mode .label {
-  color: #555;
+/* ── Step Indicator bar ────────────────────────────────────── */
+.light-mode .bg-surface-950\/50 {
+  background: rgba(255,255,255,0.6) !important;
+  border-color: rgba(0,0,0,0.05) !important;
+}
+.light-mode .bg-white\/\[0\.07\] {
+  background: rgba(0,0,0,0.04) !important;
+}
+.light-mode .border-white\/10 {
+  border-color: rgba(0,0,0,0.08) !important;
+}
+.light-mode .border-white\/5 {
+  border-color: rgba(0,0,0,0.04) !important;
 }
 
-.light-mode .btn-secondary {
-  background: rgba(0,0,0,0.05);
-  color: #1a1a2e;
-  border-color: rgba(0,0,0,0.1);
-}
-.light-mode .btn-secondary:hover {
-  background: rgba(0,0,0,0.08);
-}
-
-.light-mode h1, .light-mode h2, .light-mode h3 {
-  color: #1a1a2e;
-}
-
+/* ── Text colors ───────────────────────────────────────────── */
 .light-mode .text-white {
   color: #1a1a2e !important;
 }
-.light-mode .text-surface-300,
+.light-mode .text-surface-300 {
+  color: #555 !important;
+}
 .light-mode .text-surface-400 {
   color: #666 !important;
 }
 .light-mode .text-surface-500 {
+  color: #888 !important;
+}
+.light-mode .text-surface-600 {
+  color: #555 !important;
+}
+.light-mode .placeholder-surface-400::placeholder {
+  color: #aaa !important;
+}
+
+/* ── Backgrounds ───────────────────────────────────────────── */
+.light-mode .bg-surface-950 {
+  background-color: #f0f2f5 !important;
+}
+.light-mode .bg-surface-900 {
+  background-color: #e8eaed !important;
+}
+.light-mode .bg-surface-800 {
+  background-color: #ddd !important;
+}
+.light-mode .bg-white\/5,
+.light-mode .bg-white\/\[0\.05\] {
+  background: rgba(0,0,0,0.03) !important;
+}
+.light-mode .bg-white\/10,
+.light-mode .bg-white\/\[0\.1\] {
+  background: rgba(0,0,0,0.05) !important;
+}
+.light-mode .bg-white\/\[0\.07\] {
+  background: rgba(0,0,0,0.04) !important;
+}
+.light-mode .bg-white\/15 {
+  background: rgba(0,0,0,0.07) !important;
+}
+.light-mode .bg-white\/\[0\.12\] {
+  background: rgba(0,0,0,0.06) !important;
+}
+
+/* ── Glass components ──────────────────────────────────────── */
+.light-mode .glass {
+  background: rgba(255,255,255,0.75) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+.light-mode .glass-strong {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.light-mode .glass-card {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.light-mode .glass-card:hover {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(92,124,250,0.3) !important;
+  box-shadow: 0 4px 20px rgba(92,124,250,0.1);
+}
+
+/* ── Inputs ────────────────────────────────────────────────── */
+.light-mode .input-field {
+  background: rgba(0,0,0,0.03) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  color: #1a1a2e !important;
+}
+.light-mode .input-field::placeholder {
   color: #999 !important;
 }
+.light-mode .input-field:focus {
+  background: #fff !important;
+  border-color: rgba(92,124,250,0.4) !important;
+  box-shadow: 0 0 0 3px rgba(92,124,250,0.1) !important;
+}
+.light-mode input,
+.light-mode textarea,
+.light-mode select {
+  color: #1a1a2e !important;
+}
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: #aaa !important;
+}
 
+/* ── Labels ────────────────────────────────────────────────── */
+.light-mode .label {
+  color: #444 !important;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.light-mode .btn-primary {
+  box-shadow: 0 4px 16px rgba(92,124,250,0.2);
+}
+.light-mode .btn-secondary {
+  background: rgba(0,0,0,0.05) !important;
+  color: #1a1a2e !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+.light-mode .btn-secondary:hover {
+  background: rgba(0,0,0,0.08) !important;
+}
+
+/* ── Headers/Headings ──────────────────────────────────────── */
+.light-mode h1, .light-mode h2, .light-mode h3, .light-mode h4 {
+  color: #1a1a2e !important;
+}
+.light-mode p {
+  color: #555;
+}
+
+/* ── Shadows ───────────────────────────────────────────────── */
+.light-mode .shadow-lg {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06) !important;
+}
+.light-mode .shadow-xl {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08) !important;
+}
+.light-mode .shadow-primary-500\/20,
+.light-mode .shadow-primary-500\/25,
+.light-mode .shadow-primary-500\/30 {
+  --tw-shadow-color: rgba(92,124,250,0.12) !important;
+}
+
+/* ── Glow effects ──────────────────────────────────────────── */
+.light-mode .glow-primary {
+  box-shadow: 0 0 30px rgba(92,124,250,0.08), 0 0 60px rgba(92,124,250,0.03);
+}
+.light-mode .glow-accent {
+  box-shadow: 0 0 30px rgba(255,152,0,0.08), 0 0 60px rgba(255,152,0,0.03);
+}
+
+/* ── Step indicator ────────────────────────────────────────── */
+.light-mode .bg-primary-600 {
+  background-color: #4c6ef5 !important;
+}
+.light-mode .ring-primary-500\/20 {
+  --tw-ring-color: rgba(92,124,250,0.15) !important;
+}
+
+/* ── Dashboard empty state ─────────────────────────────────── */
+.light-mode .bg-surface-900\/50 {
+  background: rgba(0,0,0,0.03) !important;
+}
+
+/* ── Template cards ────────────────────────────────────────── */
+.light-mode .bg-gradient-to-br {
+  opacity: 0.95;
+}
+
+/* ── Auth page ─────────────────────────────────────────────── */
+.light-mode .bg-surface-900\/30 {
+  background: rgba(255,255,255,0.6) !important;
+}
+.light-mode .bg-surface-900\/50 {
+  background: rgba(255,255,255,0.5) !important;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
 .light-mode ::-webkit-scrollbar-track {
-  background: #eee;
+  background: #eee !important;
 }
 .light-mode ::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: #ccc !important;
+}
+.light-mode ::-webkit-scrollbar-thumb:hover {
+  background: #bbb !important;
 }
 
-/* ── Settings Dropdown ──────────────────────────────────────── */
-.settings-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 100;
-  min-width: 220px;
-  padding: 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(15,17,30,0.95);
-  backdrop-filter: blur(24px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+/* ── Border overrides ──────────────────────────────────────── */
+.light-mode .border-white\/10,
+.light-mode .border-white\/15,
+.light-mode .border-white\/20 {
+  border-color: rgba(0,0,0,0.08) !important;
+}
+.light-mode .border-white\/5 {
+  border-color: rgba(0,0,0,0.04) !important;
 }
 
-.light-mode .settings-dropdown {
-  background: rgba(255,255,255,0.96);
-  border-color: rgba(0,0,0,0.08);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+/* ── Hover states ──────────────────────────────────────────── */
+.light-mode .hover\:bg-white\/10:hover {
+  background: rgba(0,0,0,0.06) !important;
 }
-.light-mode .settings-dropdown h3 {
+.light-mode .hover\:bg-white\/15:hover {
+  background: rgba(0,0,0,0.08) !important;
+}
+.light-mode .hover\:bg-white\/\[0\.12\]:hover {
+  background: rgba(0,0,0,0.07) !important;
+}
+.light-mode .hover\:border-white\/20:hover {
+  border-color: rgba(92,124,250,0.2) !important;
+}
+.light-mode .hover\:text-white:hover {
   color: #1a1a2e !important;
 }
 
-.settings-option {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-  color: rgba(255,255,255,0.5);
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.settings-option:hover {
-  background: rgba(255,255,255,0.07);
-  color: white;
-}
-.settings-option.active {
-  background: rgba(92,124,250,0.12);
-  border-color: rgba(92,124,250,0.3);
-  color: white;
+/* ── Text gradient fix ─────────────────────────────────────── */
+.light-mode .text-gradient {
+  background: linear-gradient(135deg, #4263eb, #f57c00) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
-.light-mode .settings-option {
-  border-color: rgba(0,0,0,0.08);
-  background: rgba(0,0,0,0.02);
-  color: #888;
+/* ── Primary active states ─────────────────────────────────── */
+.light-mode .bg-primary-500\/20 {
+  background: rgba(92,124,250,0.1) !important;
 }
-.light-mode .settings-option:hover {
-  background: rgba(0,0,0,0.05);
-  color: #333;
+.light-mode .text-primary-400 {
+  color: #4c6ef5 !important;
 }
-.light-mode .settings-option.active {
-  background: rgba(92,124,250,0.08);
-  border-color: rgba(92,124,250,0.25);
-  color: #1a1a2e;
+
+/* ── Footer ────────────────────────────────────────────────── */
+.light-mode footer,
+.light-mode .border-t {
+  border-color: rgba(0,0,0,0.06) !important;
 }
 
