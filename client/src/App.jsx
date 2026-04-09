@@ -56,7 +56,9 @@ export default function App() {
   const handleLogin = (userData, authToken) => {
     setUser(userData);
     setToken(authToken);
-    setView('dashboard');
+    setView('wizard');
+    setStep(1);
+    setData(INITIAL_DATA);
   };
 
   const handleLogout = () => {
