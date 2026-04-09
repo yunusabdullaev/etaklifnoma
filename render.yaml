@@ -1,0 +1,26 @@
+databases:
+  - name: etaklifnoma-db
+    plan: free
+    databaseName: etaklifnoma
+    user: etaklifnoma
+
+services:
+  - type: web
+    name: etaklifnoma
+    plan: free
+    runtime: node
+    buildCommand: npm install && npm run build && npx sequelize-cli db:migrate && npm run seed
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: etaklifnoma-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: VERIFY_BOT_TOKEN
+        value: 8766115817:AAE1Z6UZdJDyG94iJYWrpEJIENjsGB3iu4k
+      - key: VERIFY_CHAT_ID
+        value: "5887503077"
