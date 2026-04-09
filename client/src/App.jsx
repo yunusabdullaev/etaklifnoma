@@ -7,7 +7,8 @@ import Step3Content from './components/Step3Content';
 import Step4Preview from './components/Step4Preview';
 import Step5Generate from './components/Step5Generate';
 import AuthPage from './components/AuthPage';
-import { Sparkles, LogOut, User } from 'lucide-react';
+import Dashboard from './components/Dashboard';
+import { Sparkles, LogOut, User, LayoutGrid, PlusCircle } from 'lucide-react';
 
 const INITIAL_DATA = {
   eventType: null,
@@ -31,6 +32,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [view, setView] = useState('dashboard'); // 'dashboard' | 'wizard'
 
   // Check saved auth on mount
   useEffect(() => {
@@ -52,6 +54,7 @@ export default function App() {
   const handleLogin = (userData, authToken) => {
     setUser(userData);
     setToken(authToken);
+    setView('dashboard');
   };
 
   const handleLogout = () => {
@@ -61,6 +64,7 @@ export default function App() {
     localStorage.removeItem('taklifnoma-user');
     setStep(1);
     setData(INITIAL_DATA);
+    setView('dashboard');
   };
 
   const updateData = useCallback((updates) => {
@@ -72,6 +76,13 @@ export default function App() {
   const resetWizard = () => {
     setData(INITIAL_DATA);
     setStep(1);
+    setView('dashboard');
+  };
+
+  const startWizard = () => {
+    setData(INITIAL_DATA);
+    setStep(1);
+    setView('wizard');
   };
 
   const renderStep = () => {
@@ -93,6 +104,8 @@ export default function App() {
     return <AuthPage onLogin={handleLogin} />;
   }
 
+  const showDashboard = view === 'dashboard';
+
   return (
     <div className="min-h-screen bg-surface-950 relative overflow-hidden">
       {/* Background decorative elements */}
@@ -106,29 +119,57 @@ export default function App() {
       <header className="relative z-10 border-b border-white/5 bg-surface-950/80 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 
-              flex items-center justify-center shadow-lg shadow-primary-500/20">
-              <Sparkles size={18} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-lg font-display font-bold text-white leading-none">
-                Taklifnoma
-              </h1>
-              <p className="text-[10px] text-surface-500 leading-none mt-0.5">
-                Onlayn taklif yaratuvchi
-              </p>
-            </div>
+            <button onClick={() => setView('dashboard')} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 
+                flex items-center justify-center shadow-lg shadow-primary-500/20">
+                <Sparkles size={18} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-display font-bold text-white leading-none">
+                  Taklifnoma
+                </h1>
+                <p className="text-[10px] text-surface-500 leading-none mt-0.5">
+                  Premium taklifnomalar
+                </p>
+              </div>
+            </button>
           </div>
 
-          <div className="flex items-center gap-3">
-            {step < 5 && (
-              <div className="text-xs text-surface-500 hidden sm:block">
+          <div className="flex items-center gap-2">
+            {/* Navigation tabs */}
+            <div className="flex items-center gap-1 bg-white/5 rounded-lg p-0.5 mr-2">
+              <button
+                onClick={() => setView('dashboard')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  showDashboard
+                    ? 'bg-primary-500/20 text-primary-400'
+                    : 'text-surface-500 hover:text-white'
+                }`}
+              >
+                <LayoutGrid size={12} />
+                <span className="hidden sm:inline">Kabinet</span>
+              </button>
+              <button
+                onClick={startWizard}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  !showDashboard
+                    ? 'bg-primary-500/20 text-primary-400'
+                    : 'text-surface-500 hover:text-white'
+                }`}
+              >
+                <PlusCircle size={12} />
+                <span className="hidden sm:inline">Yaratish</span>
+              </button>
+            </div>
+
+            {!showDashboard && step < 5 && (
+              <div className="text-xs text-surface-500 hidden sm:block mr-2">
                 Qadam <span className="text-white font-semibold">{step}</span>/5
               </div>
             )}
             
             {/* User info + logout */}
-            <div className="flex items-center gap-2 pl-3 border-l border-white/10">
+            <div className="flex items-center gap-2 pl-2 border-l border-white/10">
               <div className="flex items-center gap-1.5 text-xs text-surface-400">
                 <User size={12} />
                 <span className="hidden sm:inline max-w-[100px] truncate">{user.name}</span>
@@ -145,8 +186,8 @@ export default function App() {
         </div>
       </header>
 
-      {/* Step Indicator */}
-      {step < 5 && (
+      {/* Step Indicator — only in wizard mode */}
+      {!showDashboard && step < 5 && (
         <div className="relative z-10 py-6 border-b border-white/5 bg-surface-950/50 backdrop-blur-sm">
           <StepIndicator currentStep={step} />
         </div>
@@ -155,15 +196,27 @@ export default function App() {
       {/* Main Content */}
       <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderStep()}
-          </motion.div>
+          {showDashboard ? (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Dashboard token={token} onCreateNew={startWizard} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key={`wizard-${step}`}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.3 }}
+            >
+              {renderStep()}
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
 

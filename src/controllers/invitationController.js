@@ -31,6 +31,33 @@ exports.getAll = catchAsync(async (req, res) => {
 });
 
 /**
+ * GET /api/invitations/my
+ * Returns invitations belonging to the logged-in user
+ */
+exports.getMyInvitations = catchAsync(async (req, res) => {
+  if (!req.user) throw AppError.unauthorized('Tizimga kiring');
+
+  const invitations = await Invitation.findAll({
+    where: { userId: req.user.id },
+    include: [
+      { association: 'eventType', attributes: ['id', 'name', 'label', 'icon'] },
+      { association: 'template', attributes: ['id', 'name', 'slug'] },
+    ],
+    order: [['created_at', 'DESC']],
+  });
+
+  // Attach public URLs
+  const data = invitations.map(inv => {
+    const json = inv.toJSON();
+    json.publicUrl = `${appConfig.appUrl}/invite/${json.slug}`;
+    json.viewUrl = `${appConfig.appUrl}/invite/${json.slug}/view`;
+    return json;
+  });
+
+  ApiResponse.success(res, data);
+});
+
+/**
  * GET /api/invitations/:id
  */
 exports.getById = catchAsync(async (req, res) => {
@@ -64,7 +91,11 @@ exports.create = catchAsync(async (req, res) => {
   }
 
   // Slug is auto-generated in model hook
-  const invitation = await Invitation.create(req.body);
+  // Attach user if logged in
+  const createData = { ...req.body };
+  if (req.user) createData.userId = req.user.id;
+
+  const invitation = await Invitation.create(createData);
 
   // Re-fetch with associations
   const fullInvitation = await Invitation.findByPk(invitation.id, {
