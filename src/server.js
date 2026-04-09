@@ -82,10 +82,21 @@ const start = async () => {
     await sequelize.authenticate();
     console.log('✅ Database connection established');
 
-    // Sync models in development (migrations are preferred in production)
-    if (appConfig.nodeEnv === 'development') {
-      await sequelize.sync();
-      console.log('✅ Models synchronized');
+    // Sync models (create tables if not exist)
+    await sequelize.sync();
+    console.log('✅ Models synchronized');
+
+    // Auto-seed event types and templates if empty
+    try {
+      const { EventType } = require('./models');
+      const count = await EventType.count();
+      if (count === 0) {
+        console.log('📦 Seeding event types and templates...');
+        const seedFn = require('./database/update-templates');
+        await seedFn();
+      }
+    } catch (seedErr) {
+      console.warn('⚠️ Seed check failed:', seedErr.message);
     }
 
     app.listen(appConfig.port, () => {

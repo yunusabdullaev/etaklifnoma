@@ -141,12 +141,16 @@ async function run() {
     }
 
     console.log(`\n🎉 Done! Created: ${created}, Updated: ${updated}, Total active: ${created + updated}`);
-    process.exit(0);
   } catch (error) {
     console.error('❌ Error:', error.message);
     console.error(error.stack);
-    process.exit(1);
+    throw error;
   }
 }
 
-run();
+// If run directly: node src/database/update-templates.js
+if (require.main === module) {
+  run().then(() => process.exit(0)).catch(() => process.exit(1));
+}
+
+module.exports = run;
