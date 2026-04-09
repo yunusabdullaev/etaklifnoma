@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import StepIndicator from './components/StepIndicator';
 import Step1EventType from './components/Step1EventType';
@@ -6,7 +6,8 @@ import Step2Template from './components/Step2Template';
 import Step3Content from './components/Step3Content';
 import Step4Preview from './components/Step4Preview';
 import Step5Generate from './components/Step5Generate';
-import { Sparkles } from 'lucide-react';
+import AuthPage from './components/AuthPage';
+import { Sparkles, LogOut, User } from 'lucide-react';
 
 const INITIAL_DATA = {
   eventType: null,
@@ -27,6 +28,40 @@ const INITIAL_DATA = {
 export default function App() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState(INITIAL_DATA);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Check saved auth on mount
+  useEffect(() => {
+    const savedToken = localStorage.getItem('taklifnoma-token');
+    const savedUser = localStorage.getItem('taklifnoma-user');
+
+    if (savedToken && savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+        setToken(savedToken);
+      } catch (e) {
+        localStorage.removeItem('taklifnoma-token');
+        localStorage.removeItem('taklifnoma-user');
+      }
+    }
+    setAuthChecked(true);
+  }, []);
+
+  const handleLogin = (userData, authToken) => {
+    setUser(userData);
+    setToken(authToken);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('taklifnoma-token');
+    localStorage.removeItem('taklifnoma-user');
+    setStep(1);
+    setData(INITIAL_DATA);
+  };
 
   const updateData = useCallback((updates) => {
     setData((prev) => ({ ...prev, ...updates }));
@@ -49,6 +84,14 @@ export default function App() {
       default: return null;
     }
   };
+
+  // Wait for auth check
+  if (!authChecked) return null;
+
+  // Show auth page if not logged in
+  if (!user) {
+    return <AuthPage onLogin={handleLogin} />;
+  }
 
   return (
     <div className="min-h-screen bg-surface-950 relative overflow-hidden">
@@ -77,11 +120,28 @@ export default function App() {
             </div>
           </div>
 
-          {step < 5 && (
-            <div className="text-xs text-surface-500">
-              Qadam <span className="text-white font-semibold">{step}</span>/5
+          <div className="flex items-center gap-3">
+            {step < 5 && (
+              <div className="text-xs text-surface-500 hidden sm:block">
+                Qadam <span className="text-white font-semibold">{step}</span>/5
+              </div>
+            )}
+            
+            {/* User info + logout */}
+            <div className="flex items-center gap-2 pl-3 border-l border-white/10">
+              <div className="flex items-center gap-1.5 text-xs text-surface-400">
+                <User size={12} />
+                <span className="hidden sm:inline max-w-[100px] truncate">{user.name}</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="text-surface-500 hover:text-rose-400 transition-colors p-1"
+                title="Chiqish"
+              >
+                <LogOut size={14} />
+              </button>
             </div>
-          )}
+          </div>
         </div>
       </header>
 

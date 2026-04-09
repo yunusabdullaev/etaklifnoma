@@ -18,6 +18,14 @@ class AppError extends Error {
     return new AppError(message, 404);
   }
 
+  static unauthorized(message = 'Unauthorized') {
+    return new AppError(message, 401);
+  }
+
+  static forbidden(message = 'Forbidden') {
+    return new AppError(message, 403);
+  }
+
   static conflict(message) {
     return new AppError(message, 409);
   }

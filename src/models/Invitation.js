@@ -139,6 +139,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'template_id',
       as: 'template',
     });
+    Invitation.belongsTo(models.User, {
+      foreignKey: 'user_id',
+      as: 'user',
+    });
   };
 
   return Invitation;

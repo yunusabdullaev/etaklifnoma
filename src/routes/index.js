@@ -5,15 +5,22 @@ const invitationRoutes = require('./invitationRoutes');
 const invitationController = require('../controllers/invitationController');
 const renderController = require('../controllers/renderController');
 const wishesController = require('../controllers/wishesController');
+const authController = require('../controllers/authController');
 const validators = require('../validators');
 const validate = require('../middleware/validate');
+const { protect, optionalAuth } = require('../middleware/auth');
 
 const router = Router();
+
+// ── Auth routes ─────────────────────────────────────────
+router.post('/api/auth/register', authController.register);
+router.post('/api/auth/login', authController.login);
+router.get('/api/auth/me', protect, authController.me);
 
 // ── API routes ──────────────────────────────────────────
 router.use('/api/event-types', eventTypeRoutes);
 router.use('/api/templates', templateRoutes);
-router.use('/api/invitations', invitationRoutes);
+router.use('/api/invitations', optionalAuth, invitationRoutes);
 
 // ── Preview endpoint (no auth, POST) ────────────────────
 router.post('/api/preview', renderController.preview);
