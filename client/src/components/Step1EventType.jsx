@@ -1,0 +1,136 @@
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Heart, Cake, PartyPopper, GraduationCap, Loader2 } from 'lucide-react';
+import { getEventTypes } from '../api';
+
+const iconMap = {
+  wedding: Heart,
+  birthday: Cake,
+  jubilee: PartyPopper,
+  graduation: GraduationCap,
+};
+
+const gradientMap = {
+  wedding: 'from-rose-500/20 to-pink-500/20 border-rose-500/30 hover:border-rose-400/50',
+  birthday: 'from-amber-500/20 to-orange-500/20 border-amber-500/30 hover:border-amber-400/50',
+  jubilee: 'from-violet-500/20 to-purple-500/20 border-violet-500/30 hover:border-violet-400/50',
+  graduation: 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30 hover:border-emerald-400/50',
+};
+
+const iconColorMap = {
+  wedding: 'text-rose-400',
+  birthday: 'text-amber-400',
+  jubilee: 'text-violet-400',
+  graduation: 'text-emerald-400',
+};
+
+const selectedGlow = {
+  wedding: 'shadow-rose-500/20',
+  birthday: 'shadow-amber-500/20',
+  jubilee: 'shadow-violet-500/20',
+  graduation: 'shadow-emerald-500/20',
+};
+
+export default function Step1EventType({ data, onUpdate, onNext }) {
+  const [eventTypes, setEventTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getEventTypes()
+      .then((res) => { setEventTypes(res.data); setLoading(false); })
+      .catch((err) => { setError(err.message); setLoading(false); });
+  }, []);
+
+  const handleSelect = (eventType) => {
+    onUpdate({ eventType, eventTypeId: eventType.id, templateId: null, template: null });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 text-primary-400 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-red-400 mb-2">Xatolik yuz berdi</p>
+        <p className="text-surface-400 text-sm">{error}</p>
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-8"
+    >
+      <div className="text-center space-y-2">
+        <h2 className="text-2xl md:text-3xl font-display font-bold">
+          Tadbir turini tanlang
+        </h2>
+        <p className="text-surface-400">Qanday marosim uchun taklif yaratmoqchisiz?</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+        {eventTypes.map((et, i) => {
+          const Icon = iconMap[et.name] || PartyPopper;
+          const isSelected = data.eventTypeId === et.id;
+
+          return (
+            <motion.button
+              key={et.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+              onClick={() => handleSelect(et)}
+              className={`relative group p-6 rounded-2xl border backdrop-blur-xl text-left
+                transition-all duration-300 cursor-pointer
+                bg-gradient-to-br ${gradientMap[et.name] || 'from-surface-700/50 to-surface-800/50 border-white/10'}
+                ${isSelected 
+                  ? `ring-2 ring-offset-2 ring-offset-surface-950 ring-primary-500 shadow-2xl ${selectedGlow[et.name]}` 
+                  : 'hover:scale-[1.02]'
+                }`}
+            >
+              {isSelected && (
+                <motion.div
+                  layoutId="selected-check"
+                  className="absolute top-3 right-3 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                >
+                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </motion.div>
+              )}
+
+              <div className={`w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-4 
+                ${iconColorMap[et.name]} group-hover:scale-110 transition-transform duration-300`}>
+                <Icon size={24} />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-1">{et.label}</h3>
+              <p className="text-sm text-surface-400 leading-relaxed">{et.description}</p>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      <div className="flex justify-center pt-4">
+        <button
+          onClick={onNext}
+          disabled={!data.eventTypeId}
+          className="btn-primary min-w-[200px] text-center"
+        >
+          Davom etish →
+        </button>
+      </div>
+    </motion.div>
+  );
+}
