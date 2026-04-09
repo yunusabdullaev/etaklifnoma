@@ -25,10 +25,24 @@ export default function AuthPage({ onLogin }) {
   }, [countdown]);
 
   const formatPhone = (val) => {
-    let digits = val.replace(/[^\d+]/g, '');
-    if (!digits.startsWith('+')) digits = '+' + digits;
+    // Only allow digits, max 9
+    const digits = val.replace(/\D/g, '').slice(0, 9);
     setPhone(digits);
   };
+
+  // Format for display: XX XXX XX XX
+  const displayPhone = (digits) => {
+    if (!digits) return '';
+    const parts = [];
+    if (digits.length > 0) parts.push(digits.slice(0, 2));
+    if (digits.length > 2) parts.push(digits.slice(2, 5));
+    if (digits.length > 5) parts.push(digits.slice(5, 7));
+    if (digits.length > 7) parts.push(digits.slice(7, 9));
+    return parts.join(' ');
+  };
+
+  // Full phone number for API
+  const fullPhone = '+998' + phone;
 
   // Handle OTP input
   const handleOtpChange = (index, value) => {
@@ -77,7 +91,7 @@ export default function AuthPage({ onLogin }) {
       const res = await fetch(`${API}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, name, password }),
+        body: JSON.stringify({ phone: fullPhone, name, password }),
       });
 
       const data = await res.json();
@@ -107,7 +121,7 @@ export default function AuthPage({ onLogin }) {
       const res = await fetch(`${API}/api/auth/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, code }),
+        body: JSON.stringify({ phone: fullPhone, code }),
       });
 
       const data = await res.json();
@@ -138,7 +152,7 @@ export default function AuthPage({ onLogin }) {
       const res = await fetch(`${API}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, password }),
+        body: JSON.stringify({ phone: fullPhone, password }),
       });
 
       const data = await res.json();
@@ -166,7 +180,7 @@ export default function AuthPage({ onLogin }) {
       const res = await fetch(`${API}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, name, password }),
+        body: JSON.stringify({ phone: fullPhone, name, password }),
       });
       const data = await res.json();
       if (data.success) {
@@ -240,7 +254,7 @@ export default function AuthPage({ onLogin }) {
                   <p className="text-surface-300 text-sm">
                     {t('auth.otpDesc')}
                   </p>
-                  <p className="text-primary-400 text-xs mt-1 font-mono">{phone}</p>
+                  <p className="text-primary-400 text-xs mt-1 font-mono">{fullPhone}</p>
                 </div>
 
                 {/* OTP inputs */}
@@ -363,14 +377,23 @@ export default function AuthPage({ onLogin }) {
                     <label className="label flex items-center gap-1.5">
                       <Phone size={13} /> {t('auth.phone')}
                     </label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => formatPhone(e.target.value)}
-                      placeholder="+998 90 123 45 67"
-                      className="input-field"
-                      required
-                    />
+                    <div className="flex items-center gap-0">
+                      <span className="flex items-center justify-center px-3 py-3 rounded-l-xl
+                        bg-primary-500/10 border border-r-0 border-white/10 text-primary-400
+                        text-sm font-semibold select-none whitespace-nowrap"
+                        style={{ minWidth: 64 }}
+                      >+998</span>
+                      <input
+                        type="tel"
+                        value={displayPhone(phone)}
+                        onChange={(e) => formatPhone(e.target.value)}
+                        placeholder="90 123 45 67"
+                        className="input-field flex-1"
+                        style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                        maxLength={12}
+                        required
+                      />
+                    </div>
                   </div>
 
                   <div>
