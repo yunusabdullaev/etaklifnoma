@@ -124,7 +124,7 @@ function TemplateThumbnail({ template }) {
           transform: `scale(${scale})`,
           transformOrigin: 'top left',
         }}
-        sandbox="allow-same-origin"
+        sandbox="allow-same-origin allow-scripts"
         tabIndex={-1}
       />
     </div>
