@@ -194,7 +194,7 @@ export default function App() {
       )}
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-12 pb-20 sm:pb-12">
         <AnimatePresence mode="wait">
           {showDashboard ? (
             <motion.div
@@ -220,8 +220,8 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5 mt-auto">
+      {/* Footer — hidden on mobile wizard to avoid overlap with sticky buttons */}
+      <footer className={`relative z-10 border-t border-white/5 mt-auto ${!showDashboard ? 'hidden sm:block' : ''}`}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-center">
           <p className="text-xs text-surface-600">
             © 2026 Taklifnoma — Barcha huquqlar himoyalangan

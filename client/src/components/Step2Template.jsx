@@ -224,17 +224,20 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
         </div>
       )}
 
-      <div className="flex justify-between items-center max-w-6xl mx-auto pt-4">
-        <button onClick={onBack} className="btn-secondary">
-          ← Orqaga
-        </button>
-        <button
-          onClick={onNext}
-          disabled={!data.templateId}
-          className="btn-primary min-w-[160px] text-center"
-        >
-          Davom etish →
-        </button>
+      <div className="sticky bottom-0 z-20 bg-surface-950/90 backdrop-blur-lg border-t border-white/5 
+        -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
+        <div className="flex justify-between items-center gap-3 max-w-6xl mx-auto">
+          <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">
+            ← Orqaga
+          </button>
+          <button
+            onClick={onNext}
+            disabled={!data.templateId}
+            className="btn-primary flex-1 sm:flex-none min-w-[160px] text-center py-3.5"
+          >
+            Davom etish →
+          </button>
+        </div>
       </div>
     </motion.div>
   );

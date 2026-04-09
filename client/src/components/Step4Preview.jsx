@@ -203,14 +203,17 @@ export default function Step4Preview({ data, onNext, onBack }) {
         </motion.div>
       </div>
 
-      <div className="flex justify-between items-center max-w-[700px] mx-auto pt-4">
-        <button onClick={onBack} className="btn-secondary">
-          ← Tahrirlash
-        </button>
-        <button onClick={onNext} className="btn-accent min-w-[200px] text-center flex items-center justify-center gap-2">
-          <Sparkles size={16} />
-          Havola yaratish
-        </button>
+      <div className="sticky bottom-0 z-20 bg-surface-950/90 backdrop-blur-lg border-t border-white/5 
+        -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
+        <div className="flex justify-between items-center gap-3 max-w-[700px] mx-auto">
+          <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">
+            ← Tahrirlash
+          </button>
+          <button onClick={onNext} className="btn-accent flex-1 sm:flex-none min-w-[160px] text-center flex items-center justify-center gap-2 py-3.5">
+            <Sparkles size={16} />
+            Havola yaratish
+          </button>
+        </div>
       </div>
     </motion.div>
   );

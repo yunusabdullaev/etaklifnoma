@@ -122,14 +122,17 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
         })}
       </div>
 
-      <div className="flex justify-center pt-4">
-        <button
-          onClick={onNext}
-          disabled={!data.eventTypeId}
-          className="btn-primary min-w-[200px] text-center"
-        >
-          Davom etish →
-        </button>
+      <div className="sticky bottom-0 z-20 bg-surface-950/90 backdrop-blur-lg border-t border-white/5 
+        -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
+        <div className="flex justify-center pt-0 sm:pt-4">
+          <button
+            onClick={onNext}
+            disabled={!data.eventTypeId}
+            className="btn-primary w-full sm:w-auto min-w-[200px] text-center py-3.5"
+          >
+            Davom etish →
+          </button>
+        </div>
       </div>
     </motion.div>
   );
