@@ -559,19 +559,17 @@ function buildLanguageToggle() {
       try { localStorage.setItem('taklifnoma-lang', lang); } catch(e){}
     }
 
-    // Helper: walk all text nodes and replace text
+    // Helper: walk all text nodes and replace text (split+join, no regex)
     function swapTextInPage(from, to) {
       if(!from || !to || from === to) return;
       var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
       while(walker.nextNode()) {
         var node = walker.currentNode;
         if(node.nodeValue && node.nodeValue.indexOf(from) !== -1) {
-          node.nodeValue = node.nodeValue.replace(new RegExp(escapeRegex(from), 'g'), to);
+          node.nodeValue = node.nodeValue.split(from).join(to);
         }
       }
     }
-    function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'); }
-
     window.switchLang = switchLang;
 
     // Restore saved language
