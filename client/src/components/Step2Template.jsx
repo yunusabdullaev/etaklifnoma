@@ -5,6 +5,42 @@ import { getTemplates } from '../api';
 import { useLang } from '../i18n';
 
 /**
+ * Shared template renderer — mirrors server-side renderString logic.
+ * Replaces {{key}}, {{key|default}}, {{#if key}}...{{/if}}, {{#unless}}
+ */
+function renderTemplatePreview(template) {
+  const ctx = {
+    brideName: 'Madina', groomName: 'Sardor',
+    age: '25', graduationYear: '2026', years: '50',
+    hostName: 'Karimov oilasi', host_name: 'Karimov oilasi', name: 'Karimov oilasi',
+    guestName: 'Hurmatli mehmonlar!', guest_name: 'Hurmatli mehmonlar!',
+    eventTitle: "Tug'ilgan kun bayrami", event_title: "Tug'ilgan kun bayrami",
+    eventDate: '2026-08-15', event_date: '2026-08-15',
+    eventDateFormatted: '15 Avgust, 2026', event_date_formatted: '15 Avgust, 2026',
+    date: '15 Avgust, 2026',
+    eventTime: '18:00', event_time: '18:00', time: '18:00',
+    location: 'Grand Palace', locationUrl: '',
+    message: "Sizni bayramimizga taklif qilamiz. Kelishingizni kutib qolamiz!",
+    eventTypeName: 'birthday', eventTypeLabel: "Tug'ilgan kun",
+    event_type: "Tug'ilgan kun", eventTypeIcon: '🎂', icon: '🎂',
+    slug: 'preview', templateName: template.name || '',
+  };
+
+  function render(str) {
+    if (!str) return '';
+    str = str.replace(/\{\{#if\s+(\w+)\}\}([\s\S]*?)\{\{\/if\}\}/gi,
+      (_, k, c) => { const v = ctx[k]; return v && v.toString().trim() ? c : ''; });
+    str = str.replace(/\{\{#unless\s+(\w+)\}\}([\s\S]*?)\{\{\/unless\}\}/gi,
+      (_, k, c) => { const v = ctx[k]; return !v || !v.toString().trim() ? c : ''; });
+    str = str.replace(/\{\{\s*(\w+)(?:\|([^}]*))?\s*\}\}/g,
+      (_, k, d) => { let v = ctx[k]; if (v === undefined || v === null || v === '') v = d ?? ''; return v; });
+    return str;
+  }
+
+  return { html: render(template.htmlContent), css: render(template.cssContent) };
+}
+
+/**
  * Mini iframe preview — renders scaled-down template HTML/CSS inside an iframe
  * Shows the hero (first visible section) of the invitation.
  */
@@ -32,50 +68,7 @@ function TemplateThumbnail({ template }) {
     const iframe = iframeRef.current;
     if (!iframe || !template.htmlContent || !template.cssContent) return;
 
-    // Build sample data to replace placeholders for a realistic preview
-    const sampleReplacements = {
-      // Wedding
-      '{{brideName|Kelin}}': 'Madina',
-      '{{groomName|Kuyov}}': 'Sardor',
-      '{{eventTypeLabel|Nikoh taklifi}}': 'Nikoh taklifi',
-      // Birthday
-      '{{eventTypeLabel|Tug\'ilgan kun}}': "Tug'ilgan kun",
-      '{{eventTitle|Tug\'ilgan kun bayrami}}': "Tug'ilgan kun bayrami",
-      '{{age}}': '25',
-      // Graduation
-      '{{eventTypeLabel|Bitiruv kechasi}}': 'Bitiruv kechasi',
-      '{{eventTitle|Bitiruv kechasi}}': 'Bitiruv kechasi',
-      '{{graduationYear}}': '2026',
-      // Jubilee
-      '{{eventTypeLabel|Yubiley}}': 'Yubiley',
-      '{{eventTitle|Yubiley bayramiga taklif}}': 'Yubiley bayramiga taklif',
-      '{{years}}': '50',
-      // Common
-      '{{eventDateFormatted}}': '15 Avgust, 2026',
-      '{{hostName}}': 'Karimov oilasi',
-      '{{guestName|Hurmatli mehmonlar!}}': 'Hurmatli mehmonlar!',
-      '{{message|Sizni farzandlarimiz nikoh to\'yiga tashrif buyurishingizni so\'rab qolamiz.}}': 
-        'Sizni farzandlarimiz nikoh to\'yiga tashrif buyurishingizni so\'rab qolamiz.',
-      '{{message|Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!}}':
-        'Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!',
-      '{{message|Bizning bitiruv kechamizga marhamat qiling!}}':
-        'Bizning bitiruv kechamizga marhamat qiling!',
-      '{{message|Yubiley bayramimizga marhamat qiling!}}':
-        'Yubiley bayramimizga marhamat qiling!',
-      '{{eventTime|18:00}}': '18:00',
-      '{{location}}': 'Grand Palace',
-      '{{eventDate}}': '2026-08-15',
-    };
-
-    let html = template.htmlContent;
-    for (const [key, val] of Object.entries(sampleReplacements)) {
-      html = html.replaceAll(key, val);
-    }
-    // Clean remaining {{...}} placeholders
-    html = html.replace(/\{\{[^}]+\}\}/g, '');
-    // Remove conditional blocks for cleaner preview
-    html = html.replace(/\{\{#if\s+\w+\}\}[\s\S]*?\{\{\/if\}\}/g, '');
-    html = html.replace(/\{\{#unless\s+\w+\}\}([\s\S]*?)\{\{\/unless\}\}/g, '$1');
+    const { html, css } = renderTemplatePreview(template);
 
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!doc) return;
@@ -88,7 +81,7 @@ function TemplateThumbnail({ template }) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    ${template.cssContent}
+    ${css}
     /* Thumbnail overrides */
     html, body { overflow: hidden !important; pointer-events: none !important; }
     body { margin: 0 !important; padding: 0 !important; }
@@ -330,42 +323,7 @@ function FullPreview({ template }) {
     const iframe = iframeRef.current;
     if (!iframe || !template.htmlContent || !template.cssContent) return;
 
-    const sampleReplacements = {
-      '{{brideName|Kelin}}': 'Madina',
-      '{{groomName|Kuyov}}': 'Sardor',
-      '{{eventTypeLabel|Nikoh taklifi}}': 'Nikoh taklifi',
-      "{{eventTypeLabel|Tug'ilgan kun}}": "Tug'ilgan kun",
-      "{{eventTitle|Tug'ilgan kun bayrami}}": "Tug'ilgan kun bayrami",
-      '{{age}}': '25',
-      '{{eventTypeLabel|Bitiruv kechasi}}': 'Bitiruv kechasi',
-      '{{eventTitle|Bitiruv kechasi}}': 'Bitiruv kechasi',
-      '{{graduationYear}}': '2026',
-      '{{eventTypeLabel|Yubiley}}': 'Yubiley',
-      '{{eventTitle|Yubiley bayramiga taklif}}': 'Yubiley bayramiga taklif',
-      '{{years}}': '50',
-      '{{eventDateFormatted}}': '15 Avgust, 2026',
-      '{{hostName}}': 'Karimov oilasi',
-      '{{guestName|Hurmatli mehmonlar!}}': 'Hurmatli mehmonlar!',
-      "{{message|Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz.}}":
-        "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz.",
-      '{{message|Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!}}':
-        'Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!',
-      '{{message|Bizning bitiruv kechamizga marhamat qiling!}}':
-        'Bizning bitiruv kechamizga marhamat qiling!',
-      '{{message|Yubiley bayramimizga marhamat qiling!}}':
-        'Yubiley bayramimizga marhamat qiling!',
-      '{{eventTime|18:00}}': '18:00',
-      '{{location}}': 'Grand Palace',
-      '{{eventDate}}': '2026-08-15',
-    };
-
-    let html = template.htmlContent;
-    for (const [key, val] of Object.entries(sampleReplacements)) {
-      html = html.replaceAll(key, val);
-    }
-    html = html.replace(/\{\{[^}]+\}\}/g, '');
-    html = html.replace(/\{\{#if\s+\w+\}\}[\s\S]*?\{\{\/if\}\}/g, '');
-    html = html.replace(/\{\{#unless\s+\w+\}\}([\s\S]*?)\{\{\/unless\}\}/g, '$1');
+    const { html, css } = renderTemplatePreview(template);
 
     const timer = setTimeout(() => {
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -378,7 +336,7 @@ function FullPreview({ template }) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    ${template.cssContent}
+    ${css}
     body { margin: 0 !important; }
     .scroll-cue { display: none !important; }
   </style>
