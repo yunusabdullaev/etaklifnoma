@@ -20,7 +20,7 @@ const weddingSharedHtml = `
       <div class="ornament-top">
         <svg viewBox="0 0 120 20"><path d="M0,10 C20,0 40,20 60,10 C80,0 100,20 120,10" stroke="url(#gg)" fill="none" stroke-width="0.8"/><defs><linearGradient id="gg"><stop offset="0%" stop-color="transparent"/><stop offset="30%" stop-color="var(--accent)"/><stop offset="70%" stop-color="var(--accent)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs></svg>
       </div>
-      <p class="hero-label">{{eventTypeLabel|Nikoh taklifi}}</p>
+      <p class="hero-label" data-i18n="eventLabel">{{eventTypeLabel|Nikoh taklifi}}</p>
       <h1 class="hero-names">
         <span class="hero-name">{{brideName|Kelin}}</span>
         <span class="hero-amp">&</span>
@@ -56,15 +56,15 @@ const weddingSharedHtml = `
   <!-- ====== COUNTDOWN ====== -->
   <section class="section countdown-section">
     <div class="container">
-      <h2 class="section-heading light">To'ygacha qolgan vaqt</h2>
+      <h2 class="section-heading light" data-i18n="countdownTitle">To'ygacha qolgan vaqt</h2>
       <div class="countdown" id="countdown-timer" data-date="{{eventDate}}" data-time="{{eventTime|18:00}}">
-        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Kun</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label" data-i18n="days">Kun</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Soat</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label" data-i18n="hours">Soat</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label">Minut</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label" data-i18n="minutes">Minut</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label">Sekund</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label" data-i18n="seconds">Sekund</div></div>
       </div>
     </div>
   </section>
@@ -72,22 +72,22 @@ const weddingSharedHtml = `
   <!-- ====== DETAILS ====== -->
   <section class="section details-section">
     <div class="container">
-      <h2 class="section-heading cream-heading">To'y tafsilotlari</h2>
+      <h2 class="section-heading cream-heading" data-i18n="detailsTitle">To'y tafsilotlari</h2>
       <div class="cards-row">
         <div class="info-card">
           <div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-          <div class="ic-title">Sana</div>
+          <div class="ic-title" data-i18n="dateLabel">Sana</div>
           <div class="ic-value">{{eventDateFormatted}}</div>
         </div>
         <div class="info-card">
           <div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <div class="ic-title">Vaqt</div>
+          <div class="ic-title" data-i18n="timeLabel">Vaqt</div>
           <div class="ic-value">{{eventTime|18:00}}</div>
-          <div class="ic-sub">Mehmonlarni kutib olish</div>
+          <div class="ic-sub" data-i18n="guestWelcome">Mehmonlarni kutib olish</div>
         </div>
         <div class="info-card">
           <div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-          <div class="ic-title">Manzil</div>
+          <div class="ic-title" data-i18n="venueLabel">Manzil</div>
           <div class="ic-value">{{location}}</div>
           <div class="ic-sub">{{location}}</div>
         </div>
@@ -99,14 +99,14 @@ const weddingSharedHtml = `
   {{#if locationUrl}}
   <section class="section map-section">
     <div class="container">
-      <h2 class="section-heading light">Lokatsiya</h2>
+      <h2 class="section-heading light" data-i18n="locationTitle">Lokatsiya</h2>
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
         <p class="map-venue-addr">{{location}}</p>
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-          Xaritada ko'rish
+          <span data-i18n="viewMap">Xaritada ko'rish</span>
         </a>
       </div>
     </div>
@@ -117,7 +117,7 @@ const weddingSharedHtml = `
   {{#if program}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Kechaning dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">Kechaning dasturi</h2>
       <div class="timeline" id="program-data" data-program="{{program}}">
       </div>
     </div>
@@ -127,12 +127,12 @@ const weddingSharedHtml = `
   {{#unless program}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Kechaning dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">Kechaning dasturi</h2>
       <div class="timeline">
-        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4>Mehmonlarni kutib olish</h4></div></div>
-        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4>Rasmiy nikoh marosimi</h4></div></div>
-        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">19:00</div><h4>Ziyofat dasturxoni</h4></div></div>
-        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-time">21:00</div><h4>Musiqa va ko'ngil ochar lahzalar</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4 data-i18n="prog1">Mehmonlarni kutib olish</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4 data-i18n="prog2">Rasmiy nikoh marosimi</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">19:00</div><h4 data-i18n="prog3">Ziyofat dasturxoni</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-time">21:00</div><h4 data-i18n="prog4">Musiqa va ko'ngil ochar lahzalar</h4></div></div>
       </div>
     </div>
   </section>
@@ -141,7 +141,7 @@ const weddingSharedHtml = `
   {{#if dressCode}}
   <section class="section dresscode-section">
     <div class="container center">
-      <div class="dresscode-badge">👔 Dress code: {{dressCode}}</div>
+      <div class="dresscode-badge">👔 <span data-i18n="dressCode">Dress code</span>: {{dressCode}}</div>
     </div>
   </section>
   {{/if}}
@@ -155,7 +155,7 @@ const weddingSharedHtml = `
         <span class="fn">{{groomName|Kuyov}}</span>
       </div>
       <div class="footer-date">{{eventDateFormatted}}</div>
-      <p class="footer-msg">Sizni kutib qolamiz!</p>
+      <p class="footer-msg" data-i18n="waitingMsg">Sizni kutib qolamiz!</p>
       <div class="footer-hearts">♥ ♥ ♥</div>
     </div>
   </footer>

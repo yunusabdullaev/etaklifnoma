@@ -205,12 +205,14 @@ function renderInvitation(invitation, eventType, template) {
     ${renderedCss}
     ${getMusicPlayerStyles()}
     ${getWishesFormStyles()}
+    ${getLanguageToggleStyles()}
   </style>
 </head>
 <body>
   ${renderedBody}
   ${wishesForm}
   ${musicPlayer}
+  ${buildLanguageToggle()}
 </body>
 </html>`;
 }
@@ -387,6 +389,145 @@ function getWishesFormStyles() {
   .wishes-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--glow, rgba(201,168,76,0.2))}
   .wishes-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
   .wishes-status{font-size:0.9rem;margin-top:8px;min-height:24px}
+  `;
+}
+
+/**
+ * Language toggle button + translations system
+ */
+function buildLanguageToggle() {
+  return `
+  <div class="lang-toggle" id="langToggle">
+    <button class="lang-btn active" id="langUz" onclick="switchLang('uz')">UZ</button>
+    <button class="lang-btn" id="langRu" onclick="switchLang('ru')">RU</button>
+  </div>
+  <script>
+  (function(){
+    var translations = {
+      uz: {
+        eventLabel: 'Nikoh taklifi',
+        countdownTitle: "To'ygacha qolgan vaqt",
+        days: 'Kun', hours: 'Soat', minutes: 'Minut', seconds: 'Sekund',
+        detailsTitle: "To'y tafsilotlari",
+        dateLabel: 'Sana', timeLabel: 'Vaqt', venueLabel: 'Manzil',
+        guestWelcome: 'Mehmonlarni kutib olish',
+        locationTitle: 'Lokatsiya',
+        viewMap: "Xaritada ko'rish",
+        programTitle: 'Kechaning dasturi',
+        prog1: 'Mehmonlarni kutib olish',
+        prog2: 'Rasmiy nikoh marosimi',
+        prog3: 'Ziyofat dasturxoni',
+        prog4: "Musiqa va ko'ngil ochar lahzalar",
+        dressCode: 'Dress code',
+        waitingMsg: 'Sizni kutib qolamiz!',
+        wishesTitle: '💌 Tilak va tabriklar',
+        wishesSubtitle: 'Tilak va tabriklaringizni qoldiring',
+        wishesName: 'Ismingiz',
+        wishesMessage: 'Tilaklaringiz...',
+        wishesSend: 'Yuborish 💬',
+        wishesSent: '✅ Tilaklaringiz yuborildi! Rahmat!',
+        wishesError: '❌ Xatolik yuz berdi.',
+
+        bdEventLabel: "Tug'ilgan kun taklifi",
+        bdCountdownTitle: "Bayramgacha qolgan vaqt",
+        bdDetailsTitle: "Bayram tafsilotlari",
+        bdWaitingMsg: "Sizni kutib qolamiz! 🎉",
+
+        gradEventLabel: 'Bitiruvchilar kechasi',
+        gradCountdownTitle: 'Tadbirgacha qolgan vaqt',
+        gradDetailsTitle: 'Tadbir tafsilotlari',
+
+        jubEventLabel: 'Yubiley taklifi',
+        jubCountdownTitle: 'Bayramgacha qolgan vaqt',
+        jubDetailsTitle: 'Tafsilotlar'
+      },
+      ru: {
+        eventLabel: 'Свадебное приглашение',
+        countdownTitle: 'До свадьбы осталось',
+        days: 'Дней', hours: 'Часов', minutes: 'Минут', seconds: 'Секунд',
+        detailsTitle: 'Детали свадьбы',
+        dateLabel: 'Дата', timeLabel: 'Время', venueLabel: 'Место',
+        guestWelcome: 'Встреча гостей',
+        locationTitle: 'Локация',
+        viewMap: 'Показать на карте',
+        programTitle: 'Программа вечера',
+        prog1: 'Встреча гостей',
+        prog2: 'Официальная церемония',
+        prog3: 'Праздничный ужин',
+        prog4: 'Музыка и развлечения',
+        dressCode: 'Дресс-код',
+        waitingMsg: 'Ждём вас!',
+        wishesTitle: '💌 Пожелания',
+        wishesSubtitle: 'Оставьте ваши пожелания',
+        wishesName: 'Ваше имя',
+        wishesMessage: 'Ваши пожелания...',
+        wishesSend: 'Отправить 💬',
+        wishesSent: '✅ Ваши пожелания отправлены! Спасибо!',
+        wishesError: '❌ Произошла ошибка.',
+
+        bdEventLabel: 'Приглашение на день рождения',
+        bdCountdownTitle: 'До праздника осталось',
+        bdDetailsTitle: 'Детали праздника',
+        bdWaitingMsg: 'Ждём вас! 🎉',
+
+        gradEventLabel: 'Выпускной вечер',
+        gradCountdownTitle: 'До мероприятия осталось',
+        gradDetailsTitle: 'Детали мероприятия',
+
+        jubEventLabel: 'Приглашение на юбилей',
+        jubCountdownTitle: 'До юбилея осталось',
+        jubDetailsTitle: 'Подробности'
+      }
+    };
+
+    function switchLang(lang) {
+      var t = translations[lang];
+      if(!t) return;
+
+      document.querySelectorAll('[data-i18n]').forEach(function(el){
+        var key = el.getAttribute('data-i18n');
+        if(t[key]) el.textContent = t[key];
+      });
+
+      // Update wishes form placeholders
+      var nameInput = document.querySelector('.wishes-input[name="name"]');
+      var msgInput = document.querySelector('.wishes-textarea[name="message"]');
+      var wishesBtn = document.getElementById('wishesBtnText');
+      var wishesTitle = document.querySelector('.wishes-section .section-heading');
+      var wishesSub = document.querySelector('.wishes-subtitle');
+
+      if(nameInput) nameInput.placeholder = t.wishesName || '';
+      if(msgInput) msgInput.placeholder = t.wishesMessage || '';
+      if(wishesBtn) wishesBtn.textContent = t.wishesSend || '';
+      if(wishesTitle) wishesTitle.textContent = t.wishesTitle || '';
+      if(wishesSub) wishesSub.textContent = t.wishesSubtitle || '';
+
+      // Toggle active button
+      var uzBtn = document.getElementById('langUz');
+      var ruBtn = document.getElementById('langRu');
+      if(uzBtn) uzBtn.classList.toggle('active', lang === 'uz');
+      if(ruBtn) ruBtn.classList.toggle('active', lang === 'ru');
+
+      document.documentElement.lang = lang;
+      try { localStorage.setItem('taklifnoma-lang', lang); } catch(e){}
+    }
+    window.switchLang = switchLang;
+
+    // Restore saved language
+    try {
+      var saved = localStorage.getItem('taklifnoma-lang');
+      if(saved === 'ru') switchLang('ru');
+    } catch(e){}
+  })();
+  </script>`;
+}
+
+function getLanguageToggleStyles() {
+  return `
+  .lang-toggle{position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;gap:0;border-radius:50px;overflow:hidden;border:1px solid var(--glass-border, rgba(255,255,255,0.12));background:var(--glass-bg, rgba(255,255,255,0.05));backdrop-filter:blur(16px);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+  .lang-btn{padding:10px 16px;font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.75rem;font-weight:600;letter-spacing:1.5px;border:none;background:transparent;color:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.3s ease;text-transform:uppercase}
+  .lang-btn.active{background:var(--accent, #c9a84c);color:var(--dark, #0b0d17)}
+  .lang-btn:hover:not(.active){color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.05)}
   `;
 }
 
