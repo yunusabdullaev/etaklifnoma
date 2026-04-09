@@ -164,31 +164,120 @@ const weddingSharedHtml = `
 
 <script>
 (function(){
+  // ── Countdown Timer ──
   var ct = document.getElementById('countdown-timer');
-  if(!ct) return;
-  var d = ct.dataset.date, t = ct.dataset.time || '18:00';
-  if(!d) return;
-  var target = new Date(d + 'T' + t + ':00').getTime();
-  function update(){
-    var now = Date.now(), diff = target - now;
-    if(diff < 0) diff = 0;
-    var days = Math.floor(diff / 86400000);
-    var hrs = Math.floor((diff % 86400000) / 3600000);
-    var mins = Math.floor((diff % 3600000) / 60000);
-    var secs = Math.floor((diff % 60000) / 1000);
-    var de = document.getElementById('cd-days');
-    var he = document.getElementById('cd-hours');
-    var me = document.getElementById('cd-min');
-    var se = document.getElementById('cd-sec');
-    if(de) de.textContent = String(days).padStart(2,'0');
-    if(he) he.textContent = String(hrs).padStart(2,'0');
-    if(me) me.textContent = String(mins).padStart(2,'0');
-    if(se) se.textContent = String(secs).padStart(2,'0');
+  if(ct){
+    var d = ct.dataset.date, t = ct.dataset.time || '18:00';
+    if(d){
+      var target = new Date(d + 'T' + t + ':00').getTime();
+      function update(){
+        var now = Date.now(), diff = target - now;
+        if(diff < 0) diff = 0;
+        var days = Math.floor(diff / 86400000);
+        var hrs = Math.floor((diff % 86400000) / 3600000);
+        var mins = Math.floor((diff % 3600000) / 60000);
+        var secs = Math.floor((diff % 60000) / 1000);
+        var de = document.getElementById('cd-days');
+        var he = document.getElementById('cd-hours');
+        var me = document.getElementById('cd-min');
+        var se = document.getElementById('cd-sec');
+        if(de) de.textContent = String(days).padStart(2,'0');
+        if(he) he.textContent = String(hrs).padStart(2,'0');
+        if(me) me.textContent = String(mins).padStart(2,'0');
+        if(se) se.textContent = String(secs).padStart(2,'0');
+      }
+      update();
+      setInterval(update, 1000);
+    }
   }
-  update();
-  setInterval(update, 1000);
+
+  // ── Scroll Reveal Animations ──
+  var reveals = document.querySelectorAll('.section, .info-card, .tl-item, .map-card, .dresscode-badge');
+  var heroInner = document.querySelector('.hero-inner');
+  if(heroInner) heroInner.classList.add('hero-entrance');
+
+  if('IntersectionObserver' in window){
+    var revealObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('revealed');
+          // Staggered reveal for children
+          var children = entry.target.querySelectorAll('.info-card, .tl-item, .cd-block');
+          children.forEach(function(child, i){
+            child.style.transitionDelay = (i * 0.12) + 's';
+            child.classList.add('revealed');
+          });
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    reveals.forEach(function(el){ revealObs.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add('revealed'); });
+  }
+
+  // ── Floating Golden Particles ──
+  var canvas = document.getElementById('hero-particles');
+  if(canvas){
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var particleCount = 35;
+
+    function resizeCanvas(){
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    for(var i = 0; i < particleCount; i++){
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2.5 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: -Math.random() * 0.4 - 0.1,
+        opacity: Math.random() * 0.5 + 0.1,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+
+    function animateParticles(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(function(p){
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.pulse += 0.02;
+        var alpha = p.opacity * (0.5 + 0.5 * Math.sin(p.pulse));
+
+        if(p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+        if(p.x < -10) p.x = canvas.width + 10;
+        if(p.x > canvas.width + 10) p.x = -10;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(201,168,76,' + alpha + ')';
+        ctx.fill();
+
+        // Glow effect
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(201,168,76,' + (alpha * 0.15) + ')';
+        ctx.fill();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  }
 })();
 </script>`;
+
+// Add particles canvas to hero section
+const weddingPremiumHtml = weddingSharedHtml.replace(
+  '<div class="hero-shapes">',
+  '<canvas id="hero-particles" style="position:absolute;inset:0;z-index:1;pointer-events:none"></canvas>\n    <div class="hero-shapes">'
+);
 
 // ═══════════════════════════════════════════════════════════
 // BASE CSS — shared structural rules (identical for all themes)
@@ -315,6 +404,36 @@ body{font-family:var(--ff-sans);background:var(--dark);color:var(--text-light);l
   .hero-label{font-size:0.6rem;letter-spacing:5px}
   .cd-num{font-size:2rem}
 }
+
+/* ──── PREMIUM ANIMATIONS ──── */
+.hero-entrance{animation:heroFadeIn 1.8s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes heroFadeIn{0%{opacity:0;transform:translateY(40px) scale(0.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+.section,.info-card,.tl-item,.map-card,.dresscode-badge{opacity:0;transform:translateY(50px);transition:opacity 0.8s cubic-bezier(.16,1,.3,1),transform 0.8s cubic-bezier(.16,1,.3,1)}
+.section.revealed,.info-card.revealed,.tl-item.revealed,.map-card.revealed,.dresscode-badge.revealed{opacity:1;transform:translateY(0)}
+
+.info-card:nth-child(2){transition-delay:0.12s}
+.info-card:nth-child(3){transition-delay:0.24s}
+.tl-item:nth-child(1){transition-delay:0s}
+.tl-item:nth-child(2){transition-delay:0.15s}
+.tl-item:nth-child(3){transition-delay:0.3s}
+.tl-item:nth-child(4){transition-delay:0.45s}
+
+.shape.s1{animation:floatShape1 20s ease-in-out infinite}
+.shape.s2{animation:floatShape2 25s ease-in-out infinite}
+.shape.s3{animation:floatShape3 18s ease-in-out infinite}
+@keyframes floatShape1{0%,100%{transform:translate(0,0)}25%{transform:translate(30px,20px)}50%{transform:translate(-20px,40px)}75%{transform:translate(15px,-15px)}}
+@keyframes floatShape2{0%,100%{transform:translate(0,0)}25%{transform:translate(-25px,15px)}50%{transform:translate(30px,-25px)}75%{transform:translate(-10px,30px)}}
+@keyframes floatShape3{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-45%,-55%)}50%{transform:translate(-55%,-48%)}75%{transform:translate(-48%,-52%)}}
+
+.ornament-top,.ornament-bot{animation:ornamentShimmer 4s ease-in-out infinite}
+@keyframes ornamentShimmer{0%,100%{opacity:0.5}50%{opacity:0.9}}
+
+.hero-date-badge{animation:dateBadgeIn 2s cubic-bezier(.16,1,.3,1) 0.6s both}
+@keyframes dateBadgeIn{0%{opacity:0;transform:scaleX(0.5)}100%{opacity:1;transform:scaleX(1)}}
+
+.section-heading{animation:headingGlow 3s ease-in-out infinite}
+@keyframes headingGlow{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 30px var(--glow)}}
 `;
 
 // ═══════════════════════════════════════════════════════════
@@ -592,7 +711,7 @@ const theme10_SunsetAmber = `
 // ═══════════════════════════════════════════════════════════
 
 // Wedding HTML (shared for all)
-exports.weddingPremiumHtml = weddingSharedHtml;
+exports.weddingPremiumHtml = weddingPremiumHtml;
 
 // Wedding CSS themes (each = theme variables + base structural CSS)
 exports.weddingTheme01Css = theme01_DarkGold + baseCss;
