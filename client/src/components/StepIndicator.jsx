@@ -29,21 +29,8 @@ export default function StepIndicator({ currentStep }) {
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
-      <div className="flex items-center justify-between relative" style={{ paddingBottom: 4 }}>
-        {/* Background track — full width between first and last circle centers */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 21,
-            left: 28,
-            right: 28,
-            height: 3,
-            borderRadius: 4,
-            background: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)',
-          }}
-        />
-        {/* Active progress track inside wrapper for correct width */}
-        {/* Use a wrapper div for correct width calculation */}
+      <div className="flex items-center justify-between relative">
+        {/* Only the active/completed track — no background line */}
         <div
           style={{
             position: 'absolute',
@@ -59,7 +46,7 @@ export default function StepIndicator({ currentStep }) {
               height: '100%',
               borderRadius: 4,
               background: 'linear-gradient(90deg, #5c7cfa, #748ffc, #91a7ff)',
-              boxShadow: '0 0 10px rgba(92,124,250,0.35)',
+              boxShadow: '0 0 10px rgba(92,124,250,0.3)',
             }}
             initial={{ width: '0%' }}
             animate={{ width: `${progress}%` }}
@@ -72,31 +59,30 @@ export default function StepIndicator({ currentStep }) {
           const isActive = currentStep === step.id;
           const Icon = step.icon;
 
-          // Colors based on theme
-          const inactiveBg = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.04)';
-          const inactiveBorder = isLight ? '1.5px solid rgba(0,0,0,0.1)' : '1.5px solid rgba(255,255,255,0.1)';
-          const inactiveIconColor = isLight ? 'rgba(0,0,0,0.25)' : 'rgba(255,255,255,0.25)';
-          const inactiveTextColor = isLight ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.3)';
-          const completedTextColor = isLight ? '#555' : '#94a3b8';
+          const inactiveBg = isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.04)';
+          const inactiveBorder = isLight ? '1.5px solid rgba(0,0,0,0.08)' : '1.5px solid rgba(255,255,255,0.08)';
+          const inactiveIconColor = isLight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.2)';
+          const inactiveTextColor = isLight ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.25)';
+          const completedTextColor = isLight ? '#444' : '#94a3b8';
 
           return (
             <div key={step.id} className="flex flex-col items-center relative z-10" style={{ minWidth: 56 }}>
-              {/* Glow ring for active */}
+              {/* Glow for active */}
               {isActive && (
                 <motion.div
                   style={{
                     position: 'absolute',
-                    top: -2, left: '50%', transform: 'translateX(-50%)',
-                    width: 52, height: 52, borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(92,124,250,0.15) 0%, transparent 70%)',
+                    top: -1, left: '50%', transform: 'translateX(-50%)',
+                    width: 50, height: 50, borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(92,124,250,0.18) 0%, transparent 70%)',
                   }}
-                  animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0.2, 0.6] }}
+                  animate={{ scale: [1, 1.25, 1], opacity: [0.7, 0.25, 0.7] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                 />
               )}
 
               {/* Circle */}
-              <motion.div
+              <div
                 style={{
                   width: 44,
                   height: 44,
@@ -104,24 +90,17 @@ export default function StepIndicator({ currentStep }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  position: 'relative',
-                  cursor: 'default',
                   ...(isCompleted ? {
                     background: 'linear-gradient(135deg, #5c7cfa, #4263eb)',
-                    boxShadow: '0 4px 16px rgba(92,124,250,0.3)',
-                    border: 'none',
+                    boxShadow: '0 4px 14px rgba(92,124,250,0.3)',
                   } : isActive ? {
                     background: 'linear-gradient(135deg, #4c6ef5, #3b5bdb)',
-                    boxShadow: '0 4px 20px rgba(92,124,250,0.45)',
-                    border: 'none',
+                    boxShadow: '0 4px 18px rgba(92,124,250,0.45)',
                   } : {
                     background: inactiveBg,
                     border: inactiveBorder,
-                    boxShadow: isLight ? '0 1px 4px rgba(0,0,0,0.04)' : 'none',
                   }),
                 }}
-                animate={isActive ? { scale: [1, 1.05, 1] } : {}}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {isCompleted ? (
                   <motion.div
@@ -135,21 +114,17 @@ export default function StepIndicator({ currentStep }) {
                   <Icon
                     size={16}
                     strokeWidth={2}
-                    style={{
-                      color: isActive ? '#fff' : inactiveIconColor,
-                      transition: 'color 0.3s',
-                    }}
+                    color={isActive ? '#fff' : inactiveIconColor}
                   />
                 )}
-              </motion.div>
+              </div>
 
               {/* Label */}
               <span
                 style={{
-                  marginTop: 8,
+                  marginTop: 7,
                   fontSize: 11,
                   fontWeight: isActive ? 600 : 500,
-                  letterSpacing: isActive ? 0.3 : 0,
                   color: isActive ? '#5c7cfa' : isCompleted ? completedTextColor : inactiveTextColor,
                   transition: 'all 0.3s',
                 }}
@@ -157,19 +132,12 @@ export default function StepIndicator({ currentStep }) {
                 {step.short}
               </span>
 
-              {/* Step counter badge */}
+              {/* Step badge */}
               {isActive && (
                 <motion.span
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  style={{
-                    fontSize: 9,
-                    color: '#5c7cfa',
-                    fontWeight: 700,
-                    letterSpacing: 1,
-                    marginTop: 1,
-                    opacity: 0.7,
-                  }}
+                  initial={{ opacity: 0, y: 3 }}
+                  animate={{ opacity: 0.6, y: 0 }}
+                  style={{ fontSize: 9, color: '#5c7cfa', fontWeight: 700, letterSpacing: 1, marginTop: 1 }}
                 >
                   {step.id}/5
                 </motion.span>
