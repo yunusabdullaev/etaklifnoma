@@ -74,10 +74,23 @@ async function run() {
     await sequelize.authenticate();
     console.log('✅ Connected to database');
 
-    // Get all event types
-    const eventTypes = await EventType.findAll();
+    // Event type labels and descriptions
+    const eventTypeMeta = {
+      wedding: { label: "To'y taklifi", description: 'Nikoh va to\'y marosimi uchun premium taklifnomalar', icon: '💍' },
+      birthday: { label: "Tug'ilgan kun", description: "Tug'ilgan kun bayramlari uchun quvnoq taklifnomalar", icon: '🎂' },
+      graduation: { label: 'Bitiruvchilar', description: "Bitiruvchilar kechasi va tantanalar uchun", icon: '🎓' },
+      jubilee: { label: 'Yubiley', description: 'Yubiley va bayramlar uchun taklifnomalar', icon: '🎉' },
+    };
+
+    // Ensure event types exist (findOrCreate)
     const etMap = {};
-    eventTypes.forEach(et => { etMap[et.name] = et.id; });
+    for (const [name, meta] of Object.entries(eventTypeMeta)) {
+      const [et] = await EventType.findOrCreate({
+        where: { name },
+        defaults: { label: meta.label, description: meta.description, icon: meta.icon, isActive: true },
+      });
+      etMap[name] = et.id;
+    }
     console.log('📋 Event types:', Object.keys(etMap).join(', '));
 
     let created = 0, updated = 0;
