@@ -258,6 +258,8 @@ function renderInvitation(invitation, eventType, template) {
     eventTitleRu: context['eventTitleRu'] || '',
     eventTime: context['time'] || '',
     langMode: context['langMode'] || 'uz',
+    program: context['program'] || '',
+    programRu: context['programRu'] || '',
   })};</script>
   ${buildLanguageToggle()}
   ${buildBrandingFooter()}
@@ -594,7 +596,29 @@ function buildLanguageToggle() {
         if(d.eventTitleRu) swapTextInPage(d.eventTitleRu, d.eventTitle);
       }
 
-      // 5. Toggle active button
+      // 5. Swap program/timeline (UZ ↔ RU)
+      var progEl = document.getElementById('program-data');
+      if(progEl && d.programRu) {
+        try {
+          var src = lang === 'ru' ? d.programRu : d.program;
+          if(src) {
+            var items = JSON.parse(src);
+            if(Array.isArray(items) && items.length) {
+              var h = '';
+              items.forEach(function(item, i) {
+                var last = i === items.length - 1;
+                h += '<div class="tl-item revealed"><div class="tl-marker"><div class="tl-dot"></div>' +
+                  (last ? '' : '<div class="tl-connector"></div>') +
+                  '</div><div class="tl-card"><div class="tl-time">' +
+                  (item.time || '') + '</div><h4>' + (item.text || '') + '</h4></div></div>';
+              });
+              progEl.innerHTML = h;
+            }
+          }
+        } catch(e) {}
+      }
+
+      // 6. Toggle active button
       var uzBtn = document.getElementById('langUz');
       var ruBtn = document.getElementById('langRu');
       if(uzBtn) uzBtn.classList.toggle('active', lang === 'uz');

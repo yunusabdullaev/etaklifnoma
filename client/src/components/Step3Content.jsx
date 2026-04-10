@@ -275,6 +275,52 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           })()}
         </div>
 
+        {/* Russian Program editor — only when uzru or ru mode */}
+        {(data.customFields?.langMode === 'uzru' || data.customFields?.langMode === 'ru') && (
+          <div>
+            <label className="label flex items-center gap-2 mb-2">📅 Программа (рус)</label>
+            {(() => {
+              let items = [];
+              try {
+                items = data.customFields?.programRu ? JSON.parse(data.customFields.programRu) : [];
+              } catch { items = []; }
+              if (items.length === 0) {
+                items = [
+                  { time: data.eventTime || '18:00', text: 'Встреча гостей' },
+                  { time: '18:30', text: 'Официальная часть' },
+                  { time: '19:00', text: 'Праздничный ужин' },
+                  { time: '21:00', text: 'Музыка и развлечения' },
+                ];
+              }
+              const updateProgramRu = (newItems) => {
+                handleCustomFieldChange('programRu', JSON.stringify(newItems));
+              };
+              return (
+                <div className="space-y-2">
+                  {items.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input type="time" value={item.time}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramRu(n); }}
+                        className="input-field w-28 text-center" />
+                      <input type="text" value={item.text}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramRu(n); }}
+                        className="input-field flex-1" placeholder="Название" />
+                      {items.length > 1 && (
+                        <button type="button" onClick={() => updateProgramRu(items.filter((_, j) => j !== i))}
+                          className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => updateProgramRu([...items, { time: '', text: '' }])}
+                    className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
+                    + Добавить пункт
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
         <div>
           <label className="label flex items-center gap-1.5">📱 {t('step3.telegram')}</label>
           <input type="text" placeholder="BOT_TOKEN:CHAT_ID"
