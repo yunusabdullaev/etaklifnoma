@@ -95,7 +95,7 @@ export default function App() {
       case 2: return <Step2Template data={data} onUpdate={updateData} onNext={nextStep} onBack={prevStep} />;
       case 3: return <Step3Content data={data} onUpdate={updateData} onNext={nextStep} onBack={prevStep} />;
       case 4: return <Step4Preview data={data} onNext={nextStep} onBack={prevStep} />;
-      case 5: return <Step5Generate data={data} onReset={resetWizard} />;
+      case 5: return <Step5Generate data={data} onReset={resetWizard} onBack={prevStep} />;
       default: return null;
     }
   };
@@ -195,9 +195,9 @@ export default function App() {
       </header>
 
       {/* Step Indicator — only in wizard mode */}
-      {!showDashboard && step < 5 && (
+      {!showDashboard && (
         <div className="relative z-10 py-6 border-b border-white/5 bg-surface-950/50 backdrop-blur-sm">
-          <StepIndicator currentStep={step} />
+          <StepIndicator currentStep={step} onStepClick={(s) => { if (s < step) setStep(s); }} />
         </div>
       )}
 

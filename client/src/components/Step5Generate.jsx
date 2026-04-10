@@ -4,7 +4,7 @@ import { Loader2, Copy, Check, ExternalLink, PartyPopper, RotateCcw } from 'luci
 import { createInvitation } from '../api';
 import { useLang } from '../i18n';
 
-export default function Step5Generate({ data, onReset }) {
+export default function Step5Generate({ data, onReset, onBack }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -101,13 +101,18 @@ export default function Step5Generate({ data, onReset }) {
           <span className="text-6xl">{data.eventType?.icon || '💌'}</span>
         </motion.div>
 
-        <button
-          onClick={handleGenerate}
-          className="btn-accent text-lg px-10 py-4 inline-flex items-center gap-2"
-        >
-          <PartyPopper size={20} />
-          {t('step4.generate')}
-        </button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button onClick={onBack} className="btn-secondary py-3.5 px-8">
+            ← {t('step3.back')}
+          </button>
+          <button
+            onClick={handleGenerate}
+            className="btn-accent text-lg px-10 py-4 inline-flex items-center gap-2"
+          >
+            <PartyPopper size={20} />
+            {t('step4.generate')}
+          </button>
+        </div>
       </motion.div>
     );
   }

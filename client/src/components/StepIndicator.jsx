@@ -20,7 +20,7 @@ const stepsConfig = {
   ],
 };
 
-export default function StepIndicator({ currentStep }) {
+export default function StepIndicator({ currentStep, onStepClick }) {
   const { lang } = useLang();
   const { isDark } = useTheme();
   const steps = stepsConfig[lang] || stepsConfig.uz;
@@ -69,7 +69,14 @@ export default function StepIndicator({ currentStep }) {
           const completedText = isLight ? '#555' : '#94a3b8';
 
           return (
-            <div key={step.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: circleSize, flexShrink: 0, position: 'relative', zIndex: 2 }}>
+            <div key={step.id}
+              onClick={() => isCompleted && onStepClick && onStepClick(step.id)}
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                width: circleSize, flexShrink: 0, position: 'relative', zIndex: 2,
+                cursor: isCompleted ? 'pointer' : 'default',
+              }}
+            >
               {/* Circle */}
               <div
                 style={{
