@@ -92,6 +92,59 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           className="input-field resize-none" />
       </div>
 
+      {/* Russian translation toggle */}
+      <div className="glass p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+            🌐 Rus tiliga tarjima
+          </h3>
+          <button
+            type="button"
+            onClick={() => handleCustomFieldChange('enableRu', data.customFields?.enableRu ? '' : '1')}
+            className={`relative w-11 h-6 rounded-full transition-colors ${
+              data.customFields?.enableRu ? 'bg-primary-500' : 'bg-white/10'
+            }`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+              data.customFields?.enableRu ? 'translate-x-5' : 'translate-x-0'
+            }`} />
+          </button>
+        </div>
+        {data.customFields?.enableRu && (
+          <div className="space-y-3 border-t border-white/5 pt-4">
+            <p className="text-[11px] text-surface-500">Mehmonlar RU tugmasini bosganda shu matnlar ko'rinadi</p>
+            <div>
+              <label className="label">🇷🇺 Mezbon ismi (ruscha)</label>
+              <input type="text" placeholder="Абдуллаев Юнус"
+                value={data.customFields?.hostNameRu || ''}
+                onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
+                className="input-field" />
+            </div>
+            <div>
+              <label className="label">🇷🇺 Mehmon ismi (ruscha)</label>
+              <input type="text" placeholder="Уважаемые гости"
+                value={data.customFields?.guestNameRu || ''}
+                onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
+                className="input-field" />
+            </div>
+            <div>
+              <label className="label">🇷🇺 Tadbir nomi (ruscha)</label>
+              <input type="text" placeholder="Свадебное торжество"
+                value={data.customFields?.eventTitleRu || ''}
+                onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
+                className="input-field" />
+            </div>
+            <div>
+              <label className="label">🇷🇺 Xabar (ruscha)</label>
+              <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
+                value={data.customFields?.messageRu || ''}
+                onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
+                className="input-field resize-none" />
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Template custom fields */}
       {templateFields.length > 0 && (
         <div className="glass p-5 space-y-4">

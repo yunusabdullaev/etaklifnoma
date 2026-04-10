@@ -248,11 +248,16 @@ function renderInvitation(invitation, eventType, template) {
     dateUz: context['date'] || '',
     dateRu: context['dateRu'] || '',
     message: context['message'] || '',
+    messageRu: context['messageRu'] || '',
     location: context['location'] || '',
     hostName: context['hostName'] || '',
+    hostNameRu: context['hostNameRu'] || '',
     guestName: context['guestName'] || '',
+    guestNameRu: context['guestNameRu'] || '',
     eventTitle: context['eventTitle'] || '',
+    eventTitleRu: context['eventTitleRu'] || '',
     eventTime: context['time'] || '',
+    enableRu: context['enableRu'] || '',
   })};</script>
   ${buildLanguageToggle()}
   ${buildBrandingFooter()}
@@ -446,6 +451,15 @@ function buildLanguageToggle() {
   </div>
   <script>
   (function(){
+    var d = window.__INVITE_DATA__ || {};
+
+    // Hide RU toggle if not enabled
+    if(!d.enableRu) {
+      var toggle = document.getElementById('langToggle');
+      if(toggle) toggle.style.display = 'none';
+      return;
+    }
+
     var translations = {
       uz: {
         eventLabel: 'Nikoh taklifi',
@@ -475,14 +489,17 @@ function buildLanguageToggle() {
         bdCountdownTitle: "Bayramgacha qolgan vaqt",
         bdDetailsTitle: "Bayram tafsilotlari",
         bdWaitingMsg: "Sizni kutib qolamiz! 🎉",
+        bdProgramTitle: "Bayram dasturi",
 
         gradEventLabel: 'Bitiruvchilar kechasi',
         gradCountdownTitle: 'Tadbirgacha qolgan vaqt',
         gradDetailsTitle: 'Tadbir tafsilotlari',
+        gradProgramTitle: 'Kecha dasturi',
 
         jubEventLabel: 'Yubiley taklifi',
         jubCountdownTitle: 'Bayramgacha qolgan vaqt',
-        jubDetailsTitle: 'Tafsilotlar'
+        jubDetailsTitle: 'Tafsilotlar',
+        jubProgramTitle: 'Tantana dasturi'
       },
       ru: {
         eventLabel: 'Свадебное приглашение',
@@ -512,14 +529,17 @@ function buildLanguageToggle() {
         bdCountdownTitle: 'До праздника осталось',
         bdDetailsTitle: 'Детали праздника',
         bdWaitingMsg: 'Ждём вас! 🎉',
+        bdProgramTitle: 'Программа праздника',
 
         gradEventLabel: 'Выпускной вечер',
         gradCountdownTitle: 'До мероприятия осталось',
         gradDetailsTitle: 'Детали мероприятия',
+        gradProgramTitle: 'Программа вечера',
 
         jubEventLabel: 'Приглашение на юбилей',
         jubCountdownTitle: 'До юбилея осталось',
-        jubDetailsTitle: 'Подробности'
+        jubDetailsTitle: 'Подробности',
+        jubProgramTitle: 'Программа торжества'
       }
     };
 
@@ -527,7 +547,7 @@ function buildLanguageToggle() {
       var t = translations[lang];
       if(!t) return;
 
-      // 1. Translate data-i18n elements (template strings)
+      // 1. Translate data-i18n elements
       document.querySelectorAll('[data-i18n]').forEach(function(el){
         var key = el.getAttribute('data-i18n');
         if(t[key]) el.textContent = t[key];
@@ -546,15 +566,27 @@ function buildLanguageToggle() {
       if(wishesTitle) wishesTitle.textContent = t.wishesTitle || '';
       if(wishesSub) wishesSub.textContent = t.wishesSubtitle || '';
 
-      // 3. Swap user-entered dates (UZ ↔ RU)
-      var d = window.__INVITE_DATA__;
-      if(d && d.dateUz && d.dateRu) {
+      // 3. Swap dates (UZ ↔ RU)
+      if(d.dateUz && d.dateRu) {
         var fromDate = lang === 'ru' ? d.dateUz : d.dateRu;
         var toDate = lang === 'ru' ? d.dateRu : d.dateUz;
         swapTextInPage(fromDate, toDate);
       }
 
-      // 4. Toggle active button
+      // 4. Swap user-entered content (UZ ↔ RU)
+      if(lang === 'ru') {
+        if(d.messageRu) swapTextInPage(d.message, d.messageRu);
+        if(d.hostNameRu) swapTextInPage(d.hostName, d.hostNameRu);
+        if(d.guestNameRu) swapTextInPage(d.guestName, d.guestNameRu);
+        if(d.eventTitleRu) swapTextInPage(d.eventTitle, d.eventTitleRu);
+      } else {
+        if(d.messageRu) swapTextInPage(d.messageRu, d.message);
+        if(d.hostNameRu) swapTextInPage(d.hostNameRu, d.hostName);
+        if(d.guestNameRu) swapTextInPage(d.guestNameRu, d.guestName);
+        if(d.eventTitleRu) swapTextInPage(d.eventTitleRu, d.eventTitle);
+      }
+
+      // 5. Toggle active button
       var uzBtn = document.getElementById('langUz');
       var ruBtn = document.getElementById('langRu');
       if(uzBtn) uzBtn.classList.toggle('active', lang === 'uz');
@@ -564,7 +596,6 @@ function buildLanguageToggle() {
       try { localStorage.setItem('taklifnoma-lang', lang); } catch(e){}
     }
 
-    // Helper: walk all text nodes and replace text (split+join, no regex)
     function swapTextInPage(from, to) {
       if(!from || !to || from === to) return;
       var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
