@@ -91,6 +91,24 @@ const start = async () => {
       console.warn('⚠️ Seed check failed:', seedErr.message);
     }
 
+    // Fix orphaned invitations (userId = null) — assign to first user
+    try {
+      const { Invitation, User } = require('./models');
+      const orphanCount = await Invitation.count({ where: { userId: null } });
+      if (orphanCount > 0) {
+        const firstUser = await User.findOne({ order: [['created_at', 'ASC']] });
+        if (firstUser) {
+          await Invitation.update(
+            { userId: firstUser.id },
+            { where: { userId: null } },
+          );
+          console.log(`🔧 Fixed ${orphanCount} orphaned invitations → assigned to ${firstUser.name}`);
+        }
+      }
+    } catch (fixErr) {
+      console.warn('⚠️ Orphan fix skipped:', fixErr.message);
+    }
+
     app.listen(appConfig.port, () => {
       console.log(`\n🚀 Taklifnoma Service is running`);
       console.log(`   Environment : ${appConfig.nodeEnv}`);
