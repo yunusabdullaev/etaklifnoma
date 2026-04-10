@@ -153,6 +153,51 @@ async function run() {
       }
     }
 
+    // ── New unique designs (4 designs × 4 event types) ──
+    const { newDesigns } = require('../utils/templateDesigns');
+    const prefixMap = { wedding: 'toy', birthday: 'tgk', graduation: 'grad', jubilee: 'jub' };
+
+    console.log(`\n── NEW UNIQUE DESIGNS ──`);
+    for (const [etName, etId] of Object.entries(etMap)) {
+      const prefix = prefixMap[etName];
+      const config = eventTypeConfig[etName];
+
+      for (const design of newDesigns) {
+        const slug = `${prefix}-${design.slug}`;
+        const existing = await Template.findOne({ where: { slug } });
+
+        if (existing) {
+          await existing.update({
+            name: design.name,
+            description: design.desc,
+            htmlContent: design.html,
+            cssContent: design.css,
+            structure: config.structure,
+            sortOrder: 10 + parseInt(design.key),
+            isActive: true,
+            eventTypeId: etId,
+          });
+          console.log(`  ✅ Updated: ${slug}`);
+          updated++;
+        } else {
+          await Template.create({
+            eventTypeId: etId,
+            name: design.name,
+            slug,
+            description: design.desc,
+            htmlContent: design.html,
+            cssContent: design.css,
+            structure: config.structure,
+            sortOrder: 10 + parseInt(design.key),
+            isActive: true,
+            isPremium: false,
+          });
+          console.log(`  🆕 Created: ${slug}`);
+          created++;
+        }
+      }
+    }
+
     console.log(`\n🎉 Done! Created: ${created}, Updated: ${updated}, Total active: ${created + updated}`);
   } catch (error) {
     console.error('❌ Error:', error.message);
