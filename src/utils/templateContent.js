@@ -810,18 +810,50 @@ exports.birthdayPremiumHtml = `
   </section>
   {{/if}}
 
+  {{#if program}}
+  <section class="section program-section">
+    <div class="container">
+      <h2 class="section-heading light">Bayram dasturi</h2>
+      <div class="timeline" id="program-data" data-program="{{program}}">
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#unless program}}
+  <section class="section program-section">
+    <div class="container">
+      <h2 class="section-heading light">Bayram dasturi</h2>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4>Mehmonlarni kutib olish</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4>Tort marosimi 🎂</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">19:00</div><h4>Ziyofat dasturxoni</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-time">21:00</div><h4>Musiqali lahzalar va o'yinlar 🎶</h4></div></div>
+      </div>
+    </div>
+  </section>
+  {{/unless}}
+
   <footer class="footer">
     <div class="container">
       <div class="footer-names"><span class="fn bd-fn">{{hostName}}</span></div>
       <div class="footer-date">{{eventDateFormatted}}</div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎈</p>
+      <div class="footer-hearts">🎈 🎉 🎈</div>
     </div>
   </footer>
 
 </main>
 
 <script>
-(function(){var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000)})();
+(function(){
+  var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000);
+
+  // Scroll Reveal
+  var reveals=document.querySelectorAll('.section,.info-card,.tl-item,.map-card,.dresscode-badge');
+  var heroInner=document.querySelector('.hero-inner');if(heroInner)heroInner.classList.add('hero-entrance');
+  if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('revealed');var ch=e.target.querySelectorAll('.info-card,.tl-item,.cd-block');ch.forEach(function(c,i){c.style.transitionDelay=(i*0.12)+'s';c.classList.add('revealed')});obs.unobserve(e.target)}})},{threshold:0.15,rootMargin:'0px 0px -50px 0px'});reveals.forEach(function(el){obs.observe(el)})}else{reveals.forEach(function(el){el.classList.add('revealed')})}
+})();
 </script>`;
 
 // ═══════════════════════════════════════════════════════════
@@ -934,18 +966,49 @@ exports.graduationPremiumHtml = `
   </section>
   {{/if}}
 
+  {{#if program}}
+  <section class="section program-section">
+    <div class="container">
+      <h2 class="section-heading light">Kecha dasturi</h2>
+      <div class="timeline" id="program-data" data-program="{{program}}">
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#unless program}}
+  <section class="section program-section">
+    <div class="container">
+      <h2 class="section-heading light">Kecha dasturi</h2>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4>Ro'yxatdan o'tish</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4>Rasmiy tantana 🎓</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">19:30</div><h4>Ziyofat dasturxoni</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-time">21:00</div><h4>Diskoteka va esdalik lahzalar 🎶</h4></div></div>
+      </div>
+    </div>
+  </section>
+  {{/unless}}
+
   <footer class="footer">
     <div class="container">
       <div class="footer-names"><span class="fn grad-fn">{{hostName}}</span></div>
       <div class="footer-date">{{eventDateFormatted}}</div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎓</p>
+      <div class="footer-hearts">🎓 ✨ 🎓</div>
     </div>
   </footer>
 
 </main>
 
 <script>
-(function(){var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000)})();
+(function(){
+  var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000);
+
+  var reveals=document.querySelectorAll('.section,.info-card,.tl-item,.map-card');
+  var heroInner=document.querySelector('.hero-inner');if(heroInner)heroInner.classList.add('hero-entrance');
+  if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('revealed');var ch=e.target.querySelectorAll('.info-card,.tl-item,.cd-block');ch.forEach(function(c,i){c.style.transitionDelay=(i*0.12)+'s';c.classList.add('revealed')});obs.unobserve(e.target)}})},{threshold:0.15,rootMargin:'0px 0px -50px 0px'});reveals.forEach(function(el){obs.observe(el)})}else{reveals.forEach(function(el){el.classList.add('revealed')})}
+})();
 </script>`;
 
 // ═══════════════════════════════════════════════════════════
@@ -1025,18 +1088,49 @@ exports.jubileePremiumHtml = `
   </section>
   {{/if}}
 
+  {{#if program}}
+  <section class="section program-section">
+    <div class="container">
+      <h2 class="section-heading light">Tantana dasturi</h2>
+      <div class="timeline" id="program-data" data-program="{{program}}">
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
+  {{#unless program}}
+  <section class="section program-section">
+    <div class="container">
+      <h2 class="section-heading light">Tantana dasturi</h2>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4>Mehmonlarni kutib olish</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4>Tantanali tabriklar 🎉</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">19:00</div><h4>Ziyofat dasturxoni</h4></div></div>
+        <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-time">21:00</div><h4>Musiqali kecha va raqs 🎶</h4></div></div>
+      </div>
+    </div>
+  </section>
+  {{/unless}}
+
   <footer class="footer">
     <div class="container">
       <div class="footer-names"><span class="fn jub-fn">{{hostName}}</span></div>
       <div class="footer-date">{{eventDateFormatted}}</div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎉</p>
+      <div class="footer-hearts">🎉 ✨ 🎉</div>
     </div>
   </footer>
 
 </main>
 
 <script>
-(function(){var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000)})();
+(function(){
+  var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000);
+
+  var reveals=document.querySelectorAll('.section,.info-card,.tl-item,.map-card');
+  var heroInner=document.querySelector('.hero-inner');if(heroInner)heroInner.classList.add('hero-entrance');
+  if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('revealed');var ch=e.target.querySelectorAll('.info-card,.tl-item,.cd-block');ch.forEach(function(c,i){c.style.transitionDelay=(i*0.12)+'s';c.classList.add('revealed')});obs.unobserve(e.target)}})},{threshold:0.15,rootMargin:'0px 0px -50px 0px'});reveals.forEach(function(el){obs.observe(el)})}else{reveals.forEach(function(el){el.classList.add('revealed')})}
+})();
 </script>`;
 
 // ═══════════════════════════════════════════════════════════
