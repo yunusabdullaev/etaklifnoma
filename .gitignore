@@ -20,3 +20,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Uploads (keep directory, ignore content)
+public/uploads/music/*
+!public/uploads/music/.gitkeep

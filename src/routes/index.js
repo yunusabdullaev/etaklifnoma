@@ -10,6 +10,8 @@ const validators = require('../validators');
 const validate = require('../middleware/validate');
 const { protect, optionalAuth } = require('../middleware/auth');
 
+const uploadController = require('../controllers/uploadController');
+
 const router = Router();
 
 // ── Auth routes ─────────────────────────────────────────
@@ -22,6 +24,9 @@ router.get('/api/auth/me', protect, authController.me);
 router.use('/api/event-types', eventTypeRoutes);
 router.use('/api/templates', templateRoutes);
 router.use('/api/invitations', optionalAuth, invitationRoutes);
+
+// ── Upload endpoint ─────────────────────────────────────
+router.post('/api/upload/music', uploadController.uploadMusic);
 
 // ── Preview endpoint (no auth, POST) ────────────────────
 router.post('/api/preview', renderController.preview);

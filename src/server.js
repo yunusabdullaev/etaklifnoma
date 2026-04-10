@@ -65,6 +65,8 @@ app.use(routes);
 
 // ── Static files + SPA fallback (production) ────────────
 const clientDist = path.join(__dirname, '..', 'client', 'dist');
+const publicDir = path.join(__dirname, '..', 'public');
+app.use('/uploads', express.static(path.join(publicDir, 'uploads')));
 app.use(express.static(clientDist));
 
 // SPA fallback — serve index.html for all non-API, non-invite routes
