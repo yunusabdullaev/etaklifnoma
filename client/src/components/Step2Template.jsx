@@ -4,6 +4,26 @@ import { Loader2, Crown, Sparkles, Check, Eye, X } from 'lucide-react';
 import { getTemplates } from '../api';
 import { useLang } from '../i18n';
 
+// Russian translations for template names/descriptions (keyed by slug suffix)
+const templateNameRu = {
+  'dark-gold':     { name: 'Классика Тёмное Золото', desc: 'Классический тёмный фон с золотыми акцентами' },
+  'pushti':        { name: 'Романтик Розовый', desc: 'Романтические розовые и цветочные тона' },
+  'minimalist-oq': { name: 'Минималист Белый', desc: 'Чистый белый минималистичный дизайн' },
+  'binafsha':      { name: 'Королевский Фиолет', desc: 'Королевский фиолетовый и серебряные тона' },
+  'yashil':        { name: 'Природный Зелёный', desc: 'Натуральный зелёный и лесные оттенки' },
+  'sharqona':      { name: 'Восточный Золотой', desc: 'Восточные красные и золотые акценты' },
+  'qora':          { name: 'Современный Чёрный', desc: 'Современный чёрно-белый контраст' },
+  'sepia':         { name: 'Винтаж Сепия', desc: 'Винтажные тёплые тона сепии' },
+  'kok':           { name: 'Океан Синий', desc: 'Океанические синие и голубые тона' },
+  'oltin':         { name: 'Солнечный Золотой', desc: 'Солнечные тёплые золотые тона' },
+};
+
+function getTemplateSuffix(slug) {
+  if (!slug) return '';
+  // Remove event prefix: toy-dark-gold → dark-gold, tgk-pushti → pushti
+  return slug.replace(/^(toy|tgk|grad|jub)-/, '');
+}
+
 /**
  * Shared template renderer — mirrors server-side renderString logic.
  * Replaces {{key}}, {{key|default}}, {{#if key}}...{{/if}}, {{#unless}}
@@ -169,7 +189,7 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [previewTemplate, setPreviewTemplate] = useState(null);
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   useEffect(() => {
     if (!data.eventTypeId) return;
@@ -263,8 +283,12 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
 
                 {/* Template name & description */}
                 <div className="p-3 pt-2">
-                  <h3 className="text-sm font-semibold text-white mb-0.5 truncate">{tmpl.name}</h3>
-                  <p className="text-[11px] text-surface-400 line-clamp-1">{tmpl.description}</p>
+                  <h3 className="text-sm font-semibold text-white mb-0.5 truncate">
+                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.name || tmpl.name) : tmpl.name}
+                  </h3>
+                  <p className="text-[11px] text-surface-400 line-clamp-1">
+                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.desc || tmpl.description) : tmpl.description}
+                  </p>
                 </div>
               </motion.button>
             );
