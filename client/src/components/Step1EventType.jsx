@@ -32,11 +32,21 @@ const selectedGlow = {
   graduation: 'shadow-emerald-500/20',
 };
 
+// Client-side translations for event types (DB stores only UZ)
+const eventTypeTranslations = {
+  ru: {
+    wedding: { label: 'Свадьба', description: 'Премиум приглашения для никаха и свадьбы' },
+    birthday: { label: 'День рождения', description: 'Яркие приглашения на день рождения' },
+    jubilee: { label: 'Юбилей', description: 'Приглашения для юбилеев и праздников' },
+    graduation: { label: 'Выпускной', description: 'Приглашения на выпускной вечер и торжества' },
+  },
+};
+
 export default function Step1EventType({ data, onUpdate, onNext }) {
   const [eventTypes, setEventTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   useEffect(() => {
     getEventTypes()
@@ -117,8 +127,12 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
                 ${iconColorMap[et.name]} group-hover:scale-110 transition-transform duration-300`}>
                 <Icon size={24} />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-1">{et.label}</h3>
-              <p className="text-sm text-surface-400 leading-relaxed">{et.description}</p>
+              <h3 className="text-lg font-semibold text-white mb-1">
+                {eventTypeTranslations[lang]?.[et.name]?.label || et.label}
+              </h3>
+              <p className="text-sm text-surface-400 leading-relaxed">
+                {eventTypeTranslations[lang]?.[et.name]?.description || et.description}
+              </p>
             </motion.button>
           );
         })}
