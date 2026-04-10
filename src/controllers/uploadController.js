@@ -2,8 +2,6 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/AppError');
 const ApiResponse = require('../utils/ApiResponse');
 
 // Ensure upload directory exists
@@ -12,7 +10,7 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Multer storage config
+// Multer storage — save to disk
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
@@ -24,11 +22,16 @@ const storage = multer.diskStorage({
 
 // File filter — only audio files
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/aac', 'audio/m4a', 'audio/x-m4a'];
-  if (allowedTypes.includes(file.mimetype) || file.originalname.match(/\.(mp3|wav|ogg|aac|m4a)$/i)) {
+  const allowedMIME = [
+    'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg',
+    'audio/aac', 'audio/m4a', 'audio/x-m4a', 'audio/mp4',
+    'audio/x-wav', 'audio/webm', 'audio/flac',
+  ];
+  const allowedExt = /\.(mp3|wav|ogg|aac|m4a|flac|webm)$/i;
+  if (allowedMIME.includes(file.mimetype) || allowedExt.test(file.originalname)) {
     cb(null, true);
   } else {
-    cb(new AppError('Faqat audio fayllar (MP3, WAV, OGG, AAC) yuklanishi mumkin', 400), false);
+    cb(new Error('Faqat audio fayllar (MP3, WAV, OGG, AAC) yuklanishi mumkin'), false);
   }
 };
 
@@ -42,15 +45,31 @@ const upload = multer({
  * POST /api/upload/music
  * Uploads an audio file and returns its public URL
  */
-exports.uploadMusic = [
-  upload.single('music'),
-  catchAsync(async (req, res) => {
-    if (!req.file) {
-      throw AppError.badRequest('Audio fayl yuklanmadi');
+exports.uploadMusic = (req, res) => {
+  upload.single('music')(req, res, (err) => {
+    if (err) {
+      // Handle multer-specific errors
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({
+          success: false,
+          error: { message: 'Fayl hajmi 10MB dan oshmasligi kerak' },
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        error: { message: err.message || 'Yuklashda xatolik yuz berdi' },
+      });
     }
 
-    const appUrl = process.env.APP_URL || 'http://localhost:3000';
-    const fileUrl = `${appUrl}/uploads/music/${req.file.filename}`;
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Audio fayl yuklanmadi. MP3, WAV, OGG yoki AAC fayl tanlang.' },
+      });
+    }
+
+    // Build URL relative — works with any domain
+    const fileUrl = `/uploads/music/${req.file.filename}`;
 
     ApiResponse.success(res, {
       url: fileUrl,
@@ -58,5 +77,5 @@ exports.uploadMusic = [
       originalName: req.file.originalname,
       size: req.file.size,
     });
-  }),
-];
+  });
+};

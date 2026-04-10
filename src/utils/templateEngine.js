@@ -197,7 +197,11 @@ function renderInvitation(invitation, eventType, template) {
   const ogUrl = `${appUrl}/invite/${invitation.slug}/view`;
 
   // Music support — check customFields for musicUrl
-  const musicUrl = invitation.customFields?.musicUrl || '';
+  let musicUrl = invitation.customFields?.musicUrl || '';
+  // Convert relative URL to absolute
+  if (musicUrl && musicUrl.startsWith('/')) {
+    musicUrl = `${appUrl}${musicUrl}`;
+  }
   const musicPlayer = musicUrl ? buildMusicPlayer(musicUrl) : '';
 
   // Telegram bot support
