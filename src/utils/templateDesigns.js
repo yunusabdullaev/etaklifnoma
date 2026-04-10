@@ -784,33 +784,127 @@ section{scroll-snap-align:start}.section.greeting-section{min-height:auto}
 
 
 // ═══════════════════════════════════════════════════════════
-// EXPORTS — event-type-specific HTML per design
+// COLOR VARIATIONS — 10 per design
 // ═══════════════════════════════════════════════════════════
-const newDesigns = [
+
+// Neon design — 10 neon color combos (dark backgrounds)
+const neonColors = [
+  { key: '01', slug: 'neon-cyan',    name: 'Neon Siyanuv',      desc: 'Neon ko\'k-yashil chiziqlar',    vars: '--accent:#00f0ff;--accent2:#ff00e6;--glow:0 0 20px rgba(0,240,255,0.3)' },
+  { key: '02', slug: 'neon-pink',    name: 'Neon Pushti',       desc: 'Neon pushti va sariq',            vars: '--accent:#ff2d95;--accent2:#ffb800;--glow:0 0 20px rgba(255,45,149,0.3)' },
+  { key: '03', slug: 'neon-green',   name: 'Neon Yashil',       desc: 'Neon yashil va ko\'k',            vars: '--accent:#39ff14;--accent2:#00d4ff;--glow:0 0 20px rgba(57,255,20,0.3)' },
+  { key: '04', slug: 'neon-purple',  name: 'Neon Binafsha',     desc: 'Neon binafsha va pushti',         vars: '--accent:#bf5fff;--accent2:#ff6b9d;--glow:0 0 20px rgba(191,95,255,0.3)' },
+  { key: '05', slug: 'neon-orange',  name: 'Neon To\'q sariq',  desc: 'Neon sariq va qizil',             vars: '--accent:#ff6b00;--accent2:#ff0055;--glow:0 0 20px rgba(255,107,0,0.3)' },
+  { key: '06', slug: 'neon-yellow',  name: 'Neon Sariq',        desc: 'Neon sariq va yashil',            vars: '--accent:#ffea00;--accent2:#00ff88;--glow:0 0 20px rgba(255,234,0,0.3)' },
+  { key: '07', slug: 'neon-red',     name: 'Neon Qizil',        desc: 'Neon qizil va sariq',             vars: '--accent:#ff073a;--accent2:#ffb700;--glow:0 0 20px rgba(255,7,58,0.3)' },
+  { key: '08', slug: 'neon-ice',     name: 'Neon Muz',          desc: 'Neon oq-ko\'k muzday',            vars: '--accent:#b0e0e6;--accent2:#87ceeb;--glow:0 0 20px rgba(176,224,230,0.3)' },
+  { key: '09', slug: 'neon-gold',    name: 'Neon Oltin',        desc: 'Neon oltin va bronza',            vars: '--accent:#ffd700;--accent2:#cd7f32;--glow:0 0 20px rgba(255,215,0,0.3)' },
+  { key: '10', slug: 'neon-mint',    name: 'Neon Yalpiz',       desc: 'Neon yalpiz va lavanda',          vars: '--accent:#00ffab;--accent2:#c77dff;--glow:0 0 20px rgba(0,255,171,0.3)' },
+];
+
+// Marble design — 10 elegant accent colors (light backgrounds)
+const marbleColors = [
+  { key: '01', slug: 'marble-gold',     name: 'Marmara Oltin',      desc: 'Oq marmara va oltin aksentlar',    vars: '--accent:#b8860b;--border:rgba(184,134,11,0.25);--bg:#faf8f5' },
+  { key: '02', slug: 'marble-rose',     name: 'Marmara Pushti',     desc: 'Marmara va atirgul pushti',        vars: '--accent:#b76e79;--border:rgba(183,110,121,0.25);--bg:#fdf6f7' },
+  { key: '03', slug: 'marble-navy',     name: 'Marmara Ko\'k',      desc: 'Marmara va to\'q ko\'k',          vars: '--accent:#2c3e6b;--border:rgba(44,62,107,0.25);--bg:#f5f7fa' },
+  { key: '04', slug: 'marble-emerald',  name: 'Marmara Zumrad',     desc: 'Marmara va zumrad yashil',         vars: '--accent:#2e8b57;--border:rgba(46,139,87,0.25);--bg:#f5faf7' },
+  { key: '05', slug: 'marble-plum',     name: 'Marmara Olxo\'ri',   desc: 'Marmara va olxo\'ri rang',         vars: '--accent:#8e4585;--border:rgba(142,69,133,0.25);--bg:#faf5fa' },
+  { key: '06', slug: 'marble-copper',   name: 'Marmara Mis',        desc: 'Marmara va mis rangli aksent',     vars: '--accent:#b87333;--border:rgba(184,115,51,0.25);--bg:#faf7f3' },
+  { key: '07', slug: 'marble-silver',   name: 'Marmara Kumush',     desc: 'Marmara va kumush aksent',         vars: '--accent:#708090;--border:rgba(112,128,144,0.25);--bg:#f7f8fa' },
+  { key: '08', slug: 'marble-burgundy', name: 'Marmara Sharob',     desc: 'Marmara va sharob qizil',          vars: '--accent:#722f37;--border:rgba(114,47,55,0.25);--bg:#faf5f5' },
+  { key: '09', slug: 'marble-teal',     name: 'Marmara Moviy',      desc: 'Marmara va moviy aksent',          vars: '--accent:#008080;--border:rgba(0,128,128,0.25);--bg:#f5fafa' },
+  { key: '10', slug: 'marble-charcoal', name: 'Marmara Ko\'mir',    desc: 'Qorong\'u marmara va oltin',       vars: '--accent:#c5a258;--border:rgba(197,162,88,0.25);--bg:#1a1a1a;--text:#e8e0d4;--card:#222' },
+];
+
+// Boho design — 10 nature color combos (warm backgrounds)
+const bohoColors = [
+  { key: '01', slug: 'boho-sage',     name: 'Boho O\'t',         desc: 'Yashil o\'t va terrakota',         vars: '--accent:#6b7c3f;--accent2:#c57b57;--bg:#f7f3ee' },
+  { key: '02', slug: 'boho-terracota', name: 'Boho Terrakota',   desc: 'Terrakota va zaytun',              vars: '--accent:#c57b57;--accent2:#8b7355;--bg:#faf5ef' },
+  { key: '03', slug: 'boho-lavender', name: 'Boho Lavanda',      desc: 'Lavanda va pushti',                vars: '--accent:#9b8ec4;--accent2:#d4829d;--bg:#f8f5fc' },
+  { key: '04', slug: 'boho-dusty',    name: 'Boho Changli',      desc: 'Changli pushti va yashil',         vars: '--accent:#c9a9a6;--accent2:#7d9b76;--bg:#fdf5f4' },
+  { key: '05', slug: 'boho-ocean',    name: 'Boho Okean',        desc: 'Okean ko\'k va qum',               vars: '--accent:#5c8a8a;--accent2:#c9a96e;--bg:#f3f8f8' },
+  { key: '06', slug: 'boho-sunset',   name: 'Boho Quyosh',       desc: 'Quyosh botishi va zangori',        vars: '--accent:#d4845a;--accent2:#e8a87c;--bg:#fdf6f0' },
+  { key: '07', slug: 'boho-forest',   name: 'Boho O\'rmon',      desc: 'O\'rmon yashil va jigarrang',      vars: '--accent:#3d5c3a;--accent2:#8b6f4e;--bg:#f4f7f3' },
+  { key: '08', slug: 'boho-blush',    name: 'Boho Qizaruv',      desc: 'Qizil pushti va oltin',            vars: '--accent:#d4a0a0;--accent2:#c5a258;--bg:#fdf5f5' },
+  { key: '09', slug: 'boho-mustard',  name: 'Boho Gorchitsa',    desc: 'Gorchitsa sariq va yashil',        vars: '--accent:#c9a227;--accent2:#6b7c3f;--bg:#fbf8ee' },
+  { key: '10', slug: 'boho-dark',     name: 'Boho Tun',          desc: 'Qorong\'u boho stil',              vars: '--accent:#a89070;--accent2:#d4a574;--bg:#1e1c19;--text:#e0d5c5;--border:rgba(168,144,112,0.3)' },
+];
+
+// Cinema design — 10 film color combos (dark backgrounds)
+const cinemaColors = [
+  { key: '01', slug: 'cinema-gold',     name: 'Kino Oltin',       desc: 'Klassik oltin afisha',            vars: '--accent:#e8c547;--border:rgba(232,197,71,0.2)' },
+  { key: '02', slug: 'cinema-red',      name: 'Kino Qizil',      desc: 'Qizil kino gilam stili',         vars: '--accent:#e84040;--border:rgba(232,64,64,0.2)' },
+  { key: '03', slug: 'cinema-teal',     name: 'Kino Moviy',      desc: 'Moviy kino dramatik',             vars: '--accent:#4db8a4;--border:rgba(77,184,164,0.2)' },
+  { key: '04', slug: 'cinema-silver',   name: 'Kino Kumush',     desc: 'Kumush noir stili',               vars: '--accent:#c0c0c0;--border:rgba(192,192,192,0.2)' },
+  { key: '05', slug: 'cinema-amber',    name: 'Kino Qahrabo',    desc: 'Qahrabo rangli vintage',          vars: '--accent:#ffbf00;--border:rgba(255,191,0,0.2)' },
+  { key: '06', slug: 'cinema-purple',   name: 'Kino Binafsha',   desc: 'Binafsha sci-fi stili',           vars: '--accent:#a855f7;--border:rgba(168,85,247,0.2)' },
+  { key: '07', slug: 'cinema-emerald',  name: 'Kino Zumrad',     desc: 'Zumrad qorong\'u stili',          vars: '--accent:#50c878;--border:rgba(80,200,120,0.2)' },
+  { key: '08', slug: 'cinema-coral',    name: 'Kino Marjon',     desc: 'Marjon pushti stili',              vars: '--accent:#ff6f61;--border:rgba(255,111,97,0.2)' },
+  { key: '09', slug: 'cinema-ice',      name: 'Kino Muz',        desc: 'Muz ko\'k stili',                 vars: '--accent:#87ceeb;--border:rgba(135,206,235,0.2)' },
+  { key: '10', slug: 'cinema-white',    name: 'Kino Oq',         desc: 'Minimalist oq kino stili',        vars: '--accent:#ffffff;--border:rgba(255,255,255,0.15);--text:#f0f0f0' },
+];
+
+/**
+ * Replace :root{...} vars in a base CSS string with new color vars
+ */
+function recolorCss(baseCss, newVars) {
+  return baseCss.replace(/:root\{[^}]+\}/, (match) => {
+    // Parse existing vars
+    const existing = {};
+    match.replace(/:root\{(.*)\}/, (_, inner) => {
+      inner.split(';').forEach(pair => {
+        const [k, ...vParts] = pair.split(':');
+        if (k && vParts.length) existing[k.trim()] = vParts.join(':').trim();
+      });
+    });
+    // Parse new vars (overrides)
+    newVars.split(';').forEach(pair => {
+      const [k, ...vParts] = pair.split(':');
+      if (k && vParts.length) existing[k.trim()] = vParts.join(':').trim();
+    });
+    // Rebuild
+    const entries = Object.entries(existing).map(([k, v]) => `${k}:${v}`).join(';');
+    return `:root{${entries}}`;
+  });
+}
+
+// Base design definitions
+const baseDesigns = [
   {
-    key: '11', slug: 'neon-glow',
-    name: 'Neon Glow', desc: 'Futuristik neon chiziqlar va qora fon',
-    css: neonGlowCss,
+    baseCss: neonGlowCss,
+    colors: neonColors,
     html: { wedding: neonWeddingHtml, birthday: neonBirthdayHtml, graduation: neonGraduationHtml, jubilee: neonJubileeHtml },
   },
   {
-    key: '12', slug: 'marble',
-    name: 'Elegant Marble', desc: 'Oq marmara va oltin ramkalar — hashamatli',
-    css: elegantMarbleCss,
+    baseCss: elegantMarbleCss,
+    colors: marbleColors,
     html: { wedding: marbleWeddingHtml, birthday: marbleBirthdayHtml, graduation: marbleGraduationHtml, jubilee: marbleJubileeHtml },
   },
   {
-    key: '13', slug: 'boho-garden',
-    name: 'Boho Garden', desc: 'Botanik gul naqshli tabiiy dizayn',
-    css: bohoGardenCss,
+    baseCss: bohoGardenCss,
+    colors: bohoColors,
     html: { wedding: bohoWeddingHtml, birthday: bohoBirthdayHtml, graduation: bohoGraduationHtml, jubilee: bohoJubileeHtml },
   },
   {
-    key: '14', slug: 'cinema',
-    name: 'Cinema Poster', desc: 'Film afisha stili, katta tipografiya',
-    css: cinemaPosterCss,
+    baseCss: cinemaPosterCss,
+    colors: cinemaColors,
     html: { wedding: cinemaWeddingHtml, birthday: cinemaBirthdayHtml, graduation: cinemaGraduationHtml, jubilee: cinemaJubileeHtml },
   },
 ];
 
+// Generate all color variants
+const newDesigns = [];
+for (const design of baseDesigns) {
+  for (const color of design.colors) {
+    newDesigns.push({
+      key: color.key,
+      slug: color.slug,
+      name: color.name,
+      desc: color.desc,
+      css: recolorCss(design.baseCss, color.vars),
+      html: design.html,
+    });
+  }
+}
+
 module.exports = { newDesigns };
+
