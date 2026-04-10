@@ -257,7 +257,7 @@ function renderInvitation(invitation, eventType, template) {
     eventTitle: context['eventTitle'] || '',
     eventTitleRu: context['eventTitleRu'] || '',
     eventTime: context['time'] || '',
-    enableRu: context['enableRu'] || '',
+    langMode: context['langMode'] || 'uz',
   })};</script>
   ${buildLanguageToggle()}
   ${buildBrandingFooter()}
@@ -452,12 +452,20 @@ function buildLanguageToggle() {
   <script>
   (function(){
     var d = window.__INVITE_DATA__ || {};
+    var mode = d.langMode || 'uz';
 
-    // Hide RU toggle if not enabled
-    if(!d.enableRu) {
+    // uz = hide toggle entirely
+    // ru = hide toggle, auto-switch to Russian
+    // uzru = show toggle
+    if(mode === 'uz') {
       var toggle = document.getElementById('langToggle');
       if(toggle) toggle.style.display = 'none';
       return;
+    }
+    if(mode === 'ru') {
+      var toggle = document.getElementById('langToggle');
+      if(toggle) toggle.style.display = 'none';
+      // Will auto-switch to RU at the end
     }
 
     var translations = {
@@ -608,11 +616,15 @@ function buildLanguageToggle() {
     }
     window.switchLang = switchLang;
 
-    // Restore saved language
-    try {
-      var saved = localStorage.getItem('taklifnoma-lang');
-      if(saved === 'ru') switchLang('ru');
-    } catch(e){}
+    // Auto-switch or restore language
+    if(mode === 'ru') {
+      switchLang('ru');
+    } else {
+      try {
+        var saved = localStorage.getItem('taklifnoma-lang');
+        if(saved === 'ru') switchLang('ru');
+      } catch(e){}
+    }
   })();
   </script>`;
 }

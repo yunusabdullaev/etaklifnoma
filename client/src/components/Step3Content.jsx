@@ -92,27 +92,40 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           className="input-field resize-none" />
       </div>
 
-      {/* Russian translation toggle */}
+      {/* Language / Translation settings */}
       <div className="glass p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-            🌐 Rus tiliga tarjima
-          </h3>
-          <button
-            type="button"
-            onClick={() => handleCustomFieldChange('enableRu', data.customFields?.enableRu ? '' : '1')}
-            className={`relative w-11 h-6 rounded-full transition-colors ${
-              data.customFields?.enableRu ? 'bg-primary-500' : 'bg-white/10'
-            }`}
-          >
-            <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-              data.customFields?.enableRu ? 'translate-x-5' : 'translate-x-0'
-            }`} />
-          </button>
+        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+          🌐 Til sozlamalari
+        </h3>
+        <div className="flex gap-2">
+          {[
+            { value: 'uz', label: "🇺🇿 Faqat o'zbek", desc: 'UZ' },
+            { value: 'uzru', label: '🇺🇿+🇷🇺 Ikki tilda', desc: 'UZ+RU' },
+            { value: 'ru', label: '🇷🇺 Faqat ruscha', desc: 'RU' },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => handleCustomFieldChange('langMode', opt.value)}
+              className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-medium border transition-all text-center ${
+                (data.customFields?.langMode || 'uz') === opt.value
+                  ? 'bg-primary-500/20 border-primary-500/50 text-primary-300'
+                  : 'bg-white/[0.03] border-white/10 text-surface-400 hover:border-white/20'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
-        {data.customFields?.enableRu && (
+
+        {/* Show RU fields when uzru or ru mode */}
+        {(data.customFields?.langMode === 'uzru' || data.customFields?.langMode === 'ru') && (
           <div className="space-y-3 border-t border-white/5 pt-4">
-            <p className="text-[11px] text-surface-500">Mehmonlar RU tugmasini bosganda shu matnlar ko'rinadi</p>
+            <p className="text-[11px] text-surface-500">
+              {data.customFields?.langMode === 'ru'
+                ? 'Taklifnoma to\'liq ruscha ko\'rinadi'
+                : 'Mehmonlar RU tugmasini bosganda shu matnlar ko\'rinadi'}
+            </p>
             <div>
               <label className="label">🇷🇺 Mezbon ismi (ruscha)</label>
               <input type="text" placeholder="Абдуллаев Юнус"
