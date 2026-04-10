@@ -39,6 +39,17 @@ export default function LivePreview({ data, className = '' }) {
         body: JSON.stringify(payload),
       });
 
+      if (!res.ok) {
+        const errText = await res.text();
+        try {
+          const errJson = JSON.parse(errText);
+          setError(errJson?.error?.message || 'Server xatoligi');
+        } catch {
+          setError('Server xatoligi');
+        }
+        return;
+      }
+
       const html = await res.text();
 
       // Write full HTML into iframe
@@ -50,7 +61,7 @@ export default function LivePreview({ data, className = '' }) {
         doc.close();
       }
     } catch (err) {
-      setError('Oldindan ko\'rish xatoligi');
+      setError("Oldindan ko'rish xatoligi");
     } finally {
       setLoading(false);
     }

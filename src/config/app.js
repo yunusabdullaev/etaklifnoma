@@ -17,6 +17,6 @@ module.exports = {
   // Rate limiting
   rateLimit: {
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,                  // requests per window
+    max: 500,                  // requests per window
   },
 };
