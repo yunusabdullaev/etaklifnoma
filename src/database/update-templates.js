@@ -164,13 +164,14 @@ async function run() {
 
       for (const design of newDesigns) {
         const slug = `${prefix}-${design.slug}`;
+        const htmlContent = typeof design.html === 'string' ? design.html : (design.html[etName] || design.html.wedding);
         const existing = await Template.findOne({ where: { slug } });
 
         if (existing) {
           await existing.update({
             name: design.name,
             description: design.desc,
-            htmlContent: design.html,
+            htmlContent,
             cssContent: design.css,
             structure: config.structure,
             sortOrder: 10 + parseInt(design.key),
@@ -185,7 +186,7 @@ async function run() {
             name: design.name,
             slug,
             description: design.desc,
-            htmlContent: design.html,
+            htmlContent,
             cssContent: design.css,
             structure: config.structure,
             sortOrder: 10 + parseInt(design.key),
