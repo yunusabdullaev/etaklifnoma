@@ -255,6 +255,7 @@ function renderInvitation(invitation, eventType, template) {
     eventTime: context['time'] || '',
   })};</script>
   ${buildLanguageToggle()}
+  ${buildBrandingFooter()}
 </body>
 </html>`;
 }
@@ -592,6 +593,34 @@ function getLanguageToggleStyles() {
   .lang-btn.active{background:var(--accent, #c9a84c);color:var(--dark, #0b0d17)}
   .lang-btn:hover:not(.active){color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.05)}
   `;
+}
+
+/**
+ * Builds the branding/promotional footer — appears at the very bottom of every invitation.
+ */
+function buildBrandingFooter() {
+  return `
+  <div class="etaklifnoma-branding" style="
+    text-align:center;
+    padding:16px 20px;
+    background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.3) 100%);
+    border-top:1px solid rgba(255,255,255,0.06);
+  ">
+    <a href="https://etaklifnoma.uz" target="_blank" rel="noopener" style="
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      text-decoration:none;
+      color:rgba(255,255,255,0.35);
+      font-family:'Montserrat','Helvetica Neue',sans-serif;
+      font-size:11px;
+      letter-spacing:1.5px;
+      transition:color 0.3s;
+    " onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      ETAKLIFNOMA.UZ — Premium taklifnomalar
+    </a>
+  </div>`;
 }
 
 module.exports = {
