@@ -191,6 +191,25 @@ const weddingSharedHtml = `
     }
   }
 
+  // ── Dynamic Program/Timeline Renderer ──
+  var progEl = document.getElementById('program-data');
+  if(progEl && progEl.dataset.program){
+    try{
+      var items = JSON.parse(progEl.dataset.program);
+      if(Array.isArray(items) && items.length){
+        var html = '';
+        items.forEach(function(item, i){
+          var isLast = i === items.length - 1;
+          html += '<div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div>' +
+            (isLast ? '' : '<div class="tl-connector"></div>') +
+            '</div><div class="tl-card"><div class="tl-time">' +
+            (item.time || '') + '</div><h4>' + (item.text || '') + '</h4></div></div>';
+        });
+        progEl.innerHTML = html;
+      }
+    }catch(e){}
+  }
+
   // ── Scroll Reveal Animations ──
   var reveals = document.querySelectorAll('.section, .info-card, .tl-item, .map-card, .dresscode-badge');
   var heroInner = document.querySelector('.hero-inner');
@@ -305,7 +324,7 @@ body{font-family:var(--ff-sans);background:var(--dark);color:var(--text-light);l
 .hero-names{display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0}
 .hero-name{font-family:var(--ff-script);font-size:clamp(3.2rem,9vw,6.5rem);font-weight:400;color:var(--white);line-height:1.05;text-shadow:0 0 60px var(--glow)}
 .hero-amp{font-family:var(--ff-script);font-size:clamp(1.8rem,4vw,3rem);color:var(--accent);opacity:0.7;line-height:1;margin:4px 0}
-.hero-date-badge{display:flex;align-items:center;gap:20px;margin-top:36px}
+.hero-date-badge{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:36px}
 .date-line{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
 .hero-date{font-family:var(--ff-serif);font-size:1.25rem;letter-spacing:6px;color:var(--accent-bright);font-weight:300}
 .scroll-cue{position:absolute;bottom:40px;left:50%;transform:translateX(-50%)}
@@ -849,6 +868,9 @@ exports.birthdayPremiumHtml = `
 (function(){
   var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000);
 
+  // Dynamic Program Renderer
+  var progEl=document.getElementById('program-data');if(progEl&&progEl.dataset.program){try{var items=JSON.parse(progEl.dataset.program);if(Array.isArray(items)&&items.length){var h='';items.forEach(function(item,i){var last=i===items.length-1;h+='<div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div>'+(last?'':'<div class="tl-connector"></div>')+'</div><div class="tl-card"><div class="tl-time">'+(item.time||'')+'</div><h4>'+(item.text||'')+'</h4></div></div>'});progEl.innerHTML=h}}catch(e){}}
+
   // Scroll Reveal
   var reveals=document.querySelectorAll('.section,.info-card,.tl-item,.map-card,.dresscode-badge');
   var heroInner=document.querySelector('.hero-inner');if(heroInner)heroInner.classList.add('hero-entrance');
@@ -1005,6 +1027,8 @@ exports.graduationPremiumHtml = `
 (function(){
   var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000);
 
+  var progEl=document.getElementById('program-data');if(progEl&&progEl.dataset.program){try{var items=JSON.parse(progEl.dataset.program);if(Array.isArray(items)&&items.length){var h='';items.forEach(function(item,i){var last=i===items.length-1;h+='<div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div>'+(last?'':'<div class="tl-connector"></div>')+'</div><div class="tl-card"><div class="tl-time">'+(item.time||'')+'</div><h4>'+(item.text||'')+'</h4></div></div>'});progEl.innerHTML=h}}catch(e){}}
+
   var reveals=document.querySelectorAll('.section,.info-card,.tl-item,.map-card');
   var heroInner=document.querySelector('.hero-inner');if(heroInner)heroInner.classList.add('hero-entrance');
   if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('revealed');var ch=e.target.querySelectorAll('.info-card,.tl-item,.cd-block');ch.forEach(function(c,i){c.style.transitionDelay=(i*0.12)+'s';c.classList.add('revealed')});obs.unobserve(e.target)}})},{threshold:0.15,rootMargin:'0px 0px -50px 0px'});reveals.forEach(function(el){obs.observe(el)})}else{reveals.forEach(function(el){el.classList.add('revealed')})}
@@ -1126,6 +1150,8 @@ exports.jubileePremiumHtml = `
 <script>
 (function(){
   var ct=document.getElementById('countdown-timer');if(!ct)return;var d=ct.dataset.date,t=ct.dataset.time||'18:00';if(!d)return;var target=new Date(d+'T'+t+':00').getTime();function u(){var n=Date.now(),diff=target-n;if(diff<0)diff=0;var de=document.getElementById('cd-days'),he=document.getElementById('cd-hours'),me=document.getElementById('cd-min'),se=document.getElementById('cd-sec');if(de)de.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');if(he)he.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');if(me)me.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');if(se)se.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0')}u();setInterval(u,1000);
+
+  var progEl=document.getElementById('program-data');if(progEl&&progEl.dataset.program){try{var items=JSON.parse(progEl.dataset.program);if(Array.isArray(items)&&items.length){var h='';items.forEach(function(item,i){var last=i===items.length-1;h+='<div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div>'+(last?'':'<div class="tl-connector"></div>')+'</div><div class="tl-card"><div class="tl-time">'+(item.time||'')+'</div><h4>'+(item.text||'')+'</h4></div></div>'});progEl.innerHTML=h}}catch(e){}}
 
   var reveals=document.querySelectorAll('.section,.info-card,.tl-item,.map-card');
   var heroInner=document.querySelector('.hero-inner');if(heroInner)heroInner.classList.add('hero-entrance');
