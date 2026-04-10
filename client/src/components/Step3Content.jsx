@@ -129,73 +129,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </h3>
         <div>
           <label className="label flex items-center gap-1.5">🎵 {t('step3.music')}</label>
-          {data.customFields?.musicUrl ? (
-            <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-xl">
-              <span className="text-green-400 text-sm">✅</span>
-              <span className="text-sm text-green-300 flex-1 truncate">
-                {data.customFields?.musicName || 'Musiqa yuklandi'}
-              </span>
-              <button
-                type="button"
-                onClick={() => { handleCustomFieldChange('musicUrl', ''); handleCustomFieldChange('musicName', ''); }}
-                className="text-xs text-red-400 hover:text-red-300"
-              >✕ O'chirish</button>
-            </div>
-          ) : (
-            <div className="relative">
-              <input
-                type="file"
-                accept="audio/*,.mp3,.wav,.ogg,.aac,.m4a"
-                id="music-upload"
-                className="hidden"
-                onChange={async (e) => {
-                  const file = e.target.files[0];
-                  if (!file) return;
-                  if (file.size > 10 * 1024 * 1024) {
-                    alert('Fayl hajmi 10MB dan oshmasligi kerak');
-                    return;
-                  }
-                  handleCustomFieldChange('musicName', '⏳ Yuklanmoqda...');
-                  const formData = new FormData();
-                  formData.append('music', file);
-                  try {
-                    const API = import.meta.env.VITE_API_URL || '';
-                    const res = await fetch(`${API}/api/upload/music`, {
-                      method: 'POST',
-                      body: formData,
-                    });
-                    const result = await res.json();
-                    if (result.success) {
-                      handleCustomFieldChange('musicUrl', result.data.url);
-                      handleCustomFieldChange('musicName', file.name);
-                    } else {
-                      handleCustomFieldChange('musicName', '');
-                      alert(result.error?.message || 'Yuklashda xatolik');
-                    }
-                  } catch {
-                    handleCustomFieldChange('musicName', '');
-                    alert('Yuklashda xatolik');
-                  }
-                  e.target.value = '';
-                }}
-              />
-              <label
-                htmlFor="music-upload"
-                className="flex items-center justify-center gap-2 p-3 border-2 border-dashed 
-                  border-white/15 rounded-xl cursor-pointer hover:border-primary-500/40 
-                  hover:bg-primary-500/5 transition-all"
-              >
-                {data.customFields?.musicName === '⏳ Yuklanmoqda...' ? (
-                  <span className="text-sm text-surface-400">⏳ Yuklanmoqda...</span>
-                ) : (
-                  <>
-                    <span className="text-lg">📁</span>
-                    <span className="text-sm text-surface-400">MP3 fayl tanlang (max 10MB)</span>
-                  </>
-                )}
-              </label>
-            </div>
-          )}
+          <input type="url" placeholder="https://example.com/music.mp3"
+            value={data.customFields?.musicUrl || ''}
+            onChange={(e) => handleCustomFieldChange('musicUrl', e.target.value)}
+            className="input-field" />
+          <p className="text-[11px] text-surface-500 mt-1">
+            MP3 faylga to'g'ridan-to'g'ri havola. Google Drive, Dropbox yoki boshqa xostingdan
+          </p>
         </div>
         <div>
           <label className="label flex items-center gap-1.5">📱 {t('step3.telegram')}</label>
