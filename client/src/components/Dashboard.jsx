@@ -9,7 +9,7 @@ export default function Dashboard({ token, onCreateNew }) {
   const [copiedSlug, setCopiedSlug] = useState(null);
 
   const API = import.meta.env.VITE_API_URL || '';
-  const APP_URL = window.location.origin.replace(':5173', ':3000');
+  const APP_URL = window.location.origin;
   const { t } = useLang();
 
   useEffect(() => {

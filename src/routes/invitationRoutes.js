@@ -9,7 +9,7 @@ const router = Router();
 router
   .route('/')
   .get(validators.pagination, validate, controller.getAll)
-  .post(validators.createInvitation, validate, controller.create);
+  .post(protect, validators.createInvitation, validate, controller.create);
 
 // Must be before /:id route
 router.get('/my', protect, controller.getMyInvitations);
