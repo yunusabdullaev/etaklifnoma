@@ -37,28 +37,9 @@ app.use(morgan(appConfig.nodeEnv === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting — skip for static assets and invitation view pages
-app.use(
-  rateLimit({
-    windowMs: appConfig.rateLimit.windowMs,
-    max: appConfig.rateLimit.max,
-    standardHeaders: true,
-    legacyHeaders: false,
-    skip: (req) => {
-      // Don't rate-limit static files or invitation viewing
-      if (req.path.startsWith('/assets') || req.path.startsWith('/favicon')) return true;
-      if (req.path.includes('/view')) return true;
-      if (req.path.startsWith('/api/preview')) return true;
-      if (req.method === 'GET' && req.path.startsWith('/api/templates')) return true;
-      if (req.method === 'GET' && req.path.startsWith('/api/event-types')) return true;
-      return false;
-    },
-    message: {
-      success: false,
-      error: { message: 'Too many requests. Please try again later.' },
-    },
-  }),
-);
+// Rate limiting disabled — Render provides DDoS protection at infrastructure level
+// Uncomment below to re-enable if needed:
+// app.use(rateLimit({ windowMs: 15*60*1000, max: 1000 }));
 
 // ── Routes ───────────────────────────────────────────────
 app.use(routes);
