@@ -95,13 +95,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {/* Language / Translation settings */}
       <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          🌐 Til sozlamalari
+          🌐 {t('step3.langSettings')}
         </h3>
         <div className="flex gap-2">
           {[
-            { value: 'uz', label: "🇺🇿 Faqat o'zbek", desc: 'UZ' },
-            { value: 'uzru', label: '🇺🇿+🇷🇺 Ikki tilda', desc: 'UZ+RU' },
-            { value: 'ru', label: '🇷🇺 Faqat ruscha', desc: 'RU' },
+            { value: 'uz', label: `🇺🇿 ${t('step3.langUz')}` },
+            { value: 'uzru', label: `🇺🇿+🇷🇺 ${t('step3.langUzru')}` },
+            { value: 'ru', label: `🇷🇺 ${t('step3.langRu')}` },
           ].map((opt) => (
             <button
               key={opt.value}
@@ -123,32 +123,32 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           <div className="space-y-3 border-t border-white/5 pt-4">
             <p className="text-[11px] text-surface-500">
               {data.customFields?.langMode === 'ru'
-                ? 'Taklifnoma to\'liq ruscha ko\'rinadi'
-                : 'Mehmonlar RU tugmasini bosganda shu matnlar ko\'rinadi'}
+                ? t('step3.langRuDesc')
+                : t('step3.langUzruDesc')}
             </p>
             <div>
-              <label className="label">👤 Имя хозяина</label>
+              <label className="label">👤 {t('step3.ruHostName')}</label>
               <input type="text" placeholder="Абдуллаев Юнус"
                 value={data.customFields?.hostNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">👥 Имя гостя</label>
+              <label className="label">👥 {t('step3.ruGuestName')}</label>
               <input type="text" placeholder="Уважаемые гости"
                 value={data.customFields?.guestNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">✏️ Название мероприятия</label>
+              <label className="label">✏️ {t('step3.ruEventTitle')}</label>
               <input type="text" placeholder="Свадебное торжество"
                 value={data.customFields?.eventTitleRu || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">💬 Сообщение</label>
+              <label className="label">💬 {t('step3.ruMessage')}</label>
               <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
                 value={data.customFields?.messageRu || ''}
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
@@ -191,7 +191,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {/* Extra features: music + telegram */}
       <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          ⚙️ Qo'shimcha sozlamalar
+          ⚙️ {t('step3.extras')}
         </h3>
         <div>
           <label className="label flex items-center gap-1.5">🎵 {t('step3.music')}</label>
@@ -200,13 +200,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             onChange={(e) => handleCustomFieldChange('musicUrl', e.target.value)}
             className="input-field" />
           <p className="text-[11px] text-surface-500 mt-1">
-            MP3 faylga to'g'ridan-to'g'ri havola. Google Drive, Dropbox yoki boshqa xostingdan
+            {t('step3.musicHint')}
           </p>
         </div>
 
         {/* Program / Timeline editor */}
         <div>
-          <label className="label flex items-center gap-2 mb-2">📅 Bayram dasturi</label>
+          <label className="label flex items-center gap-2 mb-2">📅 {t('step3.program')}</label>
           {(() => {
             // Parse existing program or use defaults
             let items = [];
@@ -268,7 +268,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                   onClick={() => updateProgram([...items, { time: '', text: '' }])}
                   className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1"
                 >
-                  + Punkt qo'shish
+                  + {t('step3.addItem')}
                 </button>
               </div>
             );
@@ -278,7 +278,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* Russian Program editor — only when uzru or ru mode */}
         {(data.customFields?.langMode === 'uzru' || data.customFields?.langMode === 'ru') && (
           <div>
-            <label className="label flex items-center gap-2 mb-2">📅 Программа (рус)</label>
+            <label className="label flex items-center gap-2 mb-2">📅 {t('step3.programRu')}</label>
             {(() => {
               let items = [];
               try {
@@ -313,7 +313,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                   ))}
                   <button type="button" onClick={() => updateProgramRu([...items, { time: '', text: '' }])}
                     className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
-                    + Добавить пункт
+                    + {t('step3.addItemRu')}
                   </button>
                 </div>
               );
@@ -327,7 +327,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             value={data.customFields?.telegramBot || ''}
             onChange={(e) => handleCustomFieldChange('telegramBot', e.target.value)}
             className="input-field" />
-          <p className="text-[11px] text-surface-500 mt-1">Format: BOT_TOKEN:CHAT_ID — @BotFather dan oling</p>
+          <p className="text-[11px] text-surface-500 mt-1">{t('step3.telegramHint')}</p>
         </div>
       </div>
     </div>
