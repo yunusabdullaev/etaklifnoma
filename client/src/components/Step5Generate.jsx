@@ -75,7 +75,7 @@ export default function Step5Generate({ data, onReset, onBack }) {
       >
         <div className="space-y-2">
           <h2 className="text-2xl md:text-3xl font-display font-bold">
-            Havola yaratishga tayyormisiz?
+            {t('step5.ready')}
           </h2>
           <p className="text-surface-400">
             {t('step5.desc')}
@@ -221,7 +221,7 @@ export default function Step5Generate({ data, onReset, onBack }) {
             }}
             className="btn-secondary flex-1 text-sm"
           >
-            📤 Ulashish
+            📤 {t('step5.share')}
           </button>
         </div>
       </motion.div>
@@ -238,7 +238,7 @@ export default function Step5Generate({ data, onReset, onBack }) {
           <p className="font-mono text-primary-400">{result?.slug}</p>
         </div>
         <div className="text-center">
-          <p className="text-surface-500 text-xs">Ko'rishlar</p>
+          <p className="text-surface-500 text-xs">{t('step5.views')}</p>
           <p className="text-white font-semibold">{result?.viewCount || 0}</p>
         </div>
       </motion.div>

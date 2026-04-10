@@ -105,12 +105,15 @@ const translations = {
 
     // Step 5
     'step5.title': 'Taklifnoma tayyor! 🎉',
+    'step5.ready': 'Havola yaratishga tayyormisiz?',
     'step5.desc': "Premium taklifnomangiz yaratildi",
     'step5.link': 'Taklifnoma havolasi',
     'step5.copy': 'Nusxalash',
     'step5.copied': 'Nusxalandi!',
     'step5.open': 'Ochish',
     'step5.createAnother': 'Yana yaratish',
+    'step5.share': 'Ulashish',
+    'step5.views': "Ko'rishlar",
 
     // Footer
     'footer.copyright': '© 2026 Taklifnoma — Barcha huquqlar himoyalangan',
@@ -224,12 +227,15 @@ const translations = {
 
     // Step 5
     'step5.title': 'Приглашение готово! 🎉',
+    'step5.ready': 'Готовы создать ссылку?',
     'step5.desc': 'Ваше премиум приглашение создано',
     'step5.link': 'Ссылка на приглашение',
     'step5.copy': 'Копировать',
     'step5.copied': 'Скопировано!',
     'step5.open': 'Открыть',
     'step5.createAnother': 'Создать ещё',
+    'step5.share': 'Поделиться',
+    'step5.views': 'Просмотры',
 
     // Footer
     'footer.copyright': '© 2026 Taklifnoma — Все права защищены',

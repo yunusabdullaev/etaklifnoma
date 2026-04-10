@@ -343,9 +343,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl md:text-3xl font-display font-bold">
-            Taklif mazmunini kiriting
+            {t('step3.title')}
           </h2>
-          <p className="text-surface-400 text-sm mt-1">Taklifnoma tafsilotlarini to'ldiring</p>
+          <p className="text-surface-400 text-sm mt-1">{t('step3.desc')}</p>
         </div>
         <button
           onClick={() => setShowPreview(!showPreview)}
