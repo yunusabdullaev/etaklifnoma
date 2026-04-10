@@ -8,21 +8,61 @@ import { useLang } from '../i18n';
  * Shared template renderer — mirrors server-side renderString logic.
  * Replaces {{key}}, {{key|default}}, {{#if key}}...{{/if}}, {{#unless}}
  */
-function renderTemplatePreview(template) {
+function renderTemplatePreview(template, eventTypeName = '') {
+  // Detect event type from slug prefix or explicit name
+  const detectedType = eventTypeName ||
+    (template.slug?.startsWith('toy-') ? 'wedding' :
+     template.slug?.startsWith('tgk-') ? 'birthday' :
+     template.slug?.startsWith('grad-') ? 'graduation' :
+     template.slug?.startsWith('jub-') ? 'jubilee' : 'wedding');
+
+  // Type-specific sample data
+  const typeData = {
+    wedding: {
+      brideName: 'Madina', groomName: 'Sardor',
+      eventTitle: 'Nikoh to\'yi', eventTypeLabel: 'Nikoh taklifi',
+      eventTypeIcon: '💍', icon: '💍', eventTypeName: 'wedding',
+      message: "Sizni farzandlarimiz nikoh to'yiga taklif qilamiz. Kelishingizni kutib qolamiz!",
+      hostName: 'Karimov va Rahimov oilasi',
+    },
+    birthday: {
+      age: '25', eventTitle: "Tug'ilgan kun bayrami",
+      eventTypeLabel: "Tug'ilgan kun", eventTypeIcon: '🎂', icon: '🎂',
+      eventTypeName: 'birthday',
+      message: "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!",
+      hostName: 'Karimov oilasi',
+    },
+    graduation: {
+      graduationYear: '2026', school: 'Toshkent Davlat Universiteti',
+      eventTitle: 'Bitiruvchilar kechasi', eventTypeLabel: 'Bitiruvchilar',
+      eventTypeIcon: '🎓', icon: '🎓', eventTypeName: 'graduation',
+      message: "Bitiruvchilar kechasiga taklif qilamiz. Muvaffaqiyatni birga nishonlaymiz!",
+      hostName: "2026-yil bitiruvchilari",
+    },
+    jubilee: {
+      years: '50', eventTitle: 'Oltin yubiley',
+      eventTypeLabel: 'Yubiley', eventTypeIcon: '🎉', icon: '🎉',
+      eventTypeName: 'jubilee',
+      message: "Sizni yubiley tantanamizga taklif qilamiz. Kelishingiz sharaf!",
+      hostName: 'Karimov oilasi',
+    },
+  };
+
+  const specific = typeData[detectedType] || typeData.wedding;
+
   const ctx = {
-    brideName: 'Madina', groomName: 'Sardor',
-    age: '25', graduationYear: '2026', years: '50',
-    hostName: 'Karimov oilasi', host_name: 'Karimov oilasi', name: 'Karimov oilasi',
+    ...specific,
+    brideName: specific.brideName || '', groomName: specific.groomName || '',
+    age: specific.age || '', graduationYear: specific.graduationYear || '',
+    years: specific.years || '', school: specific.school || '',
+    host_name: specific.hostName, name: specific.hostName,
     guestName: 'Hurmatli mehmonlar!', guest_name: 'Hurmatli mehmonlar!',
-    eventTitle: "Tug'ilgan kun bayrami", event_title: "Tug'ilgan kun bayrami",
+    event_title: specific.eventTitle, event_type: specific.eventTypeLabel,
     eventDate: '2026-08-15', event_date: '2026-08-15',
     eventDateFormatted: '15 Avgust, 2026', event_date_formatted: '15 Avgust, 2026',
     date: '15 Avgust, 2026',
     eventTime: '18:00', event_time: '18:00', time: '18:00',
     location: 'Grand Palace', locationUrl: '',
-    message: "Sizni bayramimizga taklif qilamiz. Kelishingizni kutib qolamiz!",
-    eventTypeName: 'birthday', eventTypeLabel: "Tug'ilgan kun",
-    event_type: "Tug'ilgan kun", eventTypeIcon: '🎂', icon: '🎂',
     slug: 'preview', templateName: template.name || '',
   };
 
