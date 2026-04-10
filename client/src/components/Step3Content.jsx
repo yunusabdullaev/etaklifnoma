@@ -127,28 +127,28 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                 : 'Mehmonlar RU tugmasini bosganda shu matnlar ko\'rinadi'}
             </p>
             <div>
-              <label className="label">🇷🇺 Mezbon ismi (ruscha)</label>
+              <label className="label">👤 Имя хозяина</label>
               <input type="text" placeholder="Абдуллаев Юнус"
                 value={data.customFields?.hostNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">🇷🇺 Mehmon ismi (ruscha)</label>
+              <label className="label">👥 Имя гостя</label>
               <input type="text" placeholder="Уважаемые гости"
                 value={data.customFields?.guestNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">🇷🇺 Tadbir nomi (ruscha)</label>
+              <label className="label">✏️ Название мероприятия</label>
               <input type="text" placeholder="Свадебное торжество"
                 value={data.customFields?.eventTitleRu || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">🇷🇺 Xabar (ruscha)</label>
+              <label className="label">💬 Сообщение</label>
               <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
                 value={data.customFields?.messageRu || ''}
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
