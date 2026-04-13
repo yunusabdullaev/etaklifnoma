@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const QRCode = require('qrcode');
 const eventTypeRoutes = require('./eventTypeRoutes');
 const templateRoutes = require('./templateRoutes');
 const invitationRoutes = require('./invitationRoutes');
@@ -44,18 +43,11 @@ router.get('/api/support/:id', protect, supportController.getTicket);
 router.post('/api/support/:id/messages', protect, supportController.addMessage);
 
 // ── QR Code endpoint ────────────────────────────────────
-router.get('/api/invitations/:slug/qr', async (req, res) => {
+router.get('/api/invitations/:slug/qr', (req, res) => {
   const appConfig = require('../config/app');
   const url = `${appConfig.appUrl}/invite/${req.params.slug}/view`;
-  try {
-    const qrDataUrl = await QRCode.toDataURL(url, {
-      width: 512, margin: 2,
-      color: { dark: '#1a1e38', light: '#ffffff' },
-    });
-    res.json({ success: true, data: { url, qrCode: qrDataUrl } });
-  } catch (err) {
-    res.status(500).json({ success: false, error: { message: 'QR generation failed' } });
-  }
+  const qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=${encodeURIComponent(url)}&color=1a1e38&bgcolor=ffffff`;
+  res.json({ success: true, data: { url, qrCode } });
 });
 
 // ── RSVP endpoints ──────────────────────────────────────
