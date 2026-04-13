@@ -1,14 +1,37 @@
 /**
  * File Upload Controller — stores files in PostgreSQL, serves via URL.
+ * In-memory LRU cache for fast repeated access.
  */
 const multer = require('multer');
 const catchAsync = require('../utils/catchAsync');
 const ApiResponse = require('../utils/ApiResponse');
 
-// Multer config — store in memory, max 10MB
+// ── Simple LRU Cache (max 100 files, ~100MB) ──────────
+const CACHE_MAX = 100;
+const cache = new Map();
+
+function cacheGet(id) {
+  const entry = cache.get(id);
+  if (!entry) return null;
+  // Move to end (most recently used)
+  cache.delete(id);
+  cache.set(id, entry);
+  return entry;
+}
+
+function cacheSet(id, data) {
+  if (cache.size >= CACHE_MAX) {
+    // Delete oldest entry
+    const oldest = cache.keys().next().value;
+    cache.delete(oldest);
+  }
+  cache.set(id, data);
+}
+
+// ── Multer config — memory, max 10MB ──────────────────
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = /^(image\/(jpeg|jpg|png|gif|webp)|audio\/(mpeg|mp3|wav|ogg|aac))$/;
     if (allowed.test(file.mimetype)) {
@@ -21,7 +44,6 @@ const upload = multer({
 
 /**
  * POST /api/upload
- * Accepts multipart file, stores in DB, returns URL
  */
 exports.uploadMiddleware = upload.single('file');
 
@@ -32,12 +54,32 @@ exports.upload = catchAsync(async (req, res) => {
     return ApiResponse.error(res, { message: 'Fayl tanlanmadi' }, 400);
   }
 
+  // Compress images server-side
+  let buffer = req.file.buffer;
+  let mimetype = req.file.mimetype;
+
+  if (mimetype.startsWith('image/')) {
+    try {
+      const sharp = require('sharp');
+      buffer = await sharp(req.file.buffer)
+        .resize(1200, 1200, { fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 75 })
+        .toBuffer();
+      mimetype = 'image/jpeg';
+    } catch (e) {
+      // sharp not available, use original
+    }
+  }
+
   const file = await File.create({
     filename: req.file.originalname,
-    mimetype: req.file.mimetype,
-    data: req.file.buffer,
-    size: req.file.size,
+    mimetype,
+    data: buffer,
+    size: buffer.length,
   });
+
+  // Pre-cache
+  cacheSet(file.id, { data: buffer, mimetype, filename: req.file.originalname, size: buffer.length });
 
   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
   const url = `${baseUrl}/api/files/${file.id}`;
@@ -47,17 +89,27 @@ exports.upload = catchAsync(async (req, res) => {
 
 /**
  * GET /api/files/:id
- * Serves file binary with proper headers + caching
+ * Serves from cache first, then DB
  */
 exports.serve = catchAsync(async (req, res) => {
-  const { File } = require('../models');
+  const id = req.params.id;
 
-  const file = await File.findByPk(req.params.id, {
-    attributes: ['data', 'mimetype', 'filename', 'size'],
-  });
+  // Check cache first
+  let file = cacheGet(id);
 
   if (!file) {
-    return res.status(404).send('File not found');
+    // Load from DB
+    const { File } = require('../models');
+    const dbFile = await File.findByPk(id, {
+      attributes: ['data', 'mimetype', 'filename', 'size'],
+    });
+
+    if (!dbFile) {
+      return res.status(404).send('File not found');
+    }
+
+    file = { data: dbFile.data, mimetype: dbFile.mimetype, filename: dbFile.filename, size: dbFile.size };
+    cacheSet(id, file);
   }
 
   res.set({
