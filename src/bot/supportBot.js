@@ -50,7 +50,7 @@ async function handleReply(text) {
   const replyText = match[2].trim();
 
   try {
-    const { SupportTicket } = require('../models');
+    const { SupportTicket, SupportMessage } = require('../models');
     const { sequelize } = require('../models');
 
     // Find ticket by short ID prefix (cast UUID to text for LIKE)
@@ -66,7 +66,14 @@ async function handleReply(text) {
       return sendMessage(`❌ Ticket "${shortId}" topilmadi`);
     }
 
-    // Update ticket with reply
+    // Create admin reply as chat message
+    await SupportMessage.create({
+      ticketId: ticket.id,
+      sender: 'admin',
+      text: replyText,
+    });
+
+    // Update ticket status
     await ticket.update({
       adminReply: replyText,
       status: 'answered',

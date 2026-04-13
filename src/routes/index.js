@@ -40,6 +40,7 @@ const supportController = require('../controllers/supportController');
 router.post('/api/support', protect, supportController.createTicket);
 router.get('/api/support', protect, supportController.getMyTickets);
 router.get('/api/support/:id', protect, supportController.getTicket);
+router.post('/api/support/:id/messages', protect, supportController.addMessage);
 
 // ── Render endpoints ────────────────────────────────────
 router.get(

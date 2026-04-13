@@ -50,6 +50,10 @@ module.exports = (sequelize) => {
       foreignKey: 'user_id',
       as: 'user',
     });
+    SupportTicket.hasMany(models.SupportMessage, {
+      foreignKey: 'ticket_id',
+      as: 'messages',
+    });
   };
 
   return SupportTicket;
