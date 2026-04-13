@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff } from 'lucide-react';
+import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff, Loader2 } from 'lucide-react';
 import LivePreview from './LivePreview';
 import { useLang } from '../i18n';
+import { uploadImage, uploadAudio } from '../utils/cloudinary';
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [showPreview, setShowPreview] = useState(true);
+  const [uploading, setUploading] = useState(null); // 'photo' | 'music' | null
   const { t } = useLang();
 
   const handleChange = (field, value) => {
@@ -257,27 +259,34 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           {!data.customFields?.musicUrl && (
             <div className="space-y-2">
               {/* File upload */}
-              <label className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-white/10 hover:border-primary-500/30 cursor-pointer transition-all bg-white/[0.02] hover:bg-white/[0.04]">
-                <input type="file" accept="audio/mp3,audio/mpeg,audio/*" className="hidden"
+              <label className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+                uploading === 'music' ? 'border-primary-500/50 bg-primary-500/5' : 'border-white/10 hover:border-primary-500/30 bg-white/[0.02] hover:bg-white/[0.04]'
+              }`}>
+                <input type="file" accept="audio/mp3,audio/mpeg,audio/*" className="hidden" disabled={uploading === 'music'}
                   onChange={async (e) => {
                     const file = e.target.files[0];
                     if (!file) return;
                     
-                    // Limit to 3MB for server compatibility
-                    if (file.size > 3 * 1024 * 1024) {
-                      alert('Fayl hajmi 3MB dan oshmasligi kerak');
+                    if (file.size > 10 * 1024 * 1024) {
+                      alert('Fayl hajmi 10MB dan oshmasligi kerak');
                       return;
                     }
                     
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                      handleCustomFieldChange('musicUrl', ev.target.result);
-                    };
-                    reader.readAsDataURL(file);
+                    setUploading('music');
+                    try {
+                      const url = await uploadAudio(file);
+                      handleCustomFieldChange('musicUrl', url);
+                    } catch (err) {
+                      alert('Musiqa yuklashda xatolik: ' + err.message);
+                    }
+                    setUploading(null);
                     e.target.value = '';
                   }} />
-                <span className="text-xl">📁</span>
-                <span className="text-sm text-surface-400">{t('step3.musicUpload')}</span>
+                {uploading === 'music' ? (
+                  <><Loader2 size={18} className="animate-spin text-primary-400" /><span className="text-sm text-primary-400">Yuklanmoqda...</span></>
+                ) : (
+                  <><span className="text-xl">📁</span><span className="text-sm text-surface-400">{t('step3.musicUpload')}</span></>
+                )}
               </label>
 
               {/* URL option */}
@@ -486,39 +495,31 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </div>
           
           {(data.customFields?.photos || []).length < 6 && (
-            <label className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-white/10 hover:border-primary-500/30 cursor-pointer transition-all bg-white/[0.02] hover:bg-white/[0.04]">
-              <input type="file" accept="image/*" multiple className="hidden"
+            <label className={`flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+              uploading === 'photo' ? 'border-primary-500/50 bg-primary-500/5' : 'border-white/10 hover:border-primary-500/30 bg-white/[0.02] hover:bg-white/[0.04]'
+            }`}>
+              <input type="file" accept="image/*" multiple className="hidden" disabled={uploading === 'photo'}
                 onChange={async (e) => {
                   const files = Array.from(e.target.files);
                   const existing = data.customFields?.photos || [];
                   const remaining = 6 - existing.length;
                   const toProcess = files.slice(0, remaining);
                   
-                  const compress = (file) => new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                      const img = new Image();
-                      img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX = 600;
-                        let w = img.width, h = img.height;
-                        if (w > h) { if (w > MAX) { h = h * MAX / w; w = MAX; } }
-                        else { if (h > MAX) { w = w * MAX / h; h = MAX; } }
-                        canvas.width = w; canvas.height = h;
-                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        resolve(canvas.toDataURL('image/jpeg', 0.5));
-                      };
-                      img.src = ev.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                  });
-                  
-                  const results = await Promise.all(toProcess.map(compress));
-                  handleCustomFieldChange('photos', [...existing, ...results]);
+                  setUploading('photo');
+                  try {
+                    const urls = await Promise.all(toProcess.map(f => uploadImage(f)));
+                    handleCustomFieldChange('photos', [...existing, ...urls]);
+                  } catch (err) {
+                    alert('Rasm yuklashda xatolik: ' + err.message);
+                  }
+                  setUploading(null);
                   e.target.value = '';
                 }} />
-              <span className="text-2xl">📷</span>
-              <span className="text-sm text-surface-400">{t('step3.photoUpload')}</span>
+              {uploading === 'photo' ? (
+                <><Loader2 size={20} className="animate-spin text-primary-400" /><span className="text-sm text-primary-400">Yuklanmoqda...</span></>
+              ) : (
+                <><span className="text-2xl">📷</span><span className="text-sm text-surface-400">{t('step3.photoUpload')}</span></>
+              )}
             </label>
           )}
         </div>
