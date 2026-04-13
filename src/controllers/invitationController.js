@@ -152,6 +152,11 @@ exports.update = catchAsync(async (req, res) => {
   delete req.body.eventDate;
   delete req.body.event_date;
 
+  // Merge customFields instead of replacing
+  if (req.body.customFields) {
+    req.body.customFields = { ...invitation.customFields, ...req.body.customFields };
+  }
+
   await invitation.update(req.body);
 
   const updated = await Invitation.findByPk(invitation.id, {
