@@ -187,8 +187,19 @@ function renderInvitation(invitation, eventType, template) {
   const context = buildContext(invitation, eventType, template);
 
   // Render template HTML and CSS
-  const renderedBody = renderString(template?.htmlContent || '', context);
+  let renderedBody = renderString(template?.htmlContent || '', context);
   const renderedCss = renderString(template?.cssContent || '', context, false);
+
+  // Swap greeting-section and wishes-section so wishes appear before greeting
+  const greetMatch = renderedBody.match(/<section class="section\s+greeting-section"[\s\S]*?<\/section>/);
+  const wishMatch = renderedBody.match(/<section class="section\s+wishes-section"[\s\S]*?<\/section>/);
+  if (greetMatch && wishMatch) {
+    renderedBody = renderedBody
+      .replace(greetMatch[0], '{{__GREETING_PLACEHOLDER__}}')
+      .replace(wishMatch[0], '{{__WISHES_PLACEHOLDER__}}')
+      .replace('{{__GREETING_PLACEHOLDER__}}', wishMatch[0])
+      .replace('{{__WISHES_PLACEHOLDER__}}', greetMatch[0]);
+  }
 
   // OG metadata
   const ogTitle = escapeHtml(invitation.eventTitle || eventType?.label || 'Taklifnoma');
