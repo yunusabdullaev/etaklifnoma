@@ -107,6 +107,10 @@ const start = async () => {
       // Start cleanup scheduler — deletes invitations 4h after event
       const { startCleanupScheduler } = require('./jobs/cleanupExpired');
       startCleanupScheduler();
+
+      // Start Telegram admin bot (background polling)
+      const { pollUpdates } = require('./bot/adminBot');
+      pollUpdates();
     });
   } catch (error) {
     console.error('❌ Unable to start server:', error.message);
