@@ -39,7 +39,16 @@ export default function Step4Preview({ data, onNext, onBack }) {
 
       const html = await res.text();
       if (html && html.includes('<')) {
-        setHtmlContent(html);
+        // Force all scroll-reveal sections visible in preview
+        const previewOverride = `<style>
+          .section, .info-card, .tl-item, .map-card, .dresscode-badge,
+          [class*="section"], [class*="card"], [class*="reveal"] {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
+        </style>`;
+        setHtmlContent(html.replace('</head>', previewOverride + '</head>'));
       }
     } catch (err) {
       console.error('Full preview error:', err);

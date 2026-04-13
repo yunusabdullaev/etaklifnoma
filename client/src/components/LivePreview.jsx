@@ -46,7 +46,19 @@ export default function LivePreview({ data, className = '' }) {
 
       const html = await res.text();
       if (html && html.includes('<')) {
-        setHtmlContent(html);
+        // Inject CSS override to force all sections visible in preview
+        // Templates use IntersectionObserver + opacity:0 for scroll-reveal,
+        // but in the preview iframe the user can't scroll so middle sections stay hidden
+        const previewOverride = `<style>
+          .section, .info-card, .tl-item, .map-card, .dresscode-badge,
+          [class*="section"], [class*="card"], [class*="reveal"] {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
+        </style>`;
+        const injectedHtml = html.replace('</head>', previewOverride + '</head>');
+        setHtmlContent(injectedHtml);
       } else {
         setError('Bo\'sh javob');
       }
