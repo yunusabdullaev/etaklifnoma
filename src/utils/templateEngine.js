@@ -258,7 +258,7 @@ function renderInvitation(invitation, eventType, template) {
 <body>
   ${renderedBody}
   ${wishesForm}
-  ${invitation.customFields?.enableRsvp ? buildRsvpForm(invitation.slug) : ''}
+  ${invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug) : ''}
   ${musicPlayer}
   <script>window.__INVITE_DATA__=${JSON.stringify({
     dateUz: context['date'] || '',

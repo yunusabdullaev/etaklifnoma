@@ -52,7 +52,7 @@ export default function Dashboard({ token, onCreateNew }) {
       eventTitle: inv.eventTitle || '', eventTime: inv.eventTime || '',
       location: inv.location || '', locationUrl: inv.locationUrl || '',
       message: inv.message || '',
-      enableRsvp: inv.customFields?.enableRsvp || false,
+      enableRsvp: inv.customFields?.enableRsvp !== false,
     });
     setEditingInv(inv);
   };
