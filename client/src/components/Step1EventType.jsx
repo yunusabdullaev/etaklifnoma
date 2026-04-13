@@ -46,6 +46,12 @@ const eventTypeTranslations = {
     jubilee: { label: 'Юбилей', description: 'Приглашения для юбилеев и праздников' },
     graduation: { label: 'Выпускной', description: 'Приглашения на выпускной вечер и торжества' },
   },
+  en: {
+    wedding: { label: 'Wedding', description: 'Premium invitations for weddings & celebrations' },
+    birthday: { label: 'Birthday', description: 'Vibrant birthday party invitations' },
+    jubilee: { label: 'Anniversary', description: 'Invitations for anniversaries & celebrations' },
+    graduation: { label: 'Graduation', description: 'Invitations for graduation parties & ceremonies' },
+  },
 };
 
 export default function Step1EventType({ data, onUpdate, onNext }) {

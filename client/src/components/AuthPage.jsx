@@ -248,7 +248,7 @@ export default function AuthPage({ onLogin, onBack }) {
                 bg-white/5 border border-white/10 text-surface-300 hover:text-white hover:bg-white/10 transition-all"
             >
               <Globe size={11} />
-              {lang === 'uz' ? 'QQ' : lang === 'qq' ? 'RU' : 'UZ'}
+              {lang === 'uz' ? 'QQ' : lang === 'qq' ? 'RU' : lang === 'ru' ? 'EN' : 'UZ'}
             </button>
           </div>
           <AnimatePresence mode="wait">

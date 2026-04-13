@@ -495,6 +495,171 @@ const translations = {
     'common.loading': 'Júklenip atır...',
     'common.error': 'Qátelik júz berdi',
   },
+
+  en: {
+    // Header
+    'header.title': 'Taklifnoma',
+    'header.subtitle': 'Premium Invitations',
+    'header.cabinet': 'Dashboard',
+    'header.create': 'Create',
+    'header.support': 'Support',
+    'header.step': 'Step',
+    'header.logout': 'Logout',
+
+    // Auth
+    'auth.login': 'Login',
+    'auth.register': 'Sign Up',
+    'auth.phone': 'Phone number',
+    'auth.password': 'Password',
+    'auth.name': 'Your name',
+    'auth.loginBtn': 'Login →',
+    'auth.registerBtn': 'Sign Up →',
+    'auth.otpTitle': 'Verification code',
+    'auth.otpDesc': 'Enter the 6-digit code sent to Telegram bot',
+    'auth.otpResend': 'Resend',
+    'auth.otpBack': 'Back',
+    'auth.otpExpires': 'Code expires in:',
+    'auth.noAccount': "Don't have an account?",
+    'auth.hasAccount': 'Already have an account?',
+    'auth.back': 'Back',
+
+    // Dashboard
+    'dashboard.title': 'My Invitations',
+    'dashboard.total': 'invitations',
+    'dashboard.empty': 'No invitations yet',
+    'dashboard.emptyTitle': 'No invitations yet',
+    'dashboard.emptyDesc': 'Create your first premium invitation — for weddings, birthdays, anniversaries or graduation parties!',
+    'dashboard.createBtn': 'Create Invitation',
+    'dashboard.newBtn': 'Create New',
+    'dashboard.view': 'View',
+    'dashboard.copyLink': 'Copy Link',
+    'dashboard.copied': 'Copied!',
+    'dashboard.delete': 'Delete',
+    'dashboard.deleteConfirm': 'Are you sure you want to delete this invitation?',
+    'dashboard.edit': 'Edit',
+    'dashboard.editTitle': 'Edit Invitation',
+    'dashboard.save': 'Save',
+    'dashboard.editSaved': 'Saved successfully!',
+    'dashboard.views': 'views',
+
+    // Step 1
+    'step1.title': 'Choose Event Type',
+    'step1.desc': 'What kind of event are you creating an invitation for?',
+    'step1.next': 'Continue →',
+
+    // Step 2
+    'step2.title': 'Choose Template',
+    'step2.count': 'templates available',
+    'step2.empty': 'No templates found for this type',
+    'step2.next': 'Continue →',
+    'step2.back': '← Back',
+
+    // Step 3
+    'step3.title': 'Fill in Invitation Details',
+    'step3.desc': 'Enter the details for your invitation',
+    'step3.host': 'Host Name',
+    'step3.guest': 'Guest Name',
+    'step3.eventTitle': 'Event Name',
+    'step3.date': 'Date',
+    'step3.time': 'Time',
+    'step3.location': 'Venue',
+    'step3.mapLink': 'Map Link',
+    'step3.message': 'Message',
+    'step3.messagePlaceholder': 'We invite you to our celebration...',
+    'step3.templateFields': 'Template Fields',
+    'step3.extras': 'Additional Settings',
+    'step3.music': 'Background Music',
+    'step3.telegram': 'Telegram Bot (for wishes)',
+    'step3.preview': 'Live Preview',
+    'step3.hide': 'Hide',
+    'step3.show': 'Show',
+    'step3.next': 'Preview →',
+    'step3.back': '← Back',
+    'step3.dateLocation': 'Date & Venue',
+    'step3.basicInfo': 'Basic Information',
+    'step3.langSettings': 'Language Settings',
+    'step3.langDesc': 'Which languages should your invitation include?',
+    'step3.langUzToggle': 'Uzbek',
+    'step3.langQqToggle': 'Karakalpak',
+    'step3.langRuToggle': 'Russian',
+    'step3.ruFields': 'Russian text',
+    'step3.qqFields': 'Karakalpak text',
+    'step3.ruHostName': 'Host name (Russian)',
+    'step3.ruGuestName': 'Guest name (Russian)',
+    'step3.ruEventTitle': 'Event title (Russian)',
+    'step3.ruMessage': 'Message (Russian)',
+    'step3.qqHostName': 'Host name (Karakalpak)',
+    'step3.qqGuestName': 'Guest name (Karakalpak)',
+    'step3.qqEventTitle': 'Event title (Karakalpak)',
+    'step3.qqMessage': 'Message (Karakalpak)',
+    'step3.program': 'Event Program',
+    'step3.programRu': 'Program (Russian)',
+    'step3.programQq': 'Program (Karakalpak)',
+    'step3.addItem': 'Add item',
+    'step3.addItemRu': 'Add item',
+    'step3.addItemQq': 'Add item',
+    'step3.musicHint': 'Upload MP3 or enter URL',
+    'step3.musicUpload': 'Click to upload MP3',
+    'step3.or': 'or',
+    'step3.telegramHint': 'Format: BOT_TOKEN:CHAT_ID — get from @BotFather',
+    'step3.rsvp': 'RSVP (Attendance Confirmation)',
+    'step3.rsvpHint': 'Guests can confirm their attendance',
+    'step3.wishes': 'Wishes & Greetings',
+    'step3.wishesHint': 'Guests can leave wishes',
+    'step3.photos': 'Photo Gallery',
+    'step3.photosHint': 'Upload photos (max 6)',
+    'step3.photoUpload': 'Click to upload photos',
+
+    // Step 4
+    'step4.title': 'Full Preview',
+    'step4.desc': 'Your invitation will look exactly like this — with music, animations, and language switching',
+    'step4.desktop': 'Desktop',
+    'step4.mobile': 'Mobile',
+    'step4.fullscreen': 'Fullscreen',
+    'step4.fullscreenTitle': 'Full View',
+    'step4.back': '← Edit',
+    'step4.generate': 'Generate Link',
+
+    // Step 5
+    'step5.title': 'Invitation Ready! 🎉',
+    'step5.ready': 'Ready to generate the link?',
+    'step5.desc': 'Your premium invitation has been created',
+    'step5.link': 'Invitation Link',
+    'step5.copy': 'Copy',
+    'step5.copied': 'Copied!',
+    'step5.open': 'Open',
+    'step5.createAnother': 'Create Another',
+    'step5.share': 'Share',
+    'step5.views': 'Views',
+
+    // Footer
+    'footer.copyright': '© 2026 Taklifnoma — All rights reserved',
+
+    // Support
+    'support.title': 'Help Center',
+    'support.subtitle': 'Have a problem or question?',
+    'support.newTicket': 'New Ticket',
+    'support.subject': 'Subject',
+    'support.subjectPlaceholder': 'e.g. Template not loading',
+    'support.message': 'Message',
+    'support.messagePlaceholder': 'Describe your issue in detail...',
+    'support.send': 'Send',
+    'support.cancel': 'Cancel',
+    'support.sent': 'Ticket submitted!',
+    'support.empty': 'No tickets yet',
+    'support.emptyDesc': 'If you have an issue, click the button above',
+    'support.back': 'Back',
+    'support.loading': 'Loading messages...',
+    'support.inputPlaceholder': 'Type a message...',
+    'support.waiting': 'Waiting',
+    'support.answered': 'Answered',
+    'support.closed': 'Closed',
+    'support.admin': 'Support',
+
+    // Common
+    'common.loading': 'Loading...',
+    'common.error': 'An error occurred',
+  },
 };
 
 const LangContext = createContext();
@@ -511,7 +676,7 @@ export function LangProvider({ children }) {
 
   const t = (key) => translations[lang]?.[key] || translations.uz[key] || key;
   const toggleLang = () => {
-    const cycle = ['uz', 'qq', 'ru'];
+    const cycle = ['uz', 'qq', 'ru', 'en'];
     const idx = cycle.indexOf(lang);
     setLang(cycle[(idx + 1) % cycle.length]);
   };

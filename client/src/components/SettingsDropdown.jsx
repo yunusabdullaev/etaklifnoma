@@ -125,6 +125,7 @@ export default function SettingsDropdown() {
           <OptBtn active={lang === 'uz'} onClick={() => setLang('uz')} label="UZ" />
           <OptBtn active={lang === 'qq'} onClick={() => setLang('qq')} label="QQ" />
           <OptBtn active={lang === 'ru'} onClick={() => setLang('ru')} label="RU" />
+          <OptBtn active={lang === 'en'} onClick={() => setLang('en')} label="EN" />
         </div>
       </div>
 
