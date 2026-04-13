@@ -27,7 +27,7 @@ app.use(
         imgSrc: ["'self'", "data:", "https:"],
         mediaSrc: ["'self'", "https:", "http:"],
         connectSrc: ["'self'", "https://api.telegram.org"],
-        frameSrc: ["'self'", "https://www.openstreetmap.org"],
+        frameSrc: ["'self'", "blob:", "data:", "https://www.openstreetmap.org"],
       },
     },
   })
