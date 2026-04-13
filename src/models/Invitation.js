@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       field: 'template_id',
     },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      field: 'user_id',
+    },
     slug: {
       type: DataTypes.STRING(30),
       allowNull: false,
