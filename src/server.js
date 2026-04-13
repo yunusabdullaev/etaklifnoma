@@ -23,7 +23,7 @@ app.use(
 app.use(cors());
 app.use(morgan(appConfig.nodeEnv === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Rate limiting disabled — Render provides DDoS protection at infrastructure level
 // Uncomment below to re-enable if needed:

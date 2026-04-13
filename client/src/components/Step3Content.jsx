@@ -263,9 +263,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                     const file = e.target.files[0];
                     if (!file) return;
                     
-                    // Compress: read as base64 (limit ~2MB)
-                    if (file.size > 5 * 1024 * 1024) {
-                      alert('Fayl hajmi 5MB dan oshmasligi kerak');
+                    // Limit to 3MB for server compatibility
+                    if (file.size > 3 * 1024 * 1024) {
+                      alert('Fayl hajmi 3MB dan oshmasligi kerak');
                       return;
                     }
                     
@@ -500,13 +500,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                       const img = new Image();
                       img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX = 800;
+                        const MAX = 600;
                         let w = img.width, h = img.height;
                         if (w > h) { if (w > MAX) { h = h * MAX / w; w = MAX; } }
                         else { if (h > MAX) { w = w * MAX / h; h = MAX; } }
                         canvas.width = w; canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                        resolve(canvas.toDataURL('image/jpeg', 0.5));
                       };
                       img.src = ev.target.result;
                     };
