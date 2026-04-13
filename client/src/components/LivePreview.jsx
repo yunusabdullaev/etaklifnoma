@@ -10,6 +10,7 @@ export default function LivePreview({ data, className = '' }) {
   const iframeRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [htmlContent, setHtmlContent] = useState('');
   const debounceRef = useRef(null);
 
   const API = import.meta.env.VITE_API_URL || '';
@@ -51,14 +52,21 @@ export default function LivePreview({ data, className = '' }) {
       }
 
       const html = await res.text();
+      setHtmlContent(html);
 
-      // Write full HTML into iframe
+      // Also try writing directly to iframe as fallback
       const iframe = iframeRef.current;
       if (iframe) {
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (doc) {
+            doc.open();
+            doc.write(html);
+            doc.close();
+          }
+        } catch (e) {
+          // srcdoc will handle it via state
+        }
       }
     } catch (err) {
       setError("Oldindan ko'rish xatoligi");
@@ -97,8 +105,9 @@ export default function LivePreview({ data, className = '' }) {
       <iframe
         ref={iframeRef}
         title="Invitation Preview"
+        srcDoc={htmlContent || undefined}
         className="w-full h-full border-0 rounded-2xl bg-[#0a0a12]"
-        sandbox="allow-same-origin allow-scripts"
+        sandbox="allow-same-origin allow-scripts allow-popups"
       />
     </div>
   );

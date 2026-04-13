@@ -46,6 +46,8 @@ exports.renderBySlug = catchAsync(async (req, res) => {
   invitation.increment('viewCount');
 
   const html = renderInvitation(invitation, invitation.eventType, invitation.template);
+  // Invitation pages use inline scripts/styles — disable restrictive CSP
+  res.removeHeader('Content-Security-Policy');
   res.set('Content-Type', 'text/html');
   res.send(html);
 });
@@ -117,6 +119,8 @@ exports.fullPreview = catchAsync(async (req, res) => {
   };
 
   const html = renderInvitation(fakeInvitation, eventType, template);
+  // Remove restrictive CSP for preview — invitation templates need inline scripts/styles
+  res.removeHeader('Content-Security-Policy');
   res.set('Content-Type', 'text/html');
   res.send(html);
 });

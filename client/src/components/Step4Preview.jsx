@@ -7,6 +7,7 @@ export default function Step4Preview({ data, onNext, onBack }) {
   const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'mobile'
   const [fullscreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [htmlContent, setHtmlContent] = useState('');
   const iframeRef = useRef(null);
   const debounceRef = useRef(null);
 
@@ -38,12 +39,21 @@ export default function Step4Preview({ data, onNext, onBack }) {
       });
 
       const html = await res.text();
+      setHtmlContent(html);
+
+      // Also try doc.write as fallback
       const iframe = iframeRef.current;
       if (iframe) {
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (doc) {
+            doc.open();
+            doc.write(html);
+            doc.close();
+          }
+        } catch (e) {
+          // srcdoc will handle it
+        }
       }
     } catch (err) {
       console.error('Full preview error:', err);
@@ -106,8 +116,9 @@ export default function Step4Preview({ data, onNext, onBack }) {
             <iframe
               ref={iframeRef}
               title="Full Preview"
+              srcDoc={htmlContent || undefined}
               className="w-full h-full border-0 rounded-2xl bg-[#0a0a12] relative z-10"
-              sandbox="allow-same-origin allow-scripts"
+              sandbox="allow-same-origin allow-scripts allow-popups"
             />
           </div>
         </div>
@@ -196,10 +207,11 @@ export default function Step4Preview({ data, onNext, onBack }) {
             <iframe
               ref={iframeRef}
               title="Full Invitation Preview"
+              srcDoc={htmlContent || undefined}
               className={`w-full border-0 rounded-2xl bg-[#0a0a12] ${
                 viewMode === 'mobile' ? 'h-[667px]' : 'h-[700px]'
               } border border-white/10`}
-              sandbox="allow-same-origin allow-scripts"
+              sandbox="allow-same-origin allow-scripts allow-popups"
             />
           </div>
         </motion.div>
