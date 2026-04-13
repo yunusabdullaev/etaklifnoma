@@ -50,12 +50,15 @@ async function handleReply(text) {
   const replyText = match[2].trim();
 
   try {
-    const { SupportTicket, User } = require('../models');
-    const { Op } = require('sequelize');
+    const { SupportTicket } = require('../models');
+    const { sequelize } = require('../models');
 
-    // Find ticket by short ID prefix
+    // Find ticket by short ID prefix (cast UUID to text for LIKE)
     const ticket = await SupportTicket.findOne({
-      where: { id: { [Op.like]: `${shortId}%` } },
+      where: sequelize.where(
+        sequelize.cast(sequelize.col('SupportTicket.id'), 'text'),
+        { [require('sequelize').Op.like]: `${shortId}%` }
+      ),
       include: [{ association: 'user', attributes: ['name', 'phone'] }],
     });
 
@@ -126,10 +129,13 @@ async function handleClose(text) {
 
   try {
     const { SupportTicket } = require('../models');
-    const { Op } = require('sequelize');
+    const { sequelize } = require('../models');
 
     const ticket = await SupportTicket.findOne({
-      where: { id: { [Op.like]: `${match[1]}%` } },
+      where: sequelize.where(
+        sequelize.cast(sequelize.col('SupportTicket.id'), 'text'),
+        { [require('sequelize').Op.like]: `${match[1]}%` }
+      ),
     });
 
     if (!ticket) {
