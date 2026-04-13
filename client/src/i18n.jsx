@@ -7,6 +7,7 @@ const translations = {
     'header.subtitle': 'Premium taklifnomalar',
     'header.cabinet': 'Kabinet',
     'header.create': 'Yaratish',
+    'header.support': 'Yordam',
     'header.step': 'Qadam',
     'header.logout': 'Chiqish',
 
@@ -126,6 +127,27 @@ const translations = {
     // Footer
     'footer.copyright': '© 2026 Taklifnoma — Barcha huquqlar himoyalangan',
 
+    // Support
+    'support.title': 'Yordam markazi',
+    'support.subtitle': 'Muammo yoki savolingiz bormi?',
+    'support.newTicket': 'Yangi murojaat',
+    'support.subject': 'Mavzu',
+    'support.subjectPlaceholder': 'Masalan: Shablon yuklanmayapti',
+    'support.message': 'Xabar',
+    'support.messagePlaceholder': 'Muammoingizni batafsil yozing...',
+    'support.send': 'Yuborish',
+    'support.cancel': 'Bekor qilish',
+    'support.sent': 'Murojaat yuborildi!',
+    'support.empty': "Hozircha murojaatingiz yo'q",
+    'support.emptyDesc': "Muammo bo'lsa, yuqoridagi tugmani bosing",
+    'support.back': 'Orqaga',
+    'support.loading': 'Xabarlar yuklanmoqda...',
+    'support.inputPlaceholder': 'Xabar yozing...',
+    'support.waiting': 'Kutilmoqda',
+    'support.answered': 'Javob berildi',
+    'support.closed': 'Yopilgan',
+    'support.admin': 'Support',
+
     // Common
     'common.loading': 'Yuklanmoqda...',
     'common.error': 'Xatolik yuz berdi',
@@ -137,6 +159,7 @@ const translations = {
     'header.subtitle': 'Премиум приглашения',
     'header.cabinet': 'Кабинет',
     'header.create': 'Создать',
+    'header.support': 'Помощь',
     'header.step': 'Шаг',
     'header.logout': 'Выйти',
 
@@ -256,6 +279,27 @@ const translations = {
     // Footer
     'footer.copyright': '© 2026 Taklifnoma — Все права защищены',
 
+    // Support
+    'support.title': 'Центр поддержки',
+    'support.subtitle': 'Есть проблема или вопрос?',
+    'support.newTicket': 'Новое обращение',
+    'support.subject': 'Тема',
+    'support.subjectPlaceholder': 'Например: Шаблон не загружается',
+    'support.message': 'Сообщение',
+    'support.messagePlaceholder': 'Опишите проблему подробно...',
+    'support.send': 'Отправить',
+    'support.cancel': 'Отмена',
+    'support.sent': 'Обращение отправлено!',
+    'support.empty': 'Обращений пока нет',
+    'support.emptyDesc': 'Если есть проблема, нажмите кнопку выше',
+    'support.back': 'Назад',
+    'support.loading': 'Загрузка сообщений...',
+    'support.inputPlaceholder': 'Напишите сообщение...',
+    'support.waiting': 'Ожидание',
+    'support.answered': 'Ответили',
+    'support.closed': 'Закрыто',
+    'support.admin': 'Поддержка',
+
     // Common
     'common.loading': 'Загрузка...',
     'common.error': 'Произошла ошибка',
@@ -267,6 +311,7 @@ const translations = {
     'header.subtitle': 'Premium mırájatlar',
     'header.cabinet': 'Kabinet',
     'header.create': 'Jaratıw',
+    'header.support': 'Járdem',
     'header.step': 'Qadam',
     'header.logout': 'Shıǵıw',
 
@@ -385,6 +430,27 @@ const translations = {
 
     // Footer
     'footer.copyright': '© 2026 Taklifnama — Barlıq huqıqlar qorǵalǵan',
+
+    // Support
+    'support.title': 'Járdem oraylıǵı',
+    'support.subtitle': 'Máselingiz yamasa sorawıngız barma?',
+    'support.newTicket': 'Jańa múrájaat',
+    'support.subject': 'Tema',
+    'support.subjectPlaceholder': 'Mısalı: Shablon júklenbeypti',
+    'support.message': 'Xabar',
+    'support.messagePlaceholder': 'Máseleńizdi tolıq jazıń...',
+    'support.send': 'Jiberiw',
+    'support.cancel': 'Biykar etiw',
+    'support.sent': 'Múrájaat jiberildi!',
+    'support.empty': 'Házirge kúnge múrájaatıńız joq',
+    'support.emptyDesc': 'Másele bolsa, joqarıdaǵı túymeni basıń',
+    'support.back': 'Artqa',
+    'support.loading': 'Xabarlar júklenip atır...',
+    'support.inputPlaceholder': 'Xabar jazıń...',
+    'support.waiting': 'Kútilmoqda',
+    'support.answered': 'Juwap berildi',
+    'support.closed': 'Jabılǵan',
+    'support.admin': 'Qollaw',
 
     // Common
     'common.loading': 'Júklenip atır...',

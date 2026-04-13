@@ -184,7 +184,7 @@ export default function App() {
                 }`}
               >
                 <MessageCircle size={12} />
-                <span className="hidden sm:inline">Yordam</span>
+                <span className="hidden sm:inline">{t('header.support')}</span>
               </button>
             </div>
 
