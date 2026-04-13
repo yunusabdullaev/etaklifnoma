@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Lock, User, ArrowRight, Sparkles, ShieldCheck, ArrowLeft, Globe } from 'lucide-react';
 import { useLang } from '../i18n';
 
-export default function AuthPage({ onLogin }) {
+export default function AuthPage({ onLogin, onBack }) {
   const [mode, setMode] = useState('login'); // 'login' | 'register' | 'verify'
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
@@ -209,6 +209,17 @@ export default function AuthPage({ onLogin }) {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md"
       >
+        {/* Back button */}
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 text-sm text-surface-400 hover:text-white transition-colors mb-4"
+          >
+            <ArrowLeft size={16} />
+            {t('auth.back') || 'Orqaga'}
+          </button>
+        )}
+
         {/* Logo */}
         <div className="text-center mb-8">
           <motion.div

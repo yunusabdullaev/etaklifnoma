@@ -25,6 +25,7 @@ const translations = {
     'auth.otpExpires': 'Kod amal qilish muddati:',
     'auth.noAccount': "Hisobingiz yo'qmi?",
     'auth.hasAccount': 'Hisobingiz bormi?',
+    'auth.back': 'Orqaga',
 
     // Dashboard
     'dashboard.title': 'Mening taklifnomalarim',
@@ -154,6 +155,7 @@ const translations = {
     'auth.otpExpires': 'Код действует:',
     'auth.noAccount': 'Нет аккаунта?',
     'auth.hasAccount': 'Есть аккаунт?',
+    'auth.back': 'Назад',
 
     // Dashboard
     'dashboard.title': 'Мои приглашения',
@@ -283,6 +285,7 @@ const translations = {
     'auth.otpExpires': 'Kod járamlilik múddeti:',
     'auth.noAccount': 'Akkauntıńız joqpa?',
     'auth.hasAccount': 'Akkauntıńız barma?',
+    'auth.back': 'Artına',
 
     // Dashboard
     'dashboard.title': 'Meniń mırájatlarım',

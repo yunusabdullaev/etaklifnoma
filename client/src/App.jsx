@@ -7,6 +7,7 @@ import Step3Content from './components/Step3Content';
 import Step4Preview from './components/Step4Preview';
 import Step5Generate from './components/Step5Generate';
 import AuthPage from './components/AuthPage';
+import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import SettingsDropdown from './components/SettingsDropdown';
 import { useLang } from './i18n';
@@ -35,6 +36,7 @@ export default function App() {
   const [token, setToken] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [view, setView] = useState('dashboard'); // 'dashboard' | 'wizard'
+  const [showAuth, setShowAuth] = useState(false); // landing → auth transition
 
   // Check saved auth on mount
   useEffect(() => {
@@ -103,9 +105,12 @@ export default function App() {
   // Wait for auth check
   if (!authChecked) return null;
 
-  // Show auth page if not logged in
+  // Show landing or auth page if not logged in
   if (!user) {
-    return <AuthPage onLogin={handleLogin} />;
+    if (!showAuth) {
+      return <LandingPage onEnter={() => setShowAuth(true)} />;
+    }
+    return <AuthPage onLogin={handleLogin} onBack={() => setShowAuth(false)} />;
   }
 
   const showDashboard = view === 'dashboard';
