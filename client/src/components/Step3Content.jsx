@@ -30,7 +30,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="label">{t('step3.host')} *</label>
-            <input type="text" placeholder="Abdullayev Yunus"
+            <input type="text" placeholder="Aliyev Jasur"
               value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
               className="input-field" />
           </div>
@@ -138,7 +138,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             </p>
             <div>
               <label className="label">👤 Mezban atı</label>
-              <input type="text" placeholder="Abdullayev Yunus"
+              <input type="text" placeholder="Aliyev Jasur"
                 value={data.customFields?.hostNameQq || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
                 className="input-field" />

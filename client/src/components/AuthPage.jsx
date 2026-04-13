@@ -377,7 +377,7 @@ export default function AuthPage({ onLogin, onBack }) {
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          placeholder="Abdullayev Yunus"
+                          placeholder="Aliyev Jasur"
                           className="input-field"
                           required={mode === 'register'}
                         />
