@@ -9,9 +9,10 @@ import Step5Generate from './components/Step5Generate';
 import AuthPage from './components/AuthPage';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
+import SupportPage from './components/SupportPage';
 import SettingsDropdown from './components/SettingsDropdown';
 import { useLang } from './i18n';
-import { Sparkles, LogOut, User, LayoutGrid, PlusCircle } from 'lucide-react';
+import { Sparkles, LogOut, User, LayoutGrid, PlusCircle, MessageCircle } from 'lucide-react';
 
 const INITIAL_DATA = {
   eventType: null,
@@ -35,7 +36,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const [view, setView] = useState('dashboard'); // 'dashboard' | 'wizard'
+  const [view, setView] = useState('dashboard'); // 'dashboard' | 'wizard' | 'support'
   const [showAuth, setShowAuth] = useState(false); // landing → auth transition
 
   // Check saved auth on mount
@@ -114,6 +115,7 @@ export default function App() {
   }
 
   const showDashboard = view === 'dashboard';
+  const showSupport = view === 'support';
   const { t } = useLang();
 
   return (
@@ -173,6 +175,17 @@ export default function App() {
                 <PlusCircle size={12} />
                 <span className="hidden sm:inline">{t('header.create')}</span>
               </button>
+              <button
+                onClick={() => setView('support')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  showSupport
+                    ? 'bg-primary-500/20 text-primary-400'
+                    : 'text-surface-500 hover:text-white'
+                }`}
+              >
+                <MessageCircle size={12} />
+                <span className="hidden sm:inline">Yordam</span>
+              </button>
             </div>
 
             {!showDashboard && step < 5 && (
@@ -218,6 +231,16 @@ export default function App() {
               transition={{ duration: 0.3 }}
             >
               <Dashboard token={token} onCreateNew={startWizard} />
+            </motion.div>
+          ) : showSupport ? (
+            <motion.div
+              key="support"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <SupportPage token={token} onBack={() => setView('dashboard')} />
             </motion.div>
           ) : (
             <motion.div

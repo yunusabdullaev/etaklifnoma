@@ -35,6 +35,12 @@ router.post('/api/preview/full', renderController.fullPreview);
 // ── Wishes endpoint (Telegram bot) ──────────────────────
 router.post('/api/wishes', wishesController.send);
 
+// ── Support ticket endpoints ────────────────────────────
+const supportController = require('../controllers/supportController');
+router.post('/api/support', protect, supportController.createTicket);
+router.get('/api/support', protect, supportController.getMyTickets);
+router.get('/api/support/:id', protect, supportController.getTicket);
+
 // ── Render endpoints ────────────────────────────────────
 router.get(
   '/api/invitations/:id/render',

@@ -111,6 +111,10 @@ const start = async () => {
       // Start Telegram admin bot (background polling)
       const { pollUpdates } = require('./bot/adminBot');
       pollUpdates();
+
+      // Start Telegram support bot (background polling)
+      const { pollUpdates: pollSupport } = require('./bot/supportBot');
+      pollSupport();
     });
   } catch (error) {
     console.error('❌ Unable to start server:', error.message);
