@@ -188,7 +188,7 @@ export default function App() {
               </button>
             </div>
 
-            {!showDashboard && step < 5 && (
+            {!showDashboard && !showSupport && step < 5 && (
               <div className="text-xs text-surface-500 hidden sm:block">
                 {t('header.step')} <span className="text-white font-semibold">{step}</span>/5
               </div>
@@ -213,7 +213,7 @@ export default function App() {
       </header>
 
       {/* Step Indicator — only in wizard mode */}
-      {!showDashboard && (
+      {!showDashboard && !showSupport && (
         <div className="relative z-10 py-6 border-b border-white/5 bg-surface-950/50 backdrop-blur-sm">
           <StepIndicator currentStep={step} onStepClick={(s) => { if (s < step) setStep(s); }} />
         </div>
