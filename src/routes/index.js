@@ -34,6 +34,7 @@ router.post('/api/preview/full', renderController.fullPreview);
 
 // ── Wishes endpoint (Telegram bot) ──────────────────────
 router.post('/api/wishes', wishesController.send);
+router.get('/api/wishes/:slug', protect, wishesController.getBySlug);
 
 // ── Support ticket endpoints ────────────────────────────
 const supportController = require('../controllers/supportController');

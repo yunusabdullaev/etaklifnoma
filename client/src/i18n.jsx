@@ -107,6 +107,8 @@ const translations = {
     'step3.telegramHint': 'Format: BOT_TOKEN:CHAT_ID — @BotFather dan oling',
     'step3.rsvp': 'RSVP (Qatnashishni tasdiqlash)',
     'step3.rsvpHint': 'Mehmonlar kelish/kelmasligini tasdiqlaydi',
+    'step3.wishes': 'Tilak va tabriklar',
+    'step3.wishesHint': 'Mehmonlar tilak yozishi mumkin',
 
     // Step 4
     'step4.title': "To'liq ko'rib chiqing",
@@ -265,6 +267,8 @@ const translations = {
     'step3.telegramHint': 'Формат: BOT_TOKEN:CHAT_ID — получите у @BotFather',
     'step3.rsvp': 'RSVP (Подтверждение участия)',
     'step3.rsvpHint': 'Гости подтверждают своё участие',
+    'step3.wishes': 'Пожелания',
+    'step3.wishesHint': 'Гости могут оставить пожелания',
 
     // Step 4
     'step4.title': 'Полный предпросмотр',
@@ -423,6 +427,8 @@ const translations = {
     'step3.telegramHint': 'Format: BOT_TOKEN:CHAT_ID — @BotFather dan alıń',
     'step3.rsvp': 'RSVP (Qatnasıwdı tastıyıqlaw)',
     'step3.rsvpHint': 'Mıymanlar keliw/kelmewin tastıyıqlaydi',
+    'step3.wishes': 'Tilekler hám qutlıqlar',
+    'step3.wishesHint': 'Mıymanlar tilek jazıwı múmkin',
 
     // Step 4
     'step4.title': 'Tolıq kóriw',

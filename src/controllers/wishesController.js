@@ -1,64 +1,64 @@
 /**
- * Wishes Controller — receives guest wishes and forwards to Telegram bot.
+ * Wishes Controller — saves wishes to DB and optionally forwards to Telegram.
  */
 const catchAsync = require('../utils/catchAsync');
 const ApiResponse = require('../utils/ApiResponse');
 
 /**
  * POST /api/wishes
- * Body: { name, message, bot (telegram bot token + chat_id), slug }
- * Format for bot: "BOT_TOKEN:CHAT_ID"
  */
 exports.send = catchAsync(async (req, res) => {
+  const { Wish } = require('../models');
   const { name, message, bot, slug } = req.body;
 
-  if (!name || !message) {
-    return ApiResponse.error(res, { message: 'Name and message are required' }, 400);
+  if (!name || !message || !slug) {
+    return ApiResponse.error(res, { message: 'Name, message and slug are required' }, 400);
   }
 
-  if (!bot) {
-    return ApiResponse.error(res, { message: 'Telegram bot not configured' }, 400);
-  }
+  // Always save to DB
+  await Wish.create({
+    invitationSlug: slug,
+    guestName: name.trim(),
+    message: message.trim(),
+  });
 
-  // Parse bot config: "BOT_TOKEN:CHAT_ID"
-  const [botToken, chatId] = bot.split(':');
-  if (!botToken || !chatId) {
-    return ApiResponse.error(res, { message: 'Invalid bot configuration' }, 400);
-  }
+  // If Telegram bot configured, also forward there
+  if (bot && bot.includes(':')) {
+    const parts = bot.split(':');
+    const botToken = parts.slice(0, -1).join(':');
+    const chatId = parts[parts.length - 1];
 
-  // Build Telegram message
-  const text = [
-    `💌 *Yangi tilak keldi!*`,
-    ``,
-    `👤 *Ism:* ${name}`,
-    `💬 *Tilak:* ${message}`,
-    ``,
-    `📎 _Taklifnoma: ${slug}_`,
-  ].join('\n');
+    if (botToken && chatId) {
+      try {
+        const text = [
+          `💌 *Yangi tilak keldi!*`, '',
+          `👤 *Ism:* ${name}`,
+          `💬 *Tilak:* ${message}`, '',
+          `📎 _Taklifnoma: ${slug}_`,
+        ].join('\n');
 
-  try {
-    // Send to Telegram Bot API
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text,
-        parse_mode: 'Markdown',
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.ok) {
-      ApiResponse.success(res, { sent: true }, 'Tilak yuborildi!');
-    } else {
-      console.error('Telegram API error:', data);
-      ApiResponse.error(res, { message: 'Telegram xatoligi' }, 500);
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' }),
+        });
+      } catch (err) {
+        console.error('Telegram wish forward error:', err.message);
+      }
     }
-  } catch (error) {
-    console.error('Telegram send error:', error.message);
-    ApiResponse.error(res, { message: 'Telegram ga yuborib bo\'lmadi' }, 500);
   }
+
+  ApiResponse.success(res, { sent: true }, 'Tilak qabul qilindi!');
+});
+
+/**
+ * GET /api/wishes/:slug — owner gets wishes list
+ */
+exports.getBySlug = catchAsync(async (req, res) => {
+  const { Wish } = require('../models');
+  const wishes = await Wish.findAll({
+    where: { invitationSlug: req.params.slug },
+    order: [['created_at', 'DESC']],
+  });
+  ApiResponse.success(res, wishes);
 });

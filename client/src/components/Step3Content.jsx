@@ -438,6 +438,22 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             }`} />
           </button>
         </div>
+
+        <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+          <div>
+            <label className="label flex items-center gap-1.5 !mb-0">💌 {t('step3.wishes')}</label>
+            <p className="text-[11px] text-surface-500 mt-0.5">{t('step3.wishesHint')}</p>
+          </div>
+          <button type="button"
+            onClick={() => handleCustomFieldChange('enableWishes', data.customFields?.enableWishes === false ? true : false)}
+            className={`w-11 h-6 rounded-full transition-all duration-300 relative flex-shrink-0 ${
+              data.customFields?.enableWishes !== false ? 'bg-primary-500' : 'bg-surface-700'
+            }`}>
+            <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+              data.customFields?.enableWishes !== false ? 'left-[22px]' : 'left-0.5'
+            }`} />
+          </button>
+        </div>
       </div>
     </div>
   );
