@@ -254,6 +254,7 @@ function renderInvitation(invitation, eventType, template) {
 <body>
   ${renderedBody}
   ${wishesForm}
+  ${buildRsvpForm(invitation.slug)}
   ${musicPlayer}
   <script>window.__INVITE_DATA__=${JSON.stringify({
     dateUz: context['date'] || '',
@@ -756,6 +757,95 @@ function buildBrandingFooter() {
       ETAKLIFNOMA.UZ — Premium taklifnomalar
     </a>
   </div>`;
+}
+
+/**
+ * Build RSVP attendance form
+ */
+function buildRsvpForm(slug) {
+  return `
+  <section class="section rsvp-section" id="rsvp" style="background:var(--countdown-bg, linear-gradient(135deg,#12152a,#1a1e38));text-align:center;padding:60px 0">
+    <div class="container" style="max-width:500px;margin:0 auto;padding:0 24px">
+      <h2 class="section-heading light" style="margin-bottom:8px">✅ Qatnashishni tasdiqlang</h2>
+      <p style="font-size:0.9rem;color:rgba(232,226,214,0.5);margin-bottom:24px">Iltimos, qatnashishingizni tasdiqlang</p>
+      <form id="rsvpForm" onsubmit="submitRsvp(event)" style="display:flex;flex-direction:column;gap:12px">
+        <input type="text" name="guestName" placeholder="Ismingiz" required style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e8e2d6;font-size:0.95rem;outline:none" />
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="rsvpButtons">
+          <label style="flex:1;min-width:100px">
+            <input type="radio" name="status" value="attending" checked style="display:none" />
+            <div class="rsvp-opt rsvp-active" onclick="selectRsvp(this,'attending')" style="padding:10px;border-radius:10px;border:1px solid rgba(76,175,80,0.3);background:rgba(76,175,80,0.15);color:#66bb6a;cursor:pointer;font-size:0.85rem;text-align:center;transition:all 0.3s">✅ Kelaman</div>
+          </label>
+          <label style="flex:1;min-width:100px">
+            <input type="radio" name="status" value="maybe" style="display:none" />
+            <div class="rsvp-opt" onclick="selectRsvp(this,'maybe')" style="padding:10px;border-radius:10px;border:1px solid rgba(255,193,7,0.3);background:rgba(255,193,7,0.05);color:#ffa726;cursor:pointer;font-size:0.85rem;text-align:center;transition:all 0.3s">🤔 Bilmayman</div>
+          </label>
+          <label style="flex:1;min-width:100px">
+            <input type="radio" name="status" value="not_attending" style="display:none" />
+            <div class="rsvp-opt" onclick="selectRsvp(this,'not_attending')" style="padding:10px;border-radius:10px;border:1px solid rgba(244,67,54,0.3);background:rgba(244,67,54,0.05);color:#ef5350;cursor:pointer;font-size:0.85rem;text-align:center;transition:all 0.3s">❌ Kelolmayman</div>
+          </label>
+        </div>
+        <select name="guestCount" style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e8e2d6;font-size:0.95rem;outline:none">
+          <option value="1">1 kishi</option>
+          <option value="2">2 kishi</option>
+          <option value="3">3 kishi</option>
+          <option value="4">4 kishi</option>
+          <option value="5">5+ kishi</option>
+        </select>
+        <input type="hidden" name="slug" value="${slug}" />
+        <button type="submit" id="rsvpBtn" style="padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#4caf50,#66bb6a);color:white;font-weight:600;font-size:0.95rem;cursor:pointer;transition:all 0.3s">
+          Tasdiqlash
+        </button>
+        <p id="rsvpStatus" style="font-size:0.85rem;margin-top:4px"></p>
+      </form>
+    </div>
+  </section>
+  <script>
+  function selectRsvp(el, val) {
+    document.querySelectorAll('.rsvp-opt').forEach(function(o){
+      o.style.background = o.style.background.replace(/0\\.15/,'0.05');
+      o.classList.remove('rsvp-active');
+    });
+    el.classList.add('rsvp-active');
+    el.style.background = el.style.background.replace(/0\\.05/,'0.15');
+    el.closest('label').querySelector('input[type=radio]').checked = true;
+  }
+  function submitRsvp(e) {
+    e.preventDefault();
+    var f = e.target;
+    var btn = document.getElementById('rsvpBtn');
+    var st = document.getElementById('rsvpStatus');
+    btn.textContent = 'Yuborilmoqda...';
+    btn.disabled = true;
+    var status = f.querySelector('input[name=status]:checked')?.value || 'attending';
+    fetch('/api/invitations/' + f.slug.value + '/rsvp', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        guestName: f.guestName.value.trim(),
+        status: status,
+        guestCount: parseInt(f.guestCount.value) || 1,
+      })
+    })
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d.success){
+        st.textContent = '✅ Javobingiz qabul qilindi! Rahmat!';
+        st.style.color = '#66bb6a';
+      } else {
+        st.textContent = '❌ Xatolik yuz berdi';
+        st.style.color = '#ef5350';
+      }
+    })
+    .catch(function(){
+      st.textContent = '❌ Tarmoq xatoligi';
+      st.style.color = '#ef5350';
+    })
+    .finally(function(){
+      btn.textContent = 'Tasdiqlash';
+      btn.disabled = false;
+    });
+  }
+  </script>`;
 }
 
 module.exports = {

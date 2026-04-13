@@ -42,6 +42,27 @@ router.get('/api/support', protect, supportController.getMyTickets);
 router.get('/api/support/:id', protect, supportController.getTicket);
 router.post('/api/support/:id/messages', protect, supportController.addMessage);
 
+// ── QR Code endpoint ────────────────────────────────────
+router.get('/api/invitations/:slug/qr', async (req, res) => {
+  const QRCode = require('qrcode');
+  const appConfig = require('../config/app');
+  const url = `${appConfig.appUrl}/invite/${req.params.slug}/view`;
+  try {
+    const qrDataUrl = await QRCode.toDataURL(url, {
+      width: 512, margin: 2,
+      color: { dark: '#1a1e38', light: '#ffffff' },
+    });
+    res.json({ success: true, data: { url, qrCode: qrDataUrl } });
+  } catch (err) {
+    res.status(500).json({ success: false, error: { message: 'QR generation failed' } });
+  }
+});
+
+// ── RSVP endpoints ──────────────────────────────────────
+const rsvpController = require('../controllers/rsvpController');
+router.post('/api/invitations/:slug/rsvp', rsvpController.submitRsvp);
+router.get('/api/invitations/:slug/rsvp', protect, rsvpController.getRsvps);
+
 // ── Render endpoints ────────────────────────────────────
 router.get(
   '/api/invitations/:id/render',
