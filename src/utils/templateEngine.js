@@ -213,10 +213,22 @@ function renderInvitation(invitation, eventType, template) {
 
   // Music support — check customFields for musicUrl
   let musicUrl = invitation.customFields?.musicUrl || '';
-  // Convert relative URL to absolute
-  if (musicUrl && musicUrl.startsWith('/')) {
-    musicUrl = `${appUrl}${musicUrl}`;
-  }
+  // Fix file URLs: normalize to relative, then make absolute
+  const fixFileUrl = (url) => {
+    if (!url) return url;
+    // Strip old absolute URLs to relative
+    url = url.replace(/^https?:\/\/[^/]+\/api\/files\//, '/api/files/');
+    // Convert relative to absolute
+    if (url.startsWith('/api/files/')) {
+      url = `${appUrl}${url}`;
+    }
+    return url;
+  };
+  musicUrl = fixFileUrl(musicUrl);
+
+  // Fix photo URLs too
+  let photos = invitation.customFields?.photos || [];
+  photos = photos.map(fixFileUrl);
   const musicPlayer = musicUrl ? buildMusicPlayer(musicUrl) : '';
 
   // Wishes form — always shown by default, Telegram bot is optional
@@ -259,7 +271,7 @@ function renderInvitation(invitation, eventType, template) {
 <body>
   ${(() => {
     // Inject gallery, wishes, rsvp INSIDE the main wrapper (before </main>)
-    const gallery = buildPhotoGallery(invitation.customFields?.photos);
+    const gallery = buildPhotoGallery(photos);
     const rsvp = invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug) : '';
     const extras = gallery + wishesForm + rsvp;
     

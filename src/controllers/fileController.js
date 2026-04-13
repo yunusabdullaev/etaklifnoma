@@ -81,8 +81,8 @@ exports.upload = catchAsync(async (req, res) => {
   // Pre-cache
   cacheSet(file.id, { data: buffer, mimetype, filename: req.file.originalname, size: buffer.length });
 
-  const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
-  const url = `${baseUrl}/api/files/${file.id}`;
+  // Use relative URL to avoid http/https mixed content issues
+  const url = `/api/files/${file.id}`;
 
   ApiResponse.success(res, { url, id: file.id }, 'Fayl yuklandi');
 });
