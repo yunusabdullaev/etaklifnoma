@@ -46,11 +46,22 @@ exports.getMyInvitations = catchAsync(async (req, res) => {
     order: [['created_at', 'DESC']],
   });
 
-  // Attach public URLs
+  // Attach public URLs and strip large data from customFields
   const data = invitations.map(inv => {
     const json = inv.toJSON();
     json.publicUrl = `${appConfig.appUrl}/invite/${json.slug}`;
     json.viewUrl = `${appConfig.appUrl}/invite/${json.slug}/view`;
+
+    // Strip large binary data — keep only meta flags for dashboard
+    if (json.customFields) {
+      const { photos, musicUrl, ...lightFields } = json.customFields;
+      json.customFields = {
+        ...lightFields,
+        hasPhotos: Array.isArray(photos) && photos.length > 0,
+        photosCount: Array.isArray(photos) ? photos.length : 0,
+        hasMusic: !!musicUrl,
+      };
+    }
     return json;
   });
 
