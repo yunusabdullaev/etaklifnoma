@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const QRCode = require('qrcode');
 const eventTypeRoutes = require('./eventTypeRoutes');
 const templateRoutes = require('./templateRoutes');
 const invitationRoutes = require('./invitationRoutes');
@@ -44,7 +45,6 @@ router.post('/api/support/:id/messages', protect, supportController.addMessage);
 
 // ── QR Code endpoint ────────────────────────────────────
 router.get('/api/invitations/:slug/qr', async (req, res) => {
-  const QRCode = require('qrcode');
   const appConfig = require('../config/app');
   const url = `${appConfig.appUrl}/invite/${req.params.slug}/view`;
   try {
