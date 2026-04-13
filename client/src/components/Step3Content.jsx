@@ -242,13 +242,64 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </h3>
         <div>
           <label className="label flex items-center gap-1.5">🎵 {t('step3.music')}</label>
-          <input type="url" placeholder="https://example.com/music.mp3"
-            value={data.customFields?.musicUrl || ''}
-            onChange={(e) => handleCustomFieldChange('musicUrl', e.target.value)}
-            className="input-field" />
-          <p className="text-[11px] text-surface-500 mt-1">
-            {t('step3.musicHint')}
-          </p>
+          
+          {/* Current music indicator */}
+          {data.customFields?.musicUrl && (
+            <div className="flex items-center gap-2 mb-2 p-2 rounded-lg bg-primary-500/10 border border-primary-500/20">
+              <span className="text-xs text-primary-300 truncate flex-1">
+                🎶 {data.customFields.musicUrl.startsWith('data:') ? 'Yuklangan musiqa' : data.customFields.musicUrl}
+              </span>
+              <button type="button" onClick={() => handleCustomFieldChange('musicUrl', '')}
+                className="text-rose-400 text-xs hover:text-rose-300">✕</button>
+            </div>
+          )}
+
+          {!data.customFields?.musicUrl && (
+            <div className="space-y-2">
+              {/* File upload */}
+              <label className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-white/10 hover:border-primary-500/30 cursor-pointer transition-all bg-white/[0.02] hover:bg-white/[0.04]">
+                <input type="file" accept="audio/mp3,audio/mpeg,audio/*" className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    // Compress: read as base64 (limit ~2MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                      alert('Fayl hajmi 5MB dan oshmasligi kerak');
+                      return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      handleCustomFieldChange('musicUrl', ev.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                    e.target.value = '';
+                  }} />
+                <span className="text-xl">📁</span>
+                <span className="text-sm text-surface-400">{t('step3.musicUpload')}</span>
+              </label>
+
+              {/* URL option */}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-px bg-white/10"></div>
+                <span className="text-[10px] text-surface-600">{t('step3.or')}</span>
+                <div className="flex-1 h-px bg-white/10"></div>
+              </div>
+              <input type="url" placeholder="https://example.com/music.mp3"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (e.target.value.trim()) {
+                      handleCustomFieldChange('musicUrl', e.target.value.trim());
+                      e.target.value = '';
+                    }
+                  }
+                }}
+                className="input-field w-full text-sm" />
+            </div>
+          )}
+          <p className="text-[11px] text-surface-500 mt-1">{t('step3.musicHint')}</p>
         </div>
 
         {/* Program / Timeline editor */}
