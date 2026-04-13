@@ -34,6 +34,12 @@ const selectedGlow = {
 
 // Client-side translations for event types (DB stores only UZ)
 const eventTypeTranslations = {
+  qq: {
+    wedding: { label: 'Toy', description: 'Nikax hám toy ushın premium shaqırıwlar' },
+    birthday: { label: 'Tuwılǵan kún', description: 'Tuwılǵan kún ushın shaqırıwlar' },
+    jubilee: { label: 'Yubilej', description: 'Yubilej hám bayramlar ushın shaqırıwlar' },
+    graduation: { label: 'Pitkeriwshiler', description: 'Pitkeriwshiler keshesi ushın shaqırıwlar' },
+  },
   ru: {
     wedding: { label: 'Свадьба', description: 'Премиум приглашения для никаха и свадьбы' },
     birthday: { label: 'День рождения', description: 'Яркие приглашения на день рождения' },

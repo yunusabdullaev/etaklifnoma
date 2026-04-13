@@ -92,39 +92,85 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           className="input-field resize-none" />
       </div>
 
-      {/* Language / Translation settings */}
+      {/* Language Toggle settings */}
       <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           🌐 {t('step3.langSettings')}
         </h3>
-        <div className="flex gap-2">
+        <p className="text-[11px] text-surface-500">{t('step3.langDesc')}</p>
+
+        {/* Three individual toggles */}
+        <div className="space-y-2">
           {[
-            { value: 'uz', label: `🇺🇿 ${t('step3.langUz')}` },
-            { value: 'uzru', label: `🇺🇿+🇷🇺 ${t('step3.langUzru')}` },
-            { value: 'ru', label: `🇷🇺 ${t('step3.langRu')}` },
-          ].map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => handleCustomFieldChange('langMode', opt.value)}
-              className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-medium border transition-all text-center ${
-                (data.customFields?.langMode || 'uz') === opt.value
-                  ? 'bg-primary-500/20 border-primary-500/50 text-primary-300'
-                  : 'bg-white/[0.03] border-white/10 text-surface-400 hover:border-white/20'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
+            { key: 'langUz', label: t('step3.langUzToggle'), flag: '🇺🇿' },
+            { key: 'langQq', label: t('step3.langQqToggle'), flag: '🏳️' },
+            { key: 'langRu', label: t('step3.langRuToggle'), flag: '🇷🇺' },
+          ].map((opt) => {
+            const isOn = data.customFields?.[opt.key] !== false && (opt.key === 'langUz' ? (data.customFields?.[opt.key] ?? true) : !!data.customFields?.[opt.key]);
+            return (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => handleCustomFieldChange(opt.key, !isOn)}
+                className={`w-full flex items-center justify-between py-3 px-4 rounded-xl text-sm font-medium border transition-all ${
+                  isOn
+                    ? 'bg-primary-500/20 border-primary-500/50 text-primary-300'
+                    : 'bg-white/[0.03] border-white/10 text-surface-500 hover:border-white/20'
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  <span>{opt.flag}</span> {opt.label}
+                </span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${isOn ? 'bg-primary-500/30 text-primary-200' : 'bg-white/5 text-surface-500'}`}>
+                  {isOn ? 'ON' : 'OFF'}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Show RU fields when uzru or ru mode */}
-        {(data.customFields?.langMode === 'uzru' || data.customFields?.langMode === 'ru') && (
+        {/* QQ fields — when Karakalpak is ON */}
+        {data.customFields?.langQq && (
           <div className="space-y-3 border-t border-white/5 pt-4">
-            <p className="text-[11px] text-surface-500">
-              {data.customFields?.langMode === 'ru'
-                ? t('step3.langRuDesc')
-                : t('step3.langUzruDesc')}
+            <p className="text-[11px] text-surface-500 flex items-center gap-1">
+              🏳️ {t('step3.qqFields')}
+            </p>
+            <div>
+              <label className="label">👤 {t('step3.qqHostName')}</label>
+              <input type="text" placeholder="Abdullayev Yunus"
+                value={data.customFields?.hostNameQq || ''}
+                onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
+                className="input-field" />
+            </div>
+            <div>
+              <label className="label">👥 {t('step3.qqGuestName')}</label>
+              <input type="text" placeholder="Húrmetli mexmanlar"
+                value={data.customFields?.guestNameQq || ''}
+                onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
+                className="input-field" />
+            </div>
+            <div>
+              <label className="label">✏️ {t('step3.qqEventTitle')}</label>
+              <input type="text" placeholder="Nikax márásimi"
+                value={data.customFields?.eventTitleQq || ''}
+                onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
+                className="input-field" />
+            </div>
+            <div>
+              <label className="label">💬 {t('step3.qqMessage')}</label>
+              <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
+                value={data.customFields?.messageQq || ''}
+                onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
+                className="input-field resize-none" />
+            </div>
+          </div>
+        )}
+
+        {/* RU fields — when Russian is ON */}
+        {data.customFields?.langRu && (
+          <div className="space-y-3 border-t border-white/5 pt-4">
+            <p className="text-[11px] text-surface-500 flex items-center gap-1">
+              🇷🇺 {t('step3.ruFields')}
             </p>
             <div>
               <label className="label">👤 {t('step3.ruHostName')}</label>
@@ -275,8 +321,54 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           })()}
         </div>
 
-        {/* Russian Program editor — only when uzru or ru mode */}
-        {(data.customFields?.langMode === 'uzru' || data.customFields?.langMode === 'ru') && (
+        {/* Karakalpak Program editor — when QQ is ON */}
+        {data.customFields?.langQq && (
+          <div>
+            <label className="label flex items-center gap-2 mb-2">📅 {t('step3.programQq')}</label>
+            {(() => {
+              let items = [];
+              try {
+                items = data.customFields?.programQq ? JSON.parse(data.customFields.programQq) : [];
+              } catch { items = []; }
+              if (items.length === 0) {
+                items = [
+                  { time: data.eventTime || '18:00', text: 'Mexmanlar kútip alıw' },
+                  { time: '18:30', text: 'Rásimiy bólim' },
+                  { time: '19:00', text: 'Ziyapat dástúrxanı' },
+                  { time: '21:00', text: 'Muzıkalı waqıtlar' },
+                ];
+              }
+              const updateProgramQq = (newItems) => {
+                handleCustomFieldChange('programQq', JSON.stringify(newItems));
+              };
+              return (
+                <div className="space-y-2">
+                  {items.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input type="time" value={item.time}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
+                        className="input-field w-28 text-center" />
+                      <input type="text" value={item.text}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
+                        className="input-field flex-1" placeholder="Ilaje atı" />
+                      {items.length > 1 && (
+                        <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
+                          className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
+                    className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
+                    + {t('step3.addItemQq')}
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* Russian Program editor — when RU is ON */}
+        {data.customFields?.langRu && (
           <div>
             <label className="label flex items-center gap-2 mb-2">📅 {t('step3.programRu')}</label>
             {(() => {

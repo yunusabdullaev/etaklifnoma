@@ -123,6 +123,7 @@ export default function SettingsDropdown() {
         <SectionLabel text={t.language} />
         <div style={{ display: 'flex', gap: 6 }}>
           <OptBtn active={lang === 'uz'} onClick={() => setLang('uz')} label="O'zbekcha" />
+          <OptBtn active={lang === 'qq'} onClick={() => setLang('qq')} label="Qaraqalpaq" />
           <OptBtn active={lang === 'ru'} onClick={() => setLang('ru')} label="Русский" />
         </div>
       </div>

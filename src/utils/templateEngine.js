@@ -249,17 +249,25 @@ function renderInvitation(invitation, eventType, template) {
     dateRu: context['dateRu'] || '',
     message: context['message'] || '',
     messageRu: context['messageRu'] || '',
+    messageQq: context['messageQq'] || '',
     location: context['location'] || '',
     hostName: context['hostName'] || '',
     hostNameRu: context['hostNameRu'] || '',
+    hostNameQq: context['hostNameQq'] || '',
     guestName: context['guestName'] || '',
     guestNameRu: context['guestNameRu'] || '',
+    guestNameQq: context['guestNameQq'] || '',
     eventTitle: context['eventTitle'] || '',
     eventTitleRu: context['eventTitleRu'] || '',
+    eventTitleQq: context['eventTitleQq'] || '',
     eventTime: context['time'] || '',
-    langMode: context['langMode'] || 'uz',
+    langMode: context['langMode'] || '',
+    langUz: context['langUz'] !== false && context['langUz'] !== 'false',
+    langQq: context['langQq'] === true || context['langQq'] === 'true',
+    langRu: context['langRu'] === true || context['langRu'] === 'true',
     program: context['program'] || '',
     programRu: context['programRu'] || '',
+    programQq: context['programQq'] || '',
   })};</script>
   ${buildLanguageToggle()}
   ${buildBrandingFooter()}
@@ -443,32 +451,49 @@ function getWishesFormStyles() {
 }
 
 /**
- * Language toggle button + translations system
+ * Language toggle button + translations system (UZ / QQ / RU)
  */
 function buildLanguageToggle() {
   return `
   <div class="lang-toggle" id="langToggle">
     <button class="lang-btn active" id="langUz" onclick="switchLang('uz')">UZ</button>
-    <button class="lang-btn" id="langRu" onclick="switchLang('ru')">RU</button>
+    <button class="lang-btn" id="langQq" onclick="switchLang('qq')" style="display:none">QQ</button>
+    <button class="lang-btn" id="langRu" onclick="switchLang('ru')" style="display:none">RU</button>
   </div>
   <script>
   (function(){
     var d = window.__INVITE_DATA__ || {};
-    var mode = d.langMode || 'uz';
 
-    // uz = hide toggle entirely
-    // ru = hide toggle, auto-switch to Russian
-    // uzru = show toggle
-    if(mode === 'uz') {
-      var toggle = document.getElementById('langToggle');
-      if(toggle) toggle.style.display = 'none';
-      return;
+    // New toggle system: langUz, langQq, langRu (boolean flags)
+    var hasUz = d.langUz !== false;
+    var hasQq = !!d.langQq;
+    var hasRu = !!d.langRu;
+
+    // Backward compat: old langMode → new flags
+    if(d.langMode) {
+      if(d.langMode === 'uz') { hasUz = true; hasQq = false; hasRu = false; }
+      else if(d.langMode === 'uzru') { hasUz = true; hasQq = false; hasRu = true; }
+      else if(d.langMode === 'ru') { hasUz = false; hasQq = false; hasRu = true; }
     }
-    if(mode === 'ru') {
-      var toggle = document.getElementById('langToggle');
-      if(toggle) toggle.style.display = 'none';
-      // Will auto-switch to RU at the end
-    }
+
+    var langs = [];
+    if(hasUz) langs.push('uz');
+    if(hasQq) langs.push('qq');
+    if(hasRu) langs.push('ru');
+
+    // Show/hide buttons
+    var uzBtn = document.getElementById('langUz');
+    var qqBtn = document.getElementById('langQq');
+    var ruBtn = document.getElementById('langRu');
+    if(uzBtn) uzBtn.style.display = hasUz ? '' : 'none';
+    if(qqBtn) qqBtn.style.display = hasQq ? '' : 'none';
+    if(ruBtn) ruBtn.style.display = hasRu ? '' : 'none';
+
+    // Hide toggle if only 1 language
+    var toggle = document.getElementById('langToggle');
+    if(langs.length <= 1 && toggle) toggle.style.display = 'none';
+
+    var currentLang = 'uz';
 
     var translations = {
       uz: {
@@ -481,10 +506,6 @@ function buildLanguageToggle() {
         locationTitle: 'Lokatsiya',
         viewMap: "Xaritada ko'rish",
         programTitle: 'Kechaning dasturi',
-        prog1: 'Mehmonlarni kutib olish',
-        prog2: 'Rasmiy nikoh marosimi',
-        prog3: 'Ziyofat dasturxoni',
-        prog4: "Musiqa va ko'ngil ochar lahzalar",
         dressCode: 'Dress code',
         waitingMsg: 'Sizni kutib qolamiz!',
         wishesTitle: '💌 Tilak va tabriklar',
@@ -511,6 +532,42 @@ function buildLanguageToggle() {
         jubDetailsTitle: 'Tafsilotlar',
         jubProgramTitle: 'Tantana dasturi'
       },
+      qq: {
+        eventLabel: 'Nikax shaqırıwı',
+        countdownTitle: 'Toyǵa shekem qalǵan waqıt',
+        days: 'Kún', hours: 'Saǵat', minutes: 'Minut', seconds: 'Sekund',
+        detailsTitle: 'Toy tafsilatları',
+        dateLabel: 'Sána', timeLabel: 'Waqıt', venueLabel: 'Mánzil',
+        guestWelcome: 'Mexmanlar kútip alıw',
+        locationTitle: 'Lokatsiya',
+        viewMap: 'Kartada kóriw',
+        programTitle: 'Kesheniń baǵdarlanması',
+        dressCode: 'Dress kod',
+        waitingMsg: 'Sizdi kútip qalamız!',
+        wishesTitle: '💌 Tilek hám qutlıqlaw',
+        wishesSubtitle: 'Tilek hém qutlıqlawlarıńızdı qaldırıń',
+        wishesName: 'Atıńız',
+        wishesMessage: 'Tilekleriniz...',
+        wishesSend: 'Jiberiw 💬',
+        wishesSent: '✅ Tilekleriniz jiberildi! Raxmet!',
+        wishesError: '❌ Qátelik júz berdi.',
+
+        bdEventLabel: 'Tuwılǵan kún shaqırıwı',
+        bdCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
+        bdDetailsTitle: 'Bayram tafsilatları',
+        bdWaitingMsg: 'Sizdi kútip qalamız! 🎉',
+        bdProgramTitle: 'Bayram baǵdarlanması',
+
+        gradEventLabel: 'Pitkeriwshiler keshesi',
+        gradCountdownTitle: 'Ilájegeche qalǵan waqıt',
+        gradDetailsTitle: 'Ilaje tafsilatları',
+        gradProgramTitle: 'Keshe baǵdarlanması',
+
+        jubEventLabel: 'Yubilej shaqırıwı',
+        jubCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
+        jubDetailsTitle: 'Tafsilatlar',
+        jubProgramTitle: 'Tantana baǵdarlanması'
+      },
       ru: {
         eventLabel: 'Свадебное приглашение',
         countdownTitle: 'До свадьбы осталось',
@@ -521,10 +578,6 @@ function buildLanguageToggle() {
         locationTitle: 'Локация',
         viewMap: 'Показать на карте',
         programTitle: 'Программа вечера',
-        prog1: 'Встреча гостей',
-        prog2: 'Официальная церемония',
-        prog3: 'Праздничный ужин',
-        prog4: 'Музыка и развлечения',
         dressCode: 'Дресс-код',
         waitingMsg: 'Ждём вас!',
         wishesTitle: '💌 Пожелания',
@@ -553,9 +606,19 @@ function buildLanguageToggle() {
       }
     };
 
+    // Data maps for each language
+    var langData = {
+      uz: { host: d.hostName, guest: d.guestName, title: d.eventTitle, message: d.message, program: d.program, date: d.dateUz },
+      qq: { host: d.hostNameQq || d.hostName, guest: d.guestNameQq || d.guestName, title: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateUz },
+      ru: { host: d.hostNameRu || d.hostName, guest: d.guestNameRu || d.guestName, title: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz },
+    };
+
     function switchLang(lang) {
       var t = translations[lang];
       if(!t) return;
+
+      var prevData = langData[currentLang] || langData.uz;
+      var newData = langData[lang] || langData.uz;
 
       // 1. Translate data-i18n elements
       document.querySelectorAll('[data-i18n]').forEach(function(el){
@@ -576,54 +639,42 @@ function buildLanguageToggle() {
       if(wishesTitle) wishesTitle.textContent = t.wishesTitle || '';
       if(wishesSub) wishesSub.textContent = t.wishesSubtitle || '';
 
-      // 3. Swap dates (UZ ↔ RU)
-      if(d.dateUz && d.dateRu) {
-        var fromDate = lang === 'ru' ? d.dateUz : d.dateRu;
-        var toDate = lang === 'ru' ? d.dateRu : d.dateUz;
-        swapTextInPage(fromDate, toDate);
+      // 3. Swap dates
+      if(prevData.date && newData.date && prevData.date !== newData.date) {
+        swapTextInPage(prevData.date, newData.date);
       }
 
-      // 4. Swap user-entered content (UZ ↔ RU)
-      if(lang === 'ru') {
-        if(d.messageRu) swapTextInPage(d.message, d.messageRu);
-        if(d.hostNameRu) swapTextInPage(d.hostName, d.hostNameRu);
-        if(d.guestNameRu) swapTextInPage(d.guestName, d.guestNameRu);
-        if(d.eventTitleRu) swapTextInPage(d.eventTitle, d.eventTitleRu);
-      } else {
-        if(d.messageRu) swapTextInPage(d.messageRu, d.message);
-        if(d.hostNameRu) swapTextInPage(d.hostNameRu, d.hostName);
-        if(d.guestNameRu) swapTextInPage(d.guestNameRu, d.guestName);
-        if(d.eventTitleRu) swapTextInPage(d.eventTitleRu, d.eventTitle);
-      }
+      // 4. Swap user-entered content
+      if(prevData.message && newData.message && prevData.message !== newData.message) swapTextInPage(prevData.message, newData.message);
+      if(prevData.host && newData.host && prevData.host !== newData.host) swapTextInPage(prevData.host, newData.host);
+      if(prevData.guest && newData.guest && prevData.guest !== newData.guest) swapTextInPage(prevData.guest, newData.guest);
+      if(prevData.title && newData.title && prevData.title !== newData.title) swapTextInPage(prevData.title, newData.title);
 
-      // 5. Swap program/timeline (UZ ↔ RU)
+      // 5. Swap program/timeline
       var progEl = document.getElementById('program-data');
-      if(progEl && d.programRu) {
+      if(progEl && newData.program) {
         try {
-          var src = lang === 'ru' ? d.programRu : d.program;
-          if(src) {
-            var items = JSON.parse(src);
-            if(Array.isArray(items) && items.length) {
-              var h = '';
-              items.forEach(function(item, i) {
-                var last = i === items.length - 1;
-                h += '<div class="tl-item revealed"><div class="tl-marker"><div class="tl-dot"></div>' +
-                  (last ? '' : '<div class="tl-connector"></div>') +
-                  '</div><div class="tl-card"><div class="tl-time">' +
-                  (item.time || '') + '</div><h4>' + (item.text || '') + '</h4></div></div>';
-              });
-              progEl.innerHTML = h;
-            }
+          var items = JSON.parse(newData.program);
+          if(Array.isArray(items) && items.length) {
+            var h = '';
+            items.forEach(function(item, i) {
+              var last = i === items.length - 1;
+              h += '<div class="tl-item revealed"><div class="tl-marker"><div class="tl-dot"></div>' +
+                (last ? '' : '<div class="tl-connector"></div>') +
+                '</div><div class="tl-card"><div class="tl-time">' +
+                (item.time || '') + '</div><h4>' + (item.text || '') + '</h4></div></div>';
+            });
+            progEl.innerHTML = h;
           }
         } catch(e) {}
       }
 
       // 6. Toggle active button
-      var uzBtn = document.getElementById('langUz');
-      var ruBtn = document.getElementById('langRu');
       if(uzBtn) uzBtn.classList.toggle('active', lang === 'uz');
+      if(qqBtn) qqBtn.classList.toggle('active', lang === 'qq');
       if(ruBtn) ruBtn.classList.toggle('active', lang === 'ru');
 
+      currentLang = lang;
       document.documentElement.lang = lang;
       try { localStorage.setItem('taklifnoma-lang', lang); } catch(e){}
     }
@@ -640,18 +691,24 @@ function buildLanguageToggle() {
     }
     window.switchLang = switchLang;
 
-    // Auto-switch or restore language
-    if(mode === 'ru') {
+    // Determine initial language
+    var defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : 'ru');
+
+    // Only RU mode → auto-switch
+    if(!hasUz && !hasQq && hasRu) {
       switchLang('ru');
+    } else if(!hasUz && hasQq && !hasRu) {
+      switchLang('qq');
     } else {
       try {
         var saved = localStorage.getItem('taklifnoma-lang');
-        if(saved === 'ru') switchLang('ru');
+        if(saved && langs.indexOf(saved) !== -1) switchLang(saved);
       } catch(e){}
     }
   })();
-  </script>`;
+  </script>`
 }
+
 
 function getLanguageToggleStyles() {
   return `

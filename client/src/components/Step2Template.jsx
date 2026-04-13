@@ -63,6 +63,65 @@ const templateNameRu = {
   'cinema-white':   { name: 'Кино Белый', desc: 'Минималистичное белое кино' },
 };
 
+// Karakalpak translations for template names/descriptions (keyed by slug suffix)
+const templateNameQq = {
+  // Original 10 themes
+  'dark-gold':     { name: 'Klassik Qara Altın', desc: 'Klassik qara fon altın aksentler menen' },
+  'pushti':        { name: 'Romantik Gúlgún', desc: 'Romantik gúlgún hám gúl reńleri' },
+  'minimalist-oq': { name: 'Minimalist Aq', desc: 'Taza aq minimalist dizayn' },
+  'binafsha':      { name: 'Korollik Banavshe', desc: 'Korollik banavshe hám kúmis reńleri' },
+  'yashil':        { name: 'Tábiyiy Jasıl', desc: 'Tábiyiy jasıl hám toǵay reńleri' },
+  'sharqona':      { name: 'Shıǵıs Altın', desc: 'Shıǵıs qızıl hám altın aksentler' },
+  'qora':          { name: 'Zámanagóy Qara', desc: 'Zámanagóy qara-aq kontrast' },
+  'sepia':         { name: 'Vintage Sepiya', desc: 'Vintage jılı sepiya reńleri' },
+  'kok':           { name: 'Okean Kók', desc: 'Okean kók hám gólúbiy reńleri' },
+  'oltin':         { name: 'Quyash Altın', desc: 'Quyash jılı altın reńleri' },
+  // Neon — 10
+  'neon-cyan':     { name: 'Neon Kók', desc: 'Neon kók-jasıl shızıqlar' },
+  'neon-pink':     { name: 'Neon Gúlgún', desc: 'Neon gúlgún hám sarı' },
+  'neon-green':    { name: 'Neon Jasıl', desc: 'Neon jasıl hám kók' },
+  'neon-purple':   { name: 'Neon Banavshe', desc: 'Neon banavshe hám gúlgún' },
+  'neon-orange':   { name: 'Neon Apelsin', desc: 'Neon apelsin hám qızıl' },
+  'neon-yellow':   { name: 'Neon Sarı', desc: 'Neon sarı hám jasıl' },
+  'neon-red':      { name: 'Neon Qızıl', desc: 'Neon qızıl hám sarı' },
+  'neon-ice':      { name: 'Neon Muz', desc: 'Neon aq-kók muzday' },
+  'neon-gold':     { name: 'Neon Altın', desc: 'Neon altın hám bronza' },
+  'neon-mint':     { name: 'Neon Jalpız', desc: 'Neon jalpız hám lavanda' },
+  // Marble — 10
+  'marble-gold':     { name: 'Mármár Altın', desc: 'Aq mármár altın menen' },
+  'marble-rose':     { name: 'Mármár Gúl', desc: 'Mármár gúlgún aksent menen' },
+  'marble-navy':     { name: 'Mármár Kók', desc: 'Mármár toq kók menen' },
+  'marble-emerald':  { name: 'Mármár Zúmret', desc: 'Mármár zúmret menen' },
+  'marble-plum':     { name: 'Mármár Álúshe', desc: 'Mármár álúshe aksent menen' },
+  'marble-copper':   { name: 'Mármár Mis', desc: 'Mármár mis aksent menen' },
+  'marble-silver':   { name: 'Mármár Kúmis', desc: 'Mármár kúmis aksent menen' },
+  'marble-burgundy': { name: 'Mármár Sharab', desc: 'Mármár sharab qızıl aksent menen' },
+  'marble-teal':     { name: 'Mármár Máviy', desc: 'Mármár máviy aksent menen' },
+  'marble-charcoal': { name: 'Mármár Kómir', desc: 'Qaranǵı mármár altın menen' },
+  // Boho — 10
+  'boho-sage':      { name: 'Boho Ót', desc: 'Jasıl ót hám terrakota' },
+  'boho-terracota': { name: 'Boho Terrakota', desc: 'Terrakota hám zaytun' },
+  'boho-lavender':  { name: 'Boho Lavanda', desc: 'Lavanda hám gúlgún' },
+  'boho-dusty':     { name: 'Boho Shaǹlı', desc: 'Shaǹlı gúlgún hám jasıl' },
+  'boho-ocean':     { name: 'Boho Okean', desc: 'Okean kók hám qum' },
+  'boho-sunset':    { name: 'Boho Quyash', desc: 'Quyash batıw reńleri' },
+  'boho-forest':    { name: 'Boho Toǵay', desc: 'Toǵay jasıl hám qońır' },
+  'boho-blush':     { name: 'Boho Qızarıw', desc: 'Gúlgún hám altın' },
+  'boho-mustard':   { name: 'Boho Gorchitsa', desc: 'Gorchitsa sarı hám jasıl' },
+  'boho-dark':      { name: 'Boho Tún', desc: 'Qaranǵı boho stil' },
+  // Cinema — 10
+  'cinema-gold':    { name: 'Kino Altın', desc: 'Klassik altın afisha' },
+  'cinema-red':     { name: 'Kino Qızıl', desc: 'Qızıl kino gilam stili' },
+  'cinema-teal':    { name: 'Kino Máviy', desc: 'Máviy kino dramatik' },
+  'cinema-silver':  { name: 'Kino Kúmis', desc: 'Kúmis noir stili' },
+  'cinema-amber':   { name: 'Kino Qahraba', desc: 'Qahraba reńli vintage' },
+  'cinema-purple':  { name: 'Kino Banavshe', desc: 'Banavshe sci-fi stili' },
+  'cinema-emerald': { name: 'Kino Zúmret', desc: 'Zúmret qaranǵı stili' },
+  'cinema-coral':   { name: 'Kino Marjan', desc: 'Marjan gúlgún stili' },
+  'cinema-ice':     { name: 'Kino Muz', desc: 'Muz kók stili' },
+  'cinema-white':   { name: 'Kino Aq', desc: 'Minimalist aq kino stili' },
+};
+
 function getTemplateSuffix(slug) {
   if (!slug) return '';
   // Remove event prefix: toy-dark-gold → dark-gold, tgk-pushti → pushti
@@ -329,10 +388,14 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
                 {/* Template name & description */}
                 <div className="p-3 pt-2">
                   <h3 className="text-sm font-semibold text-white mb-0.5 truncate">
-                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.name || tmpl.name) : tmpl.name}
+                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.name || tmpl.name)
+                     : lang === 'qq' ? (templateNameQq[getTemplateSuffix(tmpl.slug)]?.name || tmpl.name)
+                     : tmpl.name}
                   </h3>
                   <p className="text-[11px] text-surface-400 line-clamp-1">
-                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.desc || tmpl.description) : tmpl.description}
+                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.desc || tmpl.description)
+                     : lang === 'qq' ? (templateNameQq[getTemplateSuffix(tmpl.slug)]?.desc || tmpl.description)
+                     : tmpl.description}
                   </p>
                 </div>
               </motion.button>
