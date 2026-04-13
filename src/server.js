@@ -115,6 +115,17 @@ const start = async () => {
       // Start Telegram support bot (background polling)
       const { pollUpdates: pollSupport } = require('./bot/supportBot');
       pollSupport();
+
+      // Keep-alive ping — prevent Render free tier from sleeping
+      if (appConfig.nodeEnv === 'production') {
+        const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
+        setInterval(() => {
+          fetch(`${appConfig.appUrl}/health`)
+            .then(() => console.log('🏓 Keep-alive ping sent'))
+            .catch(() => {});
+        }, PING_INTERVAL);
+        console.log('🏓 Keep-alive ping enabled (every 14 min)');
+      }
     });
   } catch (error) {
     console.error('❌ Unable to start server:', error.message);
