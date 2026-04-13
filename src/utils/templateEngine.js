@@ -257,10 +257,18 @@ function renderInvitation(invitation, eventType, template) {
   </style>
 </head>
 <body>
-  ${renderedBody}
-  ${buildPhotoGallery(invitation.customFields?.photos)}
-  ${wishesForm}
-  ${invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug) : ''}
+  ${(() => {
+    // Inject gallery, wishes, rsvp INSIDE the main wrapper (before </main>)
+    const gallery = buildPhotoGallery(invitation.customFields?.photos);
+    const rsvp = invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug) : '';
+    const extras = gallery + wishesForm + rsvp;
+    
+    if (renderedBody.includes('</main>')) {
+      return renderedBody.replace('</main>', extras + '</main>');
+    }
+    // Fallback: append after body if no main wrapper
+    return renderedBody + extras;
+  })()}
   ${musicPlayer}
   <script>window.__INVITE_DATA__=${JSON.stringify({
     dateUz: context['date'] || '',
