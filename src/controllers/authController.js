@@ -53,7 +53,7 @@ async function sendOTPToTelegram(phone, code) {
 
 /**
  * POST /api/auth/register
- * Step 1: Validate, generate OTP, send to Telegram
+ * Direct registration — no OTP required
  * Body: { phone, name, password }
  */
 exports.register = catchAsync(async (req, res) => {
@@ -78,30 +78,16 @@ exports.register = catchAsync(async (req, res) => {
     throw AppError.badRequest('Bu telefon raqam allaqachon ro\'yxatdan o\'tgan');
   }
 
-  // Generate OTP
-  const code = generateOTP();
+  // Create user directly (no OTP)
   const passwordHash = await User.hashPassword(password);
-
-  // Store OTP data
-  otpStore.set(code, {
+  const user = await User.create({
     phone: cleanPhone,
     name,
     passwordHash,
-    expiresAt: Date.now() + OTP_EXPIRY_MS,
   });
 
-  // Clean up expired codes
-  for (const [key, val] of otpStore) {
-    if (val.expiresAt < Date.now()) otpStore.delete(key);
-  }
-
-  // Send OTP to Telegram
-  const sent = await sendOTPToTelegram(cleanPhone, code);
-  if (!sent) {
-    console.warn('OTP Telegram send failed, code still valid in memory');
-  }
-
-  ApiResponse.success(res, { phone: cleanPhone }, 'Tasdiqlash kodi yuborildi');
+  const token = signToken(user.id);
+  ApiResponse.success(res, { token, user }, 'Muvaffaqiyatli ro\'yxatdan o\'tildi', 201);
 });
 
 /**

@@ -81,7 +81,7 @@ export default function AuthPage({ onLogin, onBack }) {
     }
   };
 
-  // Step 1: Register → send OTP
+  // Register → direct login (no OTP)
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
@@ -96,11 +96,12 @@ export default function AuthPage({ onLogin, onBack }) {
 
       const data = await res.json();
 
-      if (data.success) {
-        setMode('verify');
-        setCountdown(300); // 5 minutes
-        setOtp(['', '', '', '', '', '']);
-        setTimeout(() => otpRefs.current[0]?.focus(), 300);
+      if (data.success && data.data?.token) {
+        // Direct login — no OTP needed
+        const { token, user } = data.data;
+        localStorage.setItem('taklifnoma-token', token);
+        localStorage.setItem('taklifnoma-user', JSON.stringify(user));
+        onLogin(user, token);
       } else {
         setError(data.message || 'Xatolik yuz berdi');
       }
