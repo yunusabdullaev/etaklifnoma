@@ -1,46 +1,42 @@
 /**
- * Cloudinary unsigned upload helper
- * Uses Cloudinary's upload API directly from the browser
+ * File upload helper — uploads to our own server API
  */
 
-const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD || 'taklifnoma';
-const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET || 'taklifnoma_unsigned';
+const API = import.meta.env.VITE_API_URL || '';
 
 /**
- * Upload a file to Cloudinary
+ * Upload a file to the server
  * @param {File} file - The file to upload
- * @param {string} resourceType - 'image' or 'video' (audio uses video)
- * @returns {Promise<string>} - The secure URL of the uploaded file
+ * @returns {Promise<string>} - The URL of the uploaded file
  */
-export async function uploadToCloudinary(file, resourceType = 'image') {
+export async function uploadFile(file) {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('upload_preset', UPLOAD_PRESET);
-  formData.append('folder', 'taklifnoma');
 
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`,
-    { method: 'POST', body: formData }
-  );
+  const res = await fetch(`${API}/api/upload`, {
+    method: 'POST',
+    body: formData,
+  });
 
   if (!res.ok) {
-    throw new Error('Upload failed');
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Upload xatolik');
   }
 
   const data = await res.json();
-  return data.secure_url;
+  return data.data.url;
 }
 
 /**
- * Upload image with auto-optimization
+ * Upload image file
  */
 export async function uploadImage(file) {
-  return uploadToCloudinary(file, 'image');
+  return uploadFile(file);
 }
 
 /**
  * Upload audio file
  */
 export async function uploadAudio(file) {
-  return uploadToCloudinary(file, 'video'); // Cloudinary uses 'video' for audio
+  return uploadFile(file);
 }

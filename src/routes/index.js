@@ -36,6 +36,11 @@ router.post('/api/preview/full', renderController.fullPreview);
 router.post('/api/wishes', wishesController.send);
 router.get('/api/wishes/:slug', protect, wishesController.getBySlug);
 
+// ── File upload/serve ───────────────────────────────────
+const fileController = require('../controllers/fileController');
+router.post('/api/upload', fileController.uploadMiddleware, fileController.upload);
+router.get('/api/files/:id', fileController.serve);
+
 // ── Support ticket endpoints ────────────────────────────
 const supportController = require('../controllers/supportController');
 router.post('/api/support', protect, supportController.createTicket);
