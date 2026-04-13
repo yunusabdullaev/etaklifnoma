@@ -102,9 +102,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* Three individual toggles */}
         <div className="space-y-2">
           {[
-            { key: 'langUz', label: t('step3.langUzToggle'), flag: '🇺🇿' },
-            { key: 'langQq', label: t('step3.langQqToggle'), flag: '🏳️' },
-            { key: 'langRu', label: t('step3.langRuToggle'), flag: '🇷🇺' },
+            { key: 'langUz', label: "O'zbek tili", code: 'UZ' },
+            { key: 'langQq', label: 'Qaraqalpoq tili', code: 'QQ' },
+            { key: 'langRu', label: 'Rus tili', code: 'RU' },
           ].map((opt) => {
             const isOn = data.customFields?.[opt.key] !== false && (opt.key === 'langUz' ? (data.customFields?.[opt.key] ?? true) : !!data.customFields?.[opt.key]);
             return (
@@ -119,7 +119,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                 }`}
               >
                 <span className="flex items-center gap-2">
-                  <span>{opt.flag}</span> {opt.label}
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isOn ? 'bg-primary-500/30' : 'bg-white/10'}`}>{opt.code}</span>
+                  {opt.label}
                 </span>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${isOn ? 'bg-primary-500/30 text-primary-200' : 'bg-white/5 text-surface-500'}`}>
                   {isOn ? 'ON' : 'OFF'}
@@ -133,31 +134,31 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {data.customFields?.langQq && (
           <div className="space-y-3 border-t border-white/5 pt-4">
             <p className="text-[11px] text-surface-500 flex items-center gap-1">
-              🏳️ {t('step3.qqFields')}
+              <span className="text-[9px] font-bold bg-white/10 px-1 py-0.5 rounded">QQ</span> Qaraqalpoqsha matnlar
             </p>
             <div>
-              <label className="label">👤 {t('step3.qqHostName')}</label>
+              <label className="label">👤 Mezban atı</label>
               <input type="text" placeholder="Abdullayev Yunus"
                 value={data.customFields?.hostNameQq || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">👥 {t('step3.qqGuestName')}</label>
+              <label className="label">👥 Mehman atı</label>
               <input type="text" placeholder="Húrmetli mexmanlar"
                 value={data.customFields?.guestNameQq || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">✏️ {t('step3.qqEventTitle')}</label>
+              <label className="label">✏️ Ilaje atı</label>
               <input type="text" placeholder="Nikax márásimi"
                 value={data.customFields?.eventTitleQq || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">💬 {t('step3.qqMessage')}</label>
+              <label className="label">💬 Xabar</label>
               <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
                 value={data.customFields?.messageQq || ''}
                 onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
@@ -170,31 +171,31 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {data.customFields?.langRu && (
           <div className="space-y-3 border-t border-white/5 pt-4">
             <p className="text-[11px] text-surface-500 flex items-center gap-1">
-              🇷🇺 {t('step3.ruFields')}
+              <span className="text-[9px] font-bold bg-white/10 px-1 py-0.5 rounded">RU</span> Тексты на русском
             </p>
             <div>
-              <label className="label">👤 {t('step3.ruHostName')}</label>
+              <label className="label">👤 Имя хозяина</label>
               <input type="text" placeholder="Абдуллаев Юнус"
                 value={data.customFields?.hostNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">👥 {t('step3.ruGuestName')}</label>
+              <label className="label">👥 Имя гостя</label>
               <input type="text" placeholder="Уважаемые гости"
                 value={data.customFields?.guestNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">✏️ {t('step3.ruEventTitle')}</label>
+              <label className="label">✏️ Название мероприятия</label>
               <input type="text" placeholder="Свадебное торжество"
                 value={data.customFields?.eventTitleRu || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">💬 {t('step3.ruMessage')}</label>
+              <label className="label">💬 Сообщение</label>
               <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
                 value={data.customFields?.messageRu || ''}
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
@@ -324,7 +325,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* Karakalpak Program editor — when QQ is ON */}
         {data.customFields?.langQq && (
           <div>
-            <label className="label flex items-center gap-2 mb-2">📅 {t('step3.programQq')}</label>
+            <label className="label flex items-center gap-2 mb-2">📅 Bag'darlanma (QQ)</label>
             {(() => {
               let items = [];
               try {
@@ -359,7 +360,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                   ))}
                   <button type="button" onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
                     className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
-                    + {t('step3.addItemQq')}
+                    + Punkt qosıw
                   </button>
                 </div>
               );
@@ -370,7 +371,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* Russian Program editor — when RU is ON */}
         {data.customFields?.langRu && (
           <div>
-            <label className="label flex items-center gap-2 mb-2">📅 {t('step3.programRu')}</label>
+            <label className="label flex items-center gap-2 mb-2">📅 Программа (RU)</label>
             {(() => {
               let items = [];
               try {
@@ -405,7 +406,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                   ))}
                   <button type="button" onClick={() => updateProgramRu([...items, { time: '', text: '' }])}
                     className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
-                    + {t('step3.addItemRu')}
+                    + Добавить пункт
                   </button>
                 </div>
               );
