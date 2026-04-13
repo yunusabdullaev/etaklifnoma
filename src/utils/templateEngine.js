@@ -188,7 +188,10 @@ function renderInvitation(invitation, eventType, template) {
 
   // Render template HTML and CSS
   let renderedBody = renderString(template?.htmlContent || '', context);
-  const renderedCss = renderString(template?.cssContent || '', context, false);
+  let renderedCss = renderString(template?.cssContent || '', context, false);
+
+  // Fix body height constraint — ensure scrolling works for wishes/RSVP sections
+  renderedCss = renderedCss.replace(/body\s*\{([^}]*?)height\s*:\s*100vh/g, 'body{$1min-height:100vh');
 
   // Swap greeting-section and wishes-section so wishes appear before greeting
   const greetMatch = renderedBody.match(/<section class="section\s+greeting-section"[\s\S]*?<\/section>/);
