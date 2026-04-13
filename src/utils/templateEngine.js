@@ -218,9 +218,9 @@ function renderInvitation(invitation, eventType, template) {
   }
   const musicPlayer = musicUrl ? buildMusicPlayer(musicUrl) : '';
 
-  // Telegram bot support — always show wishes form
+  // Telegram bot support — wishes form only when bot token is set
   const telegramBot = invitation.customFields?.telegramBot || '';
-  const wishesForm = buildWishesForm(telegramBot, invitation.slug);
+  const wishesForm = telegramBot ? buildWishesForm(telegramBot, invitation.slug) : '';
 
   // Build full page
   return `<!DOCTYPE html>
