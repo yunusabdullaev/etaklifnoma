@@ -41,6 +41,10 @@ const translations = {
     'dashboard.copied': 'Nusxalandi!',
     'dashboard.delete': "O'chirish",
     'dashboard.deleteConfirm': "Bu taklifnomani o'chirmoqchimisiz?",
+    'dashboard.edit': 'Tahrirlash',
+    'dashboard.editTitle': 'Taklifnomani tahrirlash',
+    'dashboard.save': 'Saqlash',
+    'dashboard.editSaved': 'Muvaffaqiyatli saqlandi!',
     'dashboard.views': 'ko\'rish',
 
     // Step 1
@@ -193,6 +197,10 @@ const translations = {
     'dashboard.copied': 'Скопировано!',
     'dashboard.delete': 'Удалить',
     'dashboard.deleteConfirm': 'Вы уверены, что хотите удалить это приглашение?',
+    'dashboard.edit': 'Редактировать',
+    'dashboard.editTitle': 'Редактирование приглашения',
+    'dashboard.save': 'Сохранить',
+    'dashboard.editSaved': 'Успешно сохранено!',
     'dashboard.views': 'просм.',
 
     // Step 1
@@ -345,6 +353,10 @@ const translations = {
     'dashboard.copied': 'Kóshirildi!',
     'dashboard.delete': 'Óshiriw',
     'dashboard.deleteConfirm': 'Usı mırájattı óshiriwdi qáleysizbe?',
+    'dashboard.edit': 'Redaktorlaw',
+    'dashboard.editTitle': 'Mırájattı redaktorlaw',
+    'dashboard.save': 'Saqlaw',
+    'dashboard.editSaved': 'Tabıslı saqlandı!',
     'dashboard.views': 'kóriw',
 
     // Step 1

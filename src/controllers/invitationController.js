@@ -147,8 +147,10 @@ exports.update = catchAsync(async (req, res) => {
   const invitation = await Invitation.findByPk(req.params.id);
   if (!invitation) throw AppError.notFound('Invitation not found');
 
-  // Prevent slug modification
+  // Prevent slug and date modification
   delete req.body.slug;
+  delete req.body.eventDate;
+  delete req.body.event_date;
 
   await invitation.update(req.body);
 
