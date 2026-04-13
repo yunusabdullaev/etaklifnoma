@@ -258,6 +258,7 @@ function renderInvitation(invitation, eventType, template) {
 </head>
 <body>
   ${renderedBody}
+  ${buildPhotoGallery(invitation.customFields?.photos)}
   ${wishesForm}
   ${invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug) : ''}
   ${musicPlayer}
@@ -762,6 +763,63 @@ function buildBrandingFooter() {
       ETAKLIFNOMA.UZ — Premium taklifnomalar
     </a>
   </div>`;
+}
+
+/**
+ * Build Photo Gallery section
+ */
+function buildPhotoGallery(photos) {
+  if (!photos || !Array.isArray(photos) || photos.length === 0) return '';
+  
+  const photoItems = photos.map((url, i) => `
+    <div class="gallery-item" onclick="openLightbox(${i})" style="cursor:pointer;border-radius:12px;overflow:hidden;aspect-ratio:1;position:relative">
+      <img src="${escapeHtml(url)}" alt="Foto ${i + 1}" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+    </div>
+  `).join('');
+
+  return `
+  <section class="section photo-gallery-section" id="gallery" style="background:var(--dark, #0b0d17);padding:60px 0;text-align:center">
+    <div class="container" style="max-width:600px;margin:0 auto;padding:0 24px">
+      <h2 class="section-heading light" style="margin-bottom:24px">📸 Foto lavhalar</h2>
+      <div style="display:grid;grid-template-columns:repeat(${photos.length === 1 ? 1 : photos.length === 2 ? 2 : 3},1fr);gap:8px">
+        ${photoItems}
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div id="lightbox" onclick="if(event.target===this)closeLightbox()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;flex-direction:column">
+    <button onclick="closeLightbox()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:white;font-size:28px;cursor:pointer;z-index:10">✕</button>
+    <button onclick="prevPhoto()" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:24px;padding:12px 16px;border-radius:50%;cursor:pointer">‹</button>
+    <button onclick="nextPhoto()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:24px;padding:12px 16px;border-radius:50%;cursor:pointer">›</button>
+    <img id="lightboxImg" style="max-width:90vw;max-height:80vh;border-radius:12px;object-fit:contain" />
+    <p id="lightboxCounter" style="color:rgba(255,255,255,0.5);margin-top:12px;font-size:0.85rem"></p>
+  </div>
+
+  <script>
+  var galleryPhotos = ${JSON.stringify(photos)};
+  var currentPhoto = 0;
+  function openLightbox(i) {
+    currentPhoto = i;
+    document.getElementById('lightbox').style.display = 'flex';
+    document.getElementById('lightboxImg').src = galleryPhotos[i];
+    document.getElementById('lightboxCounter').textContent = (i+1) + ' / ' + galleryPhotos.length;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  function nextPhoto() { openLightbox((currentPhoto + 1) % galleryPhotos.length); }
+  function prevPhoto() { openLightbox((currentPhoto - 1 + galleryPhotos.length) % galleryPhotos.length); }
+  document.addEventListener('keydown', function(e) {
+    if (document.getElementById('lightbox').style.display === 'flex') {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') nextPhoto();
+      if (e.key === 'ArrowLeft') prevPhoto();
+    }
+  });
+  </script>`;
 }
 
 /**

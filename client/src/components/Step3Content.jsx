@@ -414,6 +414,57 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </div>
         )}
 
+        {/* Photo Gallery */}
+        <div>
+          <label className="label flex items-center gap-1.5">🖼 {t('step3.photos')}</label>
+          <p className="text-[11px] text-surface-500 mb-2">{t('step3.photosHint')}</p>
+          
+          <div className="grid grid-cols-3 gap-2 mb-2">
+            {(data.customFields?.photos || []).map((url, i) => (
+              <div key={i} className="relative group aspect-square rounded-xl overflow-hidden border border-white/10">
+                <img src={url} alt="" className="w-full h-full object-cover" 
+                  onError={(e) => { e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23222" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%23666" font-size="12">❌</text></svg>'; }} />
+                <button type="button"
+                  onClick={() => {
+                    const photos = [...(data.customFields?.photos || [])];
+                    photos.splice(i, 1);
+                    handleCustomFieldChange('photos', photos);
+                  }}
+                  className="absolute top-1 right-1 w-6 h-6 rounded-full bg-rose-500/80 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+              </div>
+            ))}
+          </div>
+          
+          {(data.customFields?.photos || []).length < 6 && (
+            <div className="flex gap-2">
+              <input type="url" id="photoUrlInput" placeholder={t('step3.photoPlaceholder')}
+                className="input-field flex-1" 
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = e.target.value.trim();
+                    if (val) {
+                      const photos = [...(data.customFields?.photos || []), val];
+                      handleCustomFieldChange('photos', photos);
+                      e.target.value = '';
+                    }
+                  }
+                }} />
+              <button type="button"
+                onClick={() => {
+                  const input = document.getElementById('photoUrlInput');
+                  const val = input.value.trim();
+                  if (val) {
+                    const photos = [...(data.customFields?.photos || []), val];
+                    handleCustomFieldChange('photos', photos);
+                    input.value = '';
+                  }
+                }}
+                className="btn-secondary px-4 text-sm">+</button>
+            </div>
+          )}
+        </div>
+
         <div>
           <label className="label flex items-center gap-1.5">📱 {t('step3.telegram')}</label>
           <input type="text" placeholder="BOT_TOKEN:CHAT_ID"
