@@ -422,8 +422,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           <div className="grid grid-cols-3 gap-2 mb-2">
             {(data.customFields?.photos || []).map((url, i) => (
               <div key={i} className="relative group aspect-square rounded-xl overflow-hidden border border-white/10">
-                <img src={url} alt="" className="w-full h-full object-cover" 
-                  onError={(e) => { e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23222" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%23666" font-size="12">❌</text></svg>'; }} />
+                <img src={url} alt="" className="w-full h-full object-cover" />
                 <button type="button"
                   onClick={() => {
                     const photos = [...(data.customFields?.photos || [])];
@@ -436,32 +435,40 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </div>
           
           {(data.customFields?.photos || []).length < 6 && (
-            <div className="flex gap-2">
-              <input type="url" id="photoUrlInput" placeholder={t('step3.photoPlaceholder')}
-                className="input-field flex-1" 
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const val = e.target.value.trim();
-                    if (val) {
-                      const photos = [...(data.customFields?.photos || []), val];
-                      handleCustomFieldChange('photos', photos);
-                      e.target.value = '';
-                    }
-                  }
+            <label className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-white/10 hover:border-primary-500/30 cursor-pointer transition-all bg-white/[0.02] hover:bg-white/[0.04]">
+              <input type="file" accept="image/*" multiple className="hidden"
+                onChange={async (e) => {
+                  const files = Array.from(e.target.files);
+                  const existing = data.customFields?.photos || [];
+                  const remaining = 6 - existing.length;
+                  const toProcess = files.slice(0, remaining);
+                  
+                  const compress = (file) => new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      const img = new Image();
+                      img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX = 800;
+                        let w = img.width, h = img.height;
+                        if (w > h) { if (w > MAX) { h = h * MAX / w; w = MAX; } }
+                        else { if (h > MAX) { w = w * MAX / h; h = MAX; } }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                      };
+                      img.src = ev.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                  });
+                  
+                  const results = await Promise.all(toProcess.map(compress));
+                  handleCustomFieldChange('photos', [...existing, ...results]);
+                  e.target.value = '';
                 }} />
-              <button type="button"
-                onClick={() => {
-                  const input = document.getElementById('photoUrlInput');
-                  const val = input.value.trim();
-                  if (val) {
-                    const photos = [...(data.customFields?.photos || []), val];
-                    handleCustomFieldChange('photos', photos);
-                    input.value = '';
-                  }
-                }}
-                className="btn-secondary px-4 text-sm">+</button>
-            </div>
+              <span className="text-2xl">📷</span>
+              <span className="text-sm text-surface-400">{t('step3.photoUpload')}</span>
+            </label>
           )}
         </div>
 

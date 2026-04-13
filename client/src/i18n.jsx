@@ -110,8 +110,8 @@ const translations = {
     'step3.wishes': 'Tilak va tabriklar',
     'step3.wishesHint': 'Mehmonlar tilak yozishi mumkin',
     'step3.photos': 'Foto lavhalar',
-    'step3.photosHint': 'Rasmlarning URL manzilini kiriting (max 6 ta)',
-    'step3.photoPlaceholder': 'https://example.com/rasm.jpg',
+    'step3.photosHint': 'Rasmlarni yuklang (max 6 ta)',
+    'step3.photoUpload': 'Rasm yuklash uchun bosing',
 
     // Step 4
     'step4.title': "To'liq ko'rib chiqing",
@@ -273,8 +273,8 @@ const translations = {
     'step3.wishes': 'Пожелания',
     'step3.wishesHint': 'Гости могут оставить пожелания',
     'step3.photos': 'Фото галерея',
-    'step3.photosHint': 'Введите URL изображений (макс. 6)',
-    'step3.photoPlaceholder': 'https://example.com/photo.jpg',
+    'step3.photosHint': 'Загрузите фотографии (макс. 6)',
+    'step3.photoUpload': 'Нажмите для загрузки фото',
 
     // Step 4
     'step4.title': 'Полный предпросмотр',
@@ -436,8 +436,8 @@ const translations = {
     'step3.wishes': 'Tilekler hám qutlıqlar',
     'step3.wishesHint': 'Mıymanlar tilek jazıwı múmkin',
     'step3.photos': 'Foto lavhalar',
-    'step3.photosHint': 'Súwretlerdiṅ URL manzilın kiritıṅ (maks 6)',
-    'step3.photoPlaceholder': 'https://example.com/súwret.jpg',
+    'step3.photosHint': 'Suwretlerdi jukleng (maks 6)',
+    'step3.photoUpload': 'Suwret juklew ushin basin',
 
     // Step 4
     'step4.title': 'Tolıq kóriw',
