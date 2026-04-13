@@ -2,18 +2,17 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';
 
 /**
- * Renders the server-side template inside a sandboxed iframe with live data.
+ * Renders the server-side template inside an iframe using srcdoc.
  * Uses /api/preview/full to get complete rendered HTML page.
  * Debounces API calls to avoid hammering the server during typing.
  */
 export default function LivePreview({ data, className = '' }) {
-  const iframeRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [htmlContent, setHtmlContent] = useState('');
-  const debounceRef = useRef(null);
 
   const API = import.meta.env.VITE_API_URL || '';
+  const debounceRef = useRef(null);
 
   const fetchPreview = useCallback(async (previewData) => {
     if (!previewData.templateId) return;
@@ -41,32 +40,15 @@ export default function LivePreview({ data, className = '' }) {
       });
 
       if (!res.ok) {
-        const errText = await res.text();
-        try {
-          const errJson = JSON.parse(errText);
-          setError(errJson?.error?.message || 'Server xatoligi');
-        } catch {
-          setError('Server xatoligi');
-        }
+        setError('Server xatoligi');
         return;
       }
 
       const html = await res.text();
-      setHtmlContent(html);
-
-      // Also try writing directly to iframe as fallback
-      const iframe = iframeRef.current;
-      if (iframe) {
-        try {
-          const doc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (doc) {
-            doc.open();
-            doc.write(html);
-            doc.close();
-          }
-        } catch (e) {
-          // srcdoc will handle it via state
-        }
+      if (html && html.includes('<')) {
+        setHtmlContent(html);
+      } else {
+        setError('Bo\'sh javob');
       }
     } catch (err) {
       setError("Oldindan ko'rish xatoligi");
@@ -102,13 +84,18 @@ export default function LivePreview({ data, className = '' }) {
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
-      <iframe
-        ref={iframeRef}
-        title="Invitation Preview"
-        srcDoc={htmlContent || undefined}
-        className="w-full h-full border-0 rounded-2xl bg-[#0a0a12]"
-        sandbox="allow-same-origin allow-scripts allow-popups"
-      />
+      {htmlContent ? (
+        <iframe
+          title="Invitation Preview"
+          srcDoc={htmlContent}
+          className="w-full h-full border-0 rounded-2xl bg-[#0a0a12]"
+          sandbox="allow-scripts"
+        />
+      ) : (
+        <div className="w-full h-full rounded-2xl bg-[#0a0a12] flex items-center justify-center">
+          <p className="text-surface-600 text-xs">Shablon tanlang</p>
+        </div>
+      )}
     </div>
   );
 }

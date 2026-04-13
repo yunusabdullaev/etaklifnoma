@@ -8,7 +8,6 @@ export default function Step4Preview({ data, onNext, onBack }) {
   const [fullscreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [htmlContent, setHtmlContent] = useState('');
-  const iframeRef = useRef(null);
   const debounceRef = useRef(null);
 
   const API = import.meta.env.VITE_API_URL || '';
@@ -39,21 +38,8 @@ export default function Step4Preview({ data, onNext, onBack }) {
       });
 
       const html = await res.text();
-      setHtmlContent(html);
-
-      // Also try doc.write as fallback
-      const iframe = iframeRef.current;
-      if (iframe) {
-        try {
-          const doc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (doc) {
-            doc.open();
-            doc.write(html);
-            doc.close();
-          }
-        } catch (e) {
-          // srcdoc will handle it
-        }
+      if (html && html.includes('<')) {
+        setHtmlContent(html);
       }
     } catch (err) {
       console.error('Full preview error:', err);
@@ -73,6 +59,15 @@ export default function Step4Preview({ data, onNext, onBack }) {
   ]);
 
   const toggleFullscreen = () => setFullscreen(!fullscreen);
+
+  const previewIframe = (
+    <iframe
+      title="Full Invitation Preview"
+      srcDoc={htmlContent || '<html><body style="background:#0a0a12;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><p style="color:#555;font-size:14px">Yuklanmoqda...</p></body></html>'}
+      className="w-full h-full border-0 rounded-2xl bg-[#0a0a12]"
+      sandbox="allow-scripts"
+    />
+  );
 
   if (fullscreen) {
     return (
@@ -113,13 +108,9 @@ export default function Step4Preview({ data, onNext, onBack }) {
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-1.5 rounded-full bg-white/10" />
               </div>
             )}
-            <iframe
-              ref={iframeRef}
-              title="Full Preview"
-              srcDoc={htmlContent || undefined}
-              className="w-full h-full border-0 rounded-2xl bg-[#0a0a12] relative z-10"
-              sandbox="allow-same-origin allow-scripts allow-popups"
-            />
+            <div className="relative z-10 w-full h-full">
+              {previewIframe}
+            </div>
           </div>
         </div>
 
@@ -204,15 +195,9 @@ export default function Step4Preview({ data, onNext, onBack }) {
                 <Loader2 className="w-6 h-6 text-primary-400 animate-spin" />
               </div>
             )}
-            <iframe
-              ref={iframeRef}
-              title="Full Invitation Preview"
-              srcDoc={htmlContent || undefined}
-              className={`w-full border-0 rounded-2xl bg-[#0a0a12] ${
-                viewMode === 'mobile' ? 'h-[667px]' : 'h-[700px]'
-              } border border-white/10`}
-              sandbox="allow-same-origin allow-scripts allow-popups"
-            />
+            <div className={`w-full ${viewMode === 'mobile' ? 'h-[667px]' : 'h-[700px]'} border border-white/10 rounded-2xl overflow-hidden`}>
+              {previewIframe}
+            </div>
           </div>
         </motion.div>
       </div>
