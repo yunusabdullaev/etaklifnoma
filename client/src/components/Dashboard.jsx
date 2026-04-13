@@ -52,6 +52,7 @@ export default function Dashboard({ token, onCreateNew }) {
       eventTitle: inv.eventTitle || '', eventTime: inv.eventTime || '',
       location: inv.location || '', locationUrl: inv.locationUrl || '',
       message: inv.message || '',
+      enableRsvp: inv.customFields?.enableRsvp || false,
     });
     setEditingInv(inv);
   };
@@ -60,10 +61,11 @@ export default function Dashboard({ token, onCreateNew }) {
     if (!editingInv) return;
     setSaving(true);
     try {
+      const { enableRsvp, ...fields } = editForm;
       const res = await fetch(`${API}/api/invitations/${editingInv.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify({ ...fields, customFields: { ...editingInv.customFields, enableRsvp } }),
       });
       const data = await res.json();
       if (data.success) {
@@ -407,6 +409,22 @@ export default function Dashboard({ token, onCreateNew }) {
                   <label className="text-xs text-surface-400 mb-1.5 block">{t('step3.message')}</label>
                   <textarea value={editForm.message} onChange={(e) => setEditForm(p => ({ ...p, message: e.target.value }))}
                     className="input-field w-full min-h-[80px] resize-y" />
+                </div>
+
+                <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+                  <div>
+                    <label className="text-xs text-surface-300 font-medium">✅ {t('step3.rsvp')}</label>
+                    <p className="text-[10px] text-surface-500 mt-0.5">{t('step3.rsvpHint')}</p>
+                  </div>
+                  <button type="button"
+                    onClick={() => setEditForm(p => ({ ...p, enableRsvp: !p.enableRsvp }))}
+                    className={`w-11 h-6 rounded-full transition-all duration-300 relative flex-shrink-0 ${
+                      editForm.enableRsvp ? 'bg-primary-500' : 'bg-surface-700'
+                    }`}>
+                    <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+                      editForm.enableRsvp ? 'left-[22px]' : 'left-0.5'
+                    }`} />
+                  </button>
                 </div>
               </div>
               <div className="p-5 pt-0 flex justify-end gap-2">

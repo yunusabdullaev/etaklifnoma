@@ -422,6 +422,22 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             className="input-field" />
           <p className="text-[11px] text-surface-500 mt-1">{t('step3.telegramHint')}</p>
         </div>
+
+        <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+          <div>
+            <label className="label flex items-center gap-1.5 !mb-0">✅ {t('step3.rsvp')}</label>
+            <p className="text-[11px] text-surface-500 mt-0.5">{t('step3.rsvpHint')}</p>
+          </div>
+          <button type="button"
+            onClick={() => handleCustomFieldChange('enableRsvp', !data.customFields?.enableRsvp)}
+            className={`w-11 h-6 rounded-full transition-all duration-300 relative flex-shrink-0 ${
+              data.customFields?.enableRsvp ? 'bg-primary-500' : 'bg-surface-700'
+            }`}>
+            <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+              data.customFields?.enableRsvp ? 'left-[22px]' : 'left-0.5'
+            }`} />
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -105,6 +105,8 @@ const translations = {
     'step3.addItemQq': 'Punkt qosıw',
     'step3.musicHint': "MP3 faylga to'g'ridan-to'g'ri havola",
     'step3.telegramHint': 'Format: BOT_TOKEN:CHAT_ID — @BotFather dan oling',
+    'step3.rsvp': 'RSVP (Qatnashishni tasdiqlash)',
+    'step3.rsvpHint': 'Mehmonlar kelish/kelmasligini tasdiqlaydi',
 
     // Step 4
     'step4.title': "To'liq ko'rib chiqing",
@@ -261,6 +263,8 @@ const translations = {
     'step3.addItemQq': 'Пункт қосыў',
     'step3.musicHint': 'Прямая ссылка на MP3 файл',
     'step3.telegramHint': 'Формат: BOT_TOKEN:CHAT_ID — получите у @BotFather',
+    'step3.rsvp': 'RSVP (Подтверждение участия)',
+    'step3.rsvpHint': 'Гости подтверждают своё участие',
 
     // Step 4
     'step4.title': 'Полный предпросмотр',
@@ -417,6 +421,8 @@ const translations = {
     'step3.addItemQq': 'Punkt qosıw',
     'step3.musicHint': 'MP3 faylǵa tuwrıdan-tuwrı silteme',
     'step3.telegramHint': 'Format: BOT_TOKEN:CHAT_ID — @BotFather dan alıń',
+    'step3.rsvp': 'RSVP (Qatnasıwdı tastıyıqlaw)',
+    'step3.rsvpHint': 'Mıymanlar keliw/kelmewin tastıyıqlaydi',
 
     // Step 4
     'step4.title': 'Tolıq kóriw',
