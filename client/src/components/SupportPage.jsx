@@ -215,7 +215,7 @@ export default function SupportPage({ token, onBack }) {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Masalan: Shablon yuklanmayapti"
-                className="input w-full"
+                className="input-field w-full"
                 maxLength={200}
               />
             </div>
@@ -226,7 +226,7 @@ export default function SupportPage({ token, onBack }) {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Muammoingizni batafsil yozing..."
-                className="input w-full min-h-[120px] resize-y"
+                className="input-field w-full min-h-[120px] resize-y"
                 maxLength={2000}
               />
             </div>
