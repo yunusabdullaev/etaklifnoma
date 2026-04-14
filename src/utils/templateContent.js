@@ -117,7 +117,12 @@ const weddingSharedHtml = `
   {{#if program}}
   <section class="section program-section">
     <div class="container">
+      {{#if programCustomTitle}}
+      <h2 class="section-heading light">{{programCustomTitle}}</h2>
+      {{/if}}
+      {{#unless programCustomTitle}}
       <h2 class="section-heading light" data-i18n="programTitle">Kechaning dasturi</h2>
+      {{/unless}}
       <div class="timeline" id="program-data" data-program="{{program}}">
       </div>
     </div>
@@ -127,7 +132,12 @@ const weddingSharedHtml = `
   {{#unless program}}
   <section class="section program-section">
     <div class="container">
+      {{#if programCustomTitle}}
+      <h2 class="section-heading light">{{programCustomTitle}}</h2>
+      {{/if}}
+      {{#unless programCustomTitle}}
       <h2 class="section-heading light" data-i18n="programTitle">Kechaning dasturi</h2>
+      {{/unless}}
       <div class="timeline">
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4 data-i18n="prog1">Mehmonlarni kutib olish</h4></div></div>
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4 data-i18n="prog2">Rasmiy nikoh marosimi</h4></div></div>

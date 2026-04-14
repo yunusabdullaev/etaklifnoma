@@ -335,7 +335,17 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
         {/* Program / Timeline editor */}
         <div>
-          <label className="label flex items-center gap-2 mb-2">📅 {t('step3.program')}</label>
+          <div className="flex items-center justify-between mb-2">
+            <label className="label flex items-center gap-2 mb-0">📅 {t('step3.program')}</label>
+            <input
+              type="text"
+              placeholder="Sarlavha (ixtiyoriy)"
+              value={data.customFields?.programCustomTitle || ''}
+              onChange={(e) => handleCustomFieldChange('programCustomTitle', e.target.value)}
+              className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
+              title="Dastur sarlavhasini o'zgartirish (masalan: Bizning rejamiz)"
+            />
+          </div>
           {(() => {
             // Parse existing program or use defaults
             let items = [];

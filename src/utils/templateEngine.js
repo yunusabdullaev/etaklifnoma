@@ -127,7 +127,12 @@ function buildContext(invitation, eventType, template) {
   // Merge custom fields (flattened)
   const customFields = invitation.customFields || {};
   for (const [key, value] of Object.entries(customFields)) {
-    ctx[key] = value;
+    // If it's an empty array string "[]" or "[\n]", treat it as empty
+    if (typeof value === 'string' && value.replace(/\s/g, '') === '[]') {
+      ctx[key] = '';
+    } else {
+      ctx[key] = value;
+    }
   }
 
   return ctx;
