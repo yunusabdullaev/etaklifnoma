@@ -29,102 +29,6 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
   const formContent = (
     <div className="space-y-5">
-      {/* Core fields */}
-      {isUzOn && (
-      <div className="glass p-5 space-y-4">
-        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <User size={13} /> {t('step3.basicInfo')}
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="label">{t('step3.host')} *</label>
-            <input type="text" placeholder="Aliyev Jasur"
-              value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
-              className="input-field" />
-          </div>
-          <div>
-            <label className="label">{t('step3.guest')}</label>
-            <input type="text" placeholder="Hurmatli mehmon"
-              value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
-              className="input-field" />
-          </div>
-        </div>
-        <div>
-          <label className="label flex items-center gap-1.5"><Type size={13} /> {t('step3.eventTitle')}</label>
-          <input type="text" placeholder="Nikoh marosimi"
-            value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
-            className="input-field" />
-        </div>
-      </div>
-      )}
-
-      {/* Date & location */}
-      <div className="glass p-5 space-y-4">
-        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <Calendar size={13} /> {t('step3.dateLocation')}
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="label">{t('step3.date')} *</label>
-            <input type="date" value={data.eventDate || ''}
-              min={new Date().toISOString().split('T')[0]}
-              max={new Date(Date.now() + 89 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-              onChange={(e) => handleChange('eventDate', e.target.value)}
-              className="input-field" />
-          </div>
-          <div>
-            <label className="label flex items-center gap-1.5"><Clock size={13} /> {t('step3.time')}</label>
-            <input type="time" value={data.eventTime || ''}
-              onChange={(e) => handleChange('eventTime', e.target.value)}
-              className="input-field" />
-          </div>
-        </div>
-        <div>
-          <label className="label flex items-center gap-1.5"><MapPin size={13} /> {t('step3.location')} *</label>
-          <input type="text" placeholder="Navruz to'yxonasi, Toshkent"
-            value={data.location || ''} onChange={(e) => handleChange('location', e.target.value)}
-            className="input-field" />
-        </div>
-        <div>
-          <label className="label flex items-center gap-1.5"><Link2 size={13} /> {t('step3.mapLink')}</label>
-          <input type="url" placeholder="https://yandex.uz/maps/..."
-            value={data.locationUrl || ''} onChange={(e) => handleChange('locationUrl', e.target.value)}
-            className="input-field" />
-          <div className="flex gap-2 mt-1.5">
-            <a
-              href={`https://yandex.uz/maps/?text=${encodeURIComponent(data.location || '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
-                bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all"
-            >
-              📍 Yandex Maps'da qidirish
-            </a>
-            <a
-              href={`https://www.google.com/maps/search/${encodeURIComponent(data.location || '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
-                bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-all"
-            >
-              📍 Google Maps
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Message */}
-      {isUzOn && (
-      <div className="glass p-5 space-y-3">
-        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <MessageSquare size={13} /> {t('step3.message')}
-        </h3>
-        <textarea rows={3} placeholder={t('step3.messagePlaceholder')}
-          value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
-          className="input-field resize-none" />
-      </div>
-      )}
-
       {/* Language Toggle settings */}
       <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
@@ -266,6 +170,102 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Core fields */}
+      {isUzOn && (
+      <div className="glass p-5 space-y-4">
+        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+          <User size={13} /> {t('step3.basicInfo')}
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="label">{t('step3.host')} *</label>
+            <input type="text" placeholder="Aliyev Jasur"
+              value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
+              className="input-field" />
+          </div>
+          <div>
+            <label className="label">{t('step3.guest')}</label>
+            <input type="text" placeholder="Hurmatli mehmon"
+              value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
+              className="input-field" />
+          </div>
+        </div>
+        <div>
+          <label className="label flex items-center gap-1.5"><Type size={13} /> {t('step3.eventTitle')}</label>
+          <input type="text" placeholder="Nikoh marosimi"
+            value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
+            className="input-field" />
+        </div>
+      </div>
+      )}
+
+      {/* Date & location */}
+      <div className="glass p-5 space-y-4">
+        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+          <Calendar size={13} /> {t('step3.dateLocation')}
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="label">{t('step3.date')} *</label>
+            <input type="date" value={data.eventDate || ''}
+              min={new Date().toISOString().split('T')[0]}
+              max={new Date(Date.now() + 89 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+              onChange={(e) => handleChange('eventDate', e.target.value)}
+              className="input-field" />
+          </div>
+          <div>
+            <label className="label flex items-center gap-1.5"><Clock size={13} /> {t('step3.time')}</label>
+            <input type="time" value={data.eventTime || ''}
+              onChange={(e) => handleChange('eventTime', e.target.value)}
+              className="input-field" />
+          </div>
+        </div>
+        <div>
+          <label className="label flex items-center gap-1.5"><MapPin size={13} /> {t('step3.location')} *</label>
+          <input type="text" placeholder="Navruz to'yxonasi, Toshkent"
+            value={data.location || ''} onChange={(e) => handleChange('location', e.target.value)}
+            className="input-field" />
+        </div>
+        <div>
+          <label className="label flex items-center gap-1.5"><Link2 size={13} /> {t('step3.mapLink')}</label>
+          <input type="url" placeholder="https://yandex.uz/maps/..."
+            value={data.locationUrl || ''} onChange={(e) => handleChange('locationUrl', e.target.value)}
+            className="input-field" />
+          <div className="flex gap-2 mt-1.5">
+            <a
+              href={`https://yandex.uz/maps/?text=${encodeURIComponent(data.location || '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
+                bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all"
+            >
+              📍 Yandex Maps'da qidirish
+            </a>
+            <a
+              href={`https://www.google.com/maps/search/${encodeURIComponent(data.location || '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
+                bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-all"
+            >
+              📍 Google Maps
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Message */}
+      {isUzOn && (
+      <div className="glass p-5 space-y-3">
+        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+          <MessageSquare size={13} /> {t('step3.message')}
+        </h3>
+        <textarea rows={3} placeholder={t('step3.messagePlaceholder')}
+          value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
+          className="input-field resize-none" />
+      </div>
       )}
 
       {/* Extra features: music + telegram */}
