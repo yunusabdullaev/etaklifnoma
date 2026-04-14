@@ -78,12 +78,104 @@ export default function Dashboard({ token, onCreateNew }) {
     finally { setSaving(false); }
   };
 
-  // QR Code
+  // QR Code — premium branded card
   const openQr = async (slug) => {
     try {
       const res = await fetch(`${API}/api/invitations/${slug}/qr`);
       const data = await res.json();
-      if (data.success) setQrModal(data.data);
+      if (data.success) {
+        // Generate premium QR card with branding
+        const qrImg = new Image();
+        qrImg.crossOrigin = 'anonymous';
+        qrImg.onload = () => {
+          const canvas = document.createElement('canvas');
+          const W = 600, H = 780;
+          canvas.width = W; canvas.height = H;
+          const ctx = canvas.getContext('2d');
+
+          // Background gradient
+          const bg = ctx.createLinearGradient(0, 0, W, H);
+          bg.addColorStop(0, '#0b0d17');
+          bg.addColorStop(1, '#141830');
+          ctx.fillStyle = bg;
+          ctx.beginPath();
+          ctx.roundRect(0, 0, W, H, 24);
+          ctx.fill();
+
+          // Gold border
+          const border = ctx.createLinearGradient(0, 0, W, 0);
+          border.addColorStop(0, '#d4a853');
+          border.addColorStop(0.5, '#f5d89a');
+          border.addColorStop(1, '#d4a853');
+          ctx.strokeStyle = border;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(8, 8, W - 16, H - 16, 20);
+          ctx.stroke();
+
+          // Top decorative line
+          ctx.fillStyle = '#d4a85340';
+          ctx.fillRect(W / 2 - 40, 30, 80, 2);
+
+          // Title
+          ctx.fillStyle = '#d4a853';
+          ctx.font = 'bold 18px "Montserrat", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('TAKLIFNOMA', W / 2, 65);
+
+          // Subtitle
+          ctx.fillStyle = '#8b8fa3';
+          ctx.font = '13px "Montserrat", sans-serif';
+          ctx.fillText('Premium raqamli taklifnoma', W / 2, 88);
+
+          // QR white card background
+          const qrSize = 380;
+          const qrX = (W - qrSize) / 2, qrY = 115;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.roundRect(qrX, qrY, qrSize, qrSize, 16);
+          ctx.fill();
+
+          // QR shadow
+          ctx.shadowColor = 'rgba(212, 168, 83, 0.15)';
+          ctx.shadowBlur = 30;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.roundRect(qrX, qrY, qrSize, qrSize, 16);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // QR code image
+          ctx.drawImage(qrImg, qrX + 30, qrY + 30, qrSize - 60, qrSize - 60);
+
+          // Scan text
+          ctx.fillStyle = '#6b7280';
+          ctx.font = '12px "Montserrat", sans-serif';
+          ctx.fillText('Telefoningiz bilan skanerlang', W / 2, qrY + qrSize + 30);
+
+          // Bottom decorative line
+          ctx.fillStyle = '#d4a85340';
+          ctx.fillRect(W / 2 - 60, qrY + qrSize + 50, 120, 1);
+
+          // URL
+          ctx.fillStyle = '#818cf8';
+          ctx.font = '11px "Montserrat", sans-serif';
+          ctx.fillText(data.data.url, W / 2, qrY + qrSize + 75);
+
+          // Brand
+          ctx.fillStyle = '#d4a853';
+          ctx.font = 'bold 20px "Montserrat", sans-serif';
+          ctx.fillText('eTaklifnoma.uz', W / 2, H - 55);
+
+          // Bottom tagline
+          ctx.fillStyle = '#4b5563';
+          ctx.font = '10px "Montserrat", sans-serif';
+          ctx.fillText('Premium raqamli taklifnomalar xizmati', W / 2, H - 32);
+
+          setQrModal({ ...data.data, qrCode: canvas.toDataURL('image/png') });
+        };
+        qrImg.src = data.data.qrCode;
+      }
     } catch (err) { console.error(err); }
   };
 
@@ -250,25 +342,27 @@ export default function Dashboard({ token, onCreateNew }) {
         </AnimatePresence>
       </div>
 
-      {/* ═══ QR MODAL ═══ */}
+      {/* ═══ QR MODAL — PREMIUM ═══ */}
       <AnimatePresence>
         {qrModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-950/80 backdrop-blur-sm"
             onClick={(e) => { if (e.target === e.currentTarget) setQrModal(null); }}>
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
-              className="glass w-full max-w-sm text-center p-6">
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+              className="glass w-full max-w-sm text-center p-6 border border-amber-500/20">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-display font-semibold text-white">📱 QR Kod</h3>
+                <h3 className="text-lg font-display font-semibold bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">📱 QR Kod</h3>
                 <button onClick={() => setQrModal(null)} className="text-surface-500 hover:text-white"><X size={18} /></button>
               </div>
-              <div className="bg-white rounded-2xl p-4 inline-block mb-4">
-                <img src={qrModal.qrCode} alt="QR Code" className="w-48 h-48" />
+              <div className="rounded-2xl overflow-hidden mb-4 border border-amber-500/10 shadow-xl shadow-amber-500/5">
+                <img src={qrModal.qrCode} alt="QR Code" className="w-full" />
               </div>
-              <p className="text-xs text-surface-500 mb-4 break-all">{qrModal.url}</p>
+              <p className="text-[10px] text-surface-600 mb-4 break-all">{qrModal.url}</p>
               <button onClick={downloadQr}
-                className="btn-primary w-full flex items-center justify-center gap-2">
-                <Download size={16} /> Yuklab olish
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                  bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold
+                  shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all">
+                <Download size={16} /> Yuklab olish (PNG)
               </button>
             </motion.div>
           </motion.div>
