@@ -415,7 +415,7 @@ function buildWishesForm(telegramBot, invitationSlug) {
   return `
   <section class="section wishes-section" id="wishes">
     <div class="container">
-      <h2 class="section-heading light" style="margin-bottom:12px">💌 Tilak va tabriklar</h2>
+      <h2 class="section-heading" style="margin-bottom:12px">💌 Tilak va tabriklar</h2>
       <p class="wishes-subtitle">Tilak va tabriklaringizni qoldiring</p>
       <form class="wishes-form" id="wishesForm" onsubmit="sendWish(event)">
         <input type="text" name="name" placeholder="Ismingiz" required class="wishes-input" />
@@ -486,12 +486,12 @@ function getMusicPlayerStyles() {
 
 function getWishesFormStyles() {
   return `
-  .wishes-section{background:var(--countdown-bg, linear-gradient(135deg,#12152a,#1a1e38));text-align:center;padding:80px 0}
-  .wishes-subtitle{font-size:0.95rem;color:rgba(232,226,214,0.5);margin-bottom:32px;font-weight:300}
+  .wishes-section{background:var(--bg-color, transparent);text-align:center;padding:80px 0}
+  .wishes-subtitle{font-size:0.95rem;color:var(--text-color, rgba(232,226,214,0.5));opacity:0.7;margin-bottom:32px;font-weight:300}
   .wishes-form{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-  .wishes-input{background:var(--glass-bg, rgba(255,255,255,0.05));border:1px solid var(--glass-border, rgba(255,255,255,0.1));border-radius:14px;padding:14px 20px;font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.95rem;color:var(--text-light, #e8e2d6);outline:none;transition:border-color 0.3s ease}
+  .wishes-input{background:var(--glass-bg, rgba(255,255,255,0.05));border:1px solid var(--glass-border, rgba(255,255,255,0.1));border-radius:14px;padding:14px 20px;font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.95rem;color:var(--text-color, #e8e2d6);outline:none;transition:border-color 0.3s ease}
   .wishes-input:focus{border-color:var(--accent, #c9a84c)}
-  .wishes-input::placeholder{color:rgba(232,226,214,0.3)}
+  .wishes-input::placeholder{color:var(--text-color, #e8e2d6);opacity:0.35}
   .wishes-textarea{resize:vertical;min-height:100px}
   .wishes-btn{padding:14px 32px;background:var(--btn-bg, linear-gradient(135deg,#c9a84c,#9e7e2e));border:none;border-radius:50px;color:var(--btn-text, #0b0d17);font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.95rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.3s ease}
   .wishes-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--glow, rgba(201,168,76,0.2))}
@@ -810,9 +810,9 @@ function buildPhotoGallery(photos) {
   `).join('');
 
   return `
-  <section class="section photo-gallery-section" id="gallery" style="background:var(--dark, #0b0d17);padding:60px 0;text-align:center">
+  <section class="section photo-gallery-section" id="gallery" style="background:var(--bg-color, transparent);padding:60px 0;text-align:center">
     <div class="container" style="max-width:600px;margin:0 auto;padding:0 24px">
-      <h2 class="section-heading light" style="margin-bottom:24px">Foto lavhalar</h2>
+      <h2 class="section-heading" style="margin-bottom:24px">Foto lavhalar</h2>
       <div style="display:grid;grid-template-columns:repeat(${photos.length === 1 ? 1 : photos.length === 2 ? 2 : 3},1fr);gap:8px">
         ${photoItems}
       </div>
@@ -905,20 +905,20 @@ function buildRsvpForm(slug, lang = 'uz') {
   const t = txt[lang] || txt.uz;
 
   return `
-  <section class="section rsvp-section" id="rsvp" style="text-align:center;padding:60px 0;position:relative">
+  <section class="section rsvp-section" id="rsvp" style="background:var(--bg-color, transparent);text-align:center;padding:60px 0;position:relative">
     <div style="max-width:460px;margin:0 auto;padding:0 24px">
       <div style="margin-bottom:28px">
         <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(76,175,80,0.2)">
           <span style="font-size:28px">💌</span>
         </div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#e8e2d6;margin:0 0 8px">${t.title}</h2>
-        <p style="font-size:0.85rem;color:rgba(232,226,214,0.4);margin:0">${t.subtitle}</p>
+        <h2 style="font-family:var(--ff-serif, 'Playfair Display',serif);font-size:1.8rem;font-weight:700;color:var(--text-color, #e8e2d6);margin:0 0 8px">${t.title}</h2>
+        <p style="font-size:0.85rem;color:var(--text-color, #e8e2d6);opacity:0.6;margin:0">${t.subtitle}</p>
       </div>
 
       <form id="rsvpForm" onsubmit="submitRsvp(event)" style="display:flex;flex-direction:column;gap:14px">
         <input type="text" name="guestName" placeholder="${t.name}" required
-          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#e8e2d6;font-size:0.95rem;outline:none;backdrop-filter:blur(8px);transition:border-color 0.3s;font-family:inherit"
-          onfocus="this.style.borderColor='rgba(76,175,80,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" />
+          style="padding:14px 18px;border-radius:14px;border:1px solid var(--glass-border, rgba(255,255,255,0.08));background:var(--glass-bg, rgba(255,255,255,0.04));color:var(--text-color, #e8e2d6);font-size:0.95rem;outline:none;backdrop-filter:blur(8px);transition:border-color 0.3s;font-family:inherit"
+          onfocus="this.style.borderColor='rgba(76,175,80,0.4)'" onblur="this.style.borderColor='var(--glass-border, rgba(255,255,255,0.08))'" />
 
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="rsvpButtons">
           <label style="cursor:pointer">
@@ -945,7 +945,7 @@ function buildRsvpForm(slug, lang = 'uz') {
         </div>
 
         <select name="guestCount"
-          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#e8e2d6;font-size:0.95rem;outline:none;font-family:inherit;appearance:auto">
+          style="padding:14px 18px;border-radius:14px;border:1px solid var(--glass-border, rgba(255,255,255,0.08));background:var(--glass-bg, rgba(255,255,255,0.04));color:var(--text-color, #e8e2d6);font-size:0.95rem;outline:none;font-family:inherit;appearance:auto">
           <option value="1">1 ${t.person}</option>
           <option value="2">2 ${t.person}</option>
           <option value="3">3 ${t.person}</option>
@@ -958,7 +958,7 @@ function buildRsvpForm(slug, lang = 'uz') {
           style="padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,#4caf50,#2e7d32);color:white;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 24px rgba(76,175,80,0.2);font-family:inherit;letter-spacing:0.02em">
           ${t.submit}
         </button>
-        <p id="rsvpStatus" style="font-size:0.85rem;margin-top:4px"></p>
+        <p id="rsvpStatus" style="font-size:0.85rem;margin-top:4px;color:var(--text-color, inherit)"></p>
       </form>
     </div>
   </section>
