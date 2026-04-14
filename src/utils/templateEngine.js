@@ -245,12 +245,16 @@ function renderInvitation(invitation, eventType, template) {
   <meta name="description" content="${ogDesc}">
   <title>${ogTitle}</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect x='40' y='140' width='432' height='280' rx='24' fill='%23c8d3e0' stroke='%233d4f6a' stroke-width='14'/%3E%3Cpath d='M54 154 L256 310 L458 154' fill='none' stroke='%233d4f6a' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M256 340 C256 340 196 280 196 248 C196 220 220 204 244 216 C252 220 256 228 256 228 C256 228 260 220 268 216 C292 204 316 220 316 248 C316 280 256 340 256 340Z' fill='%23e63946' stroke='%23c1121f' stroke-width='6'/%3E%3C/svg%3E" />
+
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="${ogTitle}">
   <meta property="og:description" content="${ogDesc}">
   <meta property="og:url" content="${ogUrl}">
-  <meta property="og:site_name" content="Taklifnoma">
+  <meta property="og:site_name" content="eTaklifnoma.uz">
+  <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230b0d17'/%3E%3Crect x='40' y='140' width='432' height='280' rx='24' fill='%23c8d3e0' stroke='%233d4f6a' stroke-width='14'/%3E%3Cpath d='M54 154 L256 310 L458 154' fill='none' stroke='%233d4f6a' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M256 340 C256 340 196 280 196 248 C196 220 220 204 244 216 C252 220 256 228 256 228 C256 228 260 220 268 216 C292 204 316 220 316 248 C316 280 256 340 256 340Z' fill='%23e63946'/%3E%3C/svg%3E">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
