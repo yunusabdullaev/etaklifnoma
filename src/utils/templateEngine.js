@@ -559,6 +559,7 @@ function buildLanguageToggle() {
         programTitle: 'Kechaning dasturi',
         dressCode: 'Dress code',
         waitingMsg: 'Sizni kutib qolamiz!',
+        galleryTitle: 'Foto lavhalar',
         wishesTitle: '💌 Tilak va tabriklar',
         wishesSubtitle: 'Tilak va tabriklaringizni qoldiring',
         wishesName: 'Ismingiz',
@@ -595,6 +596,7 @@ function buildLanguageToggle() {
         programTitle: 'Kesheniń baǵdarlanması',
         dressCode: 'Dress kod',
         waitingMsg: 'Sizdi kútip qalamız!',
+        galleryTitle: 'Foto kórgezbe',
         wishesTitle: '💌 Tilek hám qutlıqlaw',
         wishesSubtitle: 'Tilek hém qutlıqlawlarıńızdı qaldırıń',
         wishesName: 'Atıńız',
@@ -631,6 +633,7 @@ function buildLanguageToggle() {
         programTitle: 'Программа вечера',
         dressCode: 'Дресс-код',
         waitingMsg: 'Ждём вас!',
+        galleryTitle: 'Фотогалерея',
         wishesTitle: '💌 Пожелания',
         wishesSubtitle: 'Оставьте ваши пожелания',
         wishesName: 'Ваше имя',
@@ -814,7 +817,7 @@ function buildPhotoGallery(photos) {
   <section class="section photo-gallery-section" id="gallery" style="background:var(--dark);padding:60px 0;text-align:center;position:relative">
     <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.2"></div>
     <div class="container" style="max-width:600px;margin:0 auto;padding:0 24px">
-      <h2 class="section-heading light" style="margin-bottom:24px">Foto lavhalar</h2>
+      <h2 class="section-heading light" data-i18n="galleryTitle" style="margin-bottom:24px">Foto lavhalar</h2>
       <div style="display:grid;grid-template-columns:repeat(${photos.length === 1 ? 1 : photos.length === 2 ? 2 : 3},1fr);gap:8px">
         ${photoItems}
       </div>
