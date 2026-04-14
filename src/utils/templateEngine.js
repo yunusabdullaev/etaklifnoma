@@ -323,6 +323,9 @@ function renderInvitation(invitation, eventType, template) {
     program: context['program'] || '',
     programRu: context['programRu'] || '',
     programQq: context['programQq'] || '',
+    programCustomTitle: context['programCustomTitle'] || '',
+    programCustomTitleRu: context['programCustomTitleRu'] || '',
+    programCustomTitleQq: context['programCustomTitleQq'] || '',
   })};</script>
   ${buildLanguageToggle()}
   ${buildBrandingFooter()}
@@ -666,9 +669,9 @@ function buildLanguageToggle() {
 
     // Data maps for each language
     var langData = {
-      uz: { host: d.hostName, guest: d.guestName, title: d.eventTitle, message: d.message, program: d.program, date: d.dateUz },
-      qq: { host: d.hostNameQq || d.hostName, guest: d.guestNameQq || d.guestName, title: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateUz },
-      ru: { host: d.hostNameRu || d.hostName, guest: d.guestNameRu || d.guestName, title: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz },
+      uz: { host: d.hostName, guest: d.guestName, title: d.eventTitle, message: d.message, program: d.program, date: d.dateUz, programTitle: d.programCustomTitle },
+      qq: { host: d.hostNameQq || d.hostName, guest: d.guestNameQq || d.guestName, title: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateUz, programTitle: d.programCustomTitleQq || d.programCustomTitle },
+      ru: { host: d.hostNameRu || d.hostName, guest: d.guestNameRu || d.guestName, title: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz, programTitle: d.programCustomTitleRu || d.programCustomTitle },
     };
 
     function switchLang(lang) {
@@ -681,7 +684,11 @@ function buildLanguageToggle() {
       // 1. Translate data-i18n elements
       document.querySelectorAll('[data-i18n]').forEach(function(el){
         var key = el.getAttribute('data-i18n');
-        if(t[key]) el.textContent = t[key];
+        if (key === 'programTitle' && newData.programTitle) {
+          el.textContent = newData.programTitle;
+        } else if(t[key]) {
+          el.textContent = t[key];
+        }
       });
 
       // 2. Update wishes form placeholders

@@ -343,6 +343,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
 
         {/* Program / Timeline editor */}
+        {isUzOn && (
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="label flex items-center gap-2 mb-0">📅 {t('step3.program')}</label>
@@ -422,11 +423,21 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             );
           })()}
         </div>
+        )}
 
         {/* Karakalpak Program editor — when QQ is ON */}
         {data.customFields?.langQq && (
           <div>
-            <label className="label flex items-center gap-2 mb-2">📅 Bag'darlanma (QQ)</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
+              <input
+                type="text"
+                placeholder="Sarlavha (QQ)"
+                value={data.customFields?.programCustomTitleQq || ''}
+                onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
+                className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
+              />
+            </div>
             {(() => {
               let items = [];
               try {
@@ -472,7 +483,16 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* Russian Program editor — when RU is ON */}
         {data.customFields?.langRu && (
           <div>
-            <label className="label flex items-center gap-2 mb-2">📅 Программа (RU)</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="label flex items-center gap-2 mb-0">📅 Программа (RU)</label>
+              <input
+                type="text"
+                placeholder="Название (RU)"
+                value={data.customFields?.programCustomTitleRu || ''}
+                onChange={(e) => handleCustomFieldChange('programCustomTitleRu', e.target.value)}
+                className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
+              />
+            </div>
             {(() => {
               let items = [];
               try {
