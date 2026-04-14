@@ -16,7 +16,7 @@ export default function Dashboard({ token, onCreateNew }) {
 
   const API = import.meta.env.VITE_API_URL || '';
   const APP_URL = window.location.origin;
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   useEffect(() => { fetchInvitations(); }, []);
 
