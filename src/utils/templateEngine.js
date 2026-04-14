@@ -476,7 +476,7 @@ function buildWishesForm(telegramBot, invitationSlug) {
 
 function getMusicPlayerStyles() {
   return `
-  .music-toggle{position:fixed;bottom:24px;right:24px;z-index:9999;width:52px;height:52px;background:var(--glass-bg, rgba(255,255,255,0.08));backdrop-filter:blur(16px);border:1px solid var(--glass-border, rgba(255,255,255,0.12));border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+  .music-toggle{position:fixed;bottom:24px;right:24px;z-index:9999;width:52px;height:52px;background:rgba(255,255,255,0.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
   .music-toggle:hover{transform:scale(1.1);border-color:var(--accent, #c9a84c)}
   .music-icon{width:24px;height:24px;color:rgba(255,255,255,0.5);transition:color 0.3s ease}
   .music-icon.playing{color:var(--accent-bright, #e8d07e);animation:pulse-music 2s ease-in-out infinite}
@@ -486,12 +486,12 @@ function getMusicPlayerStyles() {
 
 function getWishesFormStyles() {
   return `
-  .wishes-section{background:var(--bg-color, transparent);text-align:center;padding:80px 0}
+  .wishes-section{background:transparent;text-align:center;padding:80px 0}
   .wishes-subtitle{font-size:0.95rem;color:var(--text-color, rgba(232,226,214,0.5));opacity:0.7;margin-bottom:32px;font-weight:300}
   .wishes-form{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-  .wishes-input{background:var(--glass-bg, rgba(255,255,255,0.05));border:1px solid var(--glass-border, rgba(255,255,255,0.1));border-radius:14px;padding:14px 20px;font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.95rem;color:var(--text-color, #e8e2d6);outline:none;transition:border-color 0.3s ease}
+  .wishes-input{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 20px;font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.95rem;color:#e8e2d6;outline:none;transition:border-color 0.3s ease}
   .wishes-input:focus{border-color:var(--accent, #c9a84c)}
-  .wishes-input::placeholder{color:var(--text-color, #e8e2d6);opacity:0.35}
+  .wishes-input::placeholder{color:#e8e2d6;opacity:0.35}
   .wishes-textarea{resize:vertical;min-height:100px}
   .wishes-btn{padding:14px 32px;background:var(--btn-bg, linear-gradient(135deg,#c9a84c,#9e7e2e));border:none;border-radius:50px;color:var(--btn-text, #0b0d17);font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.95rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.3s ease}
   .wishes-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--glow, rgba(201,168,76,0.2))}
@@ -762,7 +762,7 @@ function buildLanguageToggle() {
 
 function getLanguageToggleStyles() {
   return `
-  .lang-toggle{position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;gap:0;border-radius:50px;overflow:hidden;border:1px solid var(--glass-border, rgba(255,255,255,0.12));background:var(--glass-bg, rgba(255,255,255,0.05));backdrop-filter:blur(16px);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+  .lang-toggle{position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;gap:0;border-radius:50px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
   .lang-btn{padding:10px 16px;font-family:var(--ff-sans, 'Montserrat', sans-serif);font-size:0.75rem;font-weight:600;letter-spacing:1.5px;border:none;background:transparent;color:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.3s ease;text-transform:uppercase}
   .lang-btn.active{background:var(--accent, #c9a84c);color:var(--dark, #0b0d17)}
   .lang-btn:hover:not(.active){color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.05)}
@@ -810,7 +810,7 @@ function buildPhotoGallery(photos) {
   `).join('');
 
   return `
-  <section class="section photo-gallery-section" id="gallery" style="background:var(--bg-color, transparent);padding:60px 0;text-align:center">
+  <section class="section photo-gallery-section" id="gallery" style="background:transparent;padding:60px 0;text-align:center">
     <div class="container" style="max-width:600px;margin:0 auto;padding:0 24px">
       <h2 class="section-heading" style="margin-bottom:24px">Foto lavhalar</h2>
       <div style="display:grid;grid-template-columns:repeat(${photos.length === 1 ? 1 : photos.length === 2 ? 2 : 3},1fr);gap:8px">
@@ -905,19 +905,19 @@ function buildRsvpForm(slug, lang = 'uz') {
   const t = txt[lang] || txt.uz;
 
   return `
-  <section class="section rsvp-section" id="rsvp" style="background:var(--bg-color, transparent);text-align:center;padding:60px 0;position:relative">
+  <section class="section rsvp-section" id="rsvp" style="background:transparent;text-align:center;padding:60px 0;position:relative">
     <div style="max-width:460px;margin:0 auto;padding:0 24px">
       <div style="margin-bottom:28px">
         <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(76,175,80,0.2)">
           <span style="font-size:28px">💌</span>
         </div>
-        <h2 style="font-family:var(--ff-serif, 'Playfair Display',serif);font-size:1.8rem;font-weight:700;color:var(--text-color, #e8e2d6);margin:0 0 8px">${t.title}</h2>
-        <p style="font-size:0.85rem;color:var(--text-color, #e8e2d6);opacity:0.6;margin:0">${t.subtitle}</p>
+        <h2 style="font-family:var(--ff-serif, 'Playfair Display',serif);font-size:1.8rem;font-weight:700;color:#e8e2d6;margin:0 0 8px">${t.title}</h2>
+        <p style="font-size:0.85rem;color:#e8e2d6;opacity:0.6;margin:0">${t.subtitle}</p>
       </div>
 
       <form id="rsvpForm" onsubmit="submitRsvp(event)" style="display:flex;flex-direction:column;gap:14px">
         <input type="text" name="guestName" placeholder="${t.name}" required
-          style="padding:14px 18px;border-radius:14px;border:1px solid var(--glass-border, rgba(255,255,255,0.08));background:var(--glass-bg, rgba(255,255,255,0.04));color:var(--text-color, #e8e2d6);font-size:0.95rem;outline:none;backdrop-filter:blur(8px);transition:border-color 0.3s;font-family:inherit"
+          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e8e2d6;font-size:0.95rem;outline:none;backdrop-filter:blur(8px);transition:border-color 0.3s;font-family:inherit"
           onfocus="this.style.borderColor='rgba(76,175,80,0.4)'" onblur="this.style.borderColor='var(--glass-border, rgba(255,255,255,0.08))'" />
 
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="rsvpButtons">
@@ -945,7 +945,7 @@ function buildRsvpForm(slug, lang = 'uz') {
         </div>
 
         <select name="guestCount"
-          style="padding:14px 18px;border-radius:14px;border:1px solid var(--glass-border, rgba(255,255,255,0.08));background:var(--glass-bg, rgba(255,255,255,0.04));color:var(--text-color, #e8e2d6);font-size:0.95rem;outline:none;font-family:inherit;appearance:auto">
+          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e8e2d6;font-size:0.95rem;outline:none;font-family:inherit;appearance:auto">
           <option value="1">1 ${t.person}</option>
           <option value="2">2 ${t.person}</option>
           <option value="3">3 ${t.person}</option>
