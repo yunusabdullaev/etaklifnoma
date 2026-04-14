@@ -486,13 +486,12 @@ function getMusicPlayerStyles() {
 
 function getWishesFormStyles() {
   return `
-  .wishes-section{background:var(--dark);text-align:center;padding:80px 0;position:relative}
-  .wishes-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.2}
-  .wishes-subtitle{font-size:0.95rem;color:var(--text-light);opacity:0.55;margin-bottom:32px;font-weight:300;font-family:var(--ff-serif)}
+  .wishes-section{background:var(--greeting-bg);text-align:center;padding:100px 0;position:relative}
+  .wishes-subtitle{font-size:0.95rem;color:var(--greeting-text);opacity:0.75;margin-bottom:32px;font-weight:300;font-family:var(--ff-serif)}
   .wishes-form{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-  .wishes-input{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:14px 20px;font-family:var(--ff-sans);font-size:0.95rem;color:var(--text-light);outline:none;transition:border-color 0.3s ease}
-  .wishes-input:focus{border-color:var(--accent)}
-  .wishes-input::placeholder{color:var(--text-light);opacity:0.35}
+  .wishes-input{background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 20px;font-family:var(--ff-sans);font-size:0.95rem;color:#333;outline:none;transition:border-color 0.3s ease;box-shadow:inset 0 2px 6px rgba(0,0,0,0.02)}
+  .wishes-input:focus{border-color:var(--accent);background:#fff}
+  .wishes-input::placeholder{color:#999}
   .wishes-textarea{resize:vertical;min-height:100px}
   .wishes-btn{padding:14px 32px;background:var(--btn-bg);border:none;border-radius:50px;color:var(--btn-text);font-family:var(--ff-sans);font-size:0.95rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.3s ease}
   .wishes-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--glow)}
@@ -910,48 +909,47 @@ function buildRsvpForm(slug, lang = 'uz') {
   const t = txt[lang] || txt.uz;
 
   return `
-  <section class="section rsvp-section" id="rsvp" style="background:var(--dark);text-align:center;padding:60px 0;position:relative">
-  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.2"></div>
+  <section class="section rsvp-section" id="rsvp" style="background:var(--greeting-bg);text-align:center;padding:100px 0;position:relative">
     <div style="max-width:460px;margin:0 auto;padding:0 24px">
       <div style="margin-bottom:28px">
         <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(76,175,80,0.2)">
           <span style="font-size:28px">💌</span>
         </div>
-        <h2 style="font-family:var(--ff-serif, 'Playfair Display',serif);font-size:1.8rem;font-weight:700;color:#e8e2d6;margin:0 0 8px">${t.title}</h2>
-        <p style="font-size:0.9rem;color:var(--text-light);opacity:0.55;margin:0;font-family:var(--ff-serif)">${t.subtitle}</p>
+        <h2 style="font-family:var(--ff-serif);font-size:1.8rem;font-weight:700;color:var(--greeting-text);margin:0 0 8px">${t.title}</h2>
+        <p style="font-size:0.9rem;color:var(--greeting-text);opacity:0.75;margin:0;font-family:var(--ff-serif)">${t.subtitle}</p>
       </div>
 
       <form id="rsvpForm" onsubmit="submitRsvp(event)" style="display:flex;flex-direction:column;gap:14px">
         <input type="text" name="guestName" placeholder="${t.name}" required
-          style="padding:14px 18px;border-radius:14px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-light);font-size:0.95rem;outline:none;backdrop-filter:blur(8px);transition:border-color 0.3s;font-family:var(--ff-sans)"
-          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--glass-border)'" />
+          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(0,0,0,0.08);background:rgba(255,255,255,0.7);color:#333;font-size:0.95rem;outline:none;transition:border-color 0.3s;font-family:var(--ff-sans);box-shadow:inset 0 2px 6px rgba(0,0,0,0.02)"
+          onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='rgba(0,0,0,0.08)';this.style.background='rgba(255,255,255,0.7)'" />
 
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="rsvpButtons">
           <label style="cursor:pointer">
             <input type="radio" name="status" value="attending" checked style="display:none" />
             <div class="rsvp-opt rsvp-active" onclick="selectRsvp(this,'attending')"
-              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(76,175,80,0.3);background:rgba(76,175,80,0.12);color:#66bb6a;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
+              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(76,175,80,0.3);background:rgba(76,175,80,0.15);color:#388e3c;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
               ${t.yes}
             </div>
           </label>
           <label style="cursor:pointer">
             <input type="radio" name="status" value="maybe" style="display:none" />
             <div class="rsvp-opt" onclick="selectRsvp(this,'maybe')"
-              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(255,193,7,0.15);background:rgba(255,193,7,0.04);color:#ffa726;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
+              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(255,152,0,0.3);background:rgba(255,152,0,0.1);color:#f57c00;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
               ${t.maybe}
             </div>
           </label>
           <label style="cursor:pointer">
             <input type="radio" name="status" value="not_attending" style="display:none" />
             <div class="rsvp-opt" onclick="selectRsvp(this,'not_attending')"
-              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(244,67,54,0.15);background:rgba(244,67,54,0.04);color:#ef5350;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
+              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(244,67,54,0.3);background:rgba(244,67,54,0.08);color:#d32f2f;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
               ${t.no}
             </div>
           </label>
         </div>
 
         <select name="guestCount"
-          style="padding:14px 18px;border-radius:14px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-light);font-size:0.95rem;outline:none;font-family:var(--ff-sans);appearance:auto">
+          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(0,0,0,0.08);background:rgba(255,255,255,0.7);color:#333;font-size:0.95rem;outline:none;font-family:var(--ff-sans);appearance:auto;box-shadow:inset 0 2px 6px rgba(0,0,0,0.02)">
           <option value="1">1 ${t.person}</option>
           <option value="2">2 ${t.person}</option>
           <option value="3">3 ${t.person}</option>
