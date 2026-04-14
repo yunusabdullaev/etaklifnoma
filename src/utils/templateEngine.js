@@ -486,12 +486,12 @@ function getMusicPlayerStyles() {
 
 function getWishesFormStyles() {
   return `
-  .wishes-section{background:var(--greeting-bg);text-align:center;padding:100px 0;position:relative}
-  .wishes-subtitle{font-size:0.95rem;color:var(--greeting-text);opacity:0.75;margin-bottom:32px;font-weight:300;font-family:var(--ff-serif)}
+  .wishes-section{background:var(--dark);text-align:center;padding:80px 0;position:relative}
+  .wishes-subtitle{font-size:0.95rem;color:var(--text-light);opacity:0.6;margin-bottom:32px;font-weight:300;font-family:var(--ff-serif)}
   .wishes-form{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-  .wishes-input{background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 20px;font-family:var(--ff-sans);font-size:0.95rem;color:#333;outline:none;transition:border-color 0.3s ease;box-shadow:inset 0 2px 6px rgba(0,0,0,0.02)}
-  .wishes-input:focus{border-color:var(--accent);background:#fff}
-  .wishes-input::placeholder{color:#999}
+  .wishes-input{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;padding:14px 20px;font-family:var(--ff-sans);font-size:0.95rem;color:var(--text-light);outline:none;transition:border-color 0.3s ease;backdrop-filter:blur(8px)}
+  .wishes-input:focus{border-color:var(--accent)}
+  .wishes-input::placeholder{color:var(--text-light);opacity:0.4}
   .wishes-textarea{resize:vertical;min-height:100px}
   .wishes-btn{padding:14px 32px;background:var(--btn-bg);border:none;border-radius:50px;color:var(--btn-text);font-family:var(--ff-sans);font-size:0.95rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.3s ease}
   .wishes-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--glow)}
@@ -813,10 +813,10 @@ function buildPhotoGallery(photos) {
   `).join('');
 
   return `
-  <section class="section photo-gallery-section" id="gallery" style="background:var(--dark);padding:60px 0;text-align:center;position:relative">
+  <section class="section photo-gallery-section" id="gallery" style="background:var(--greeting-bg);padding:80px 0;text-align:center;position:relative">
     <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.2"></div>
     <div class="container" style="max-width:600px;margin:0 auto;padding:0 24px">
-      <h2 class="section-heading light" data-i18n="galleryTitle" style="margin-bottom:24px">Foto lavhalar</h2>
+      <h2 class="section-heading light" data-i18n="galleryTitle" style="margin-bottom:24px;color:var(--greeting-text)">Foto lavhalar</h2>
       <div style="display:grid;grid-template-columns:repeat(${photos.length === 1 ? 1 : photos.length === 2 ? 2 : 3},1fr);gap:8px">
         ${photoItems}
       </div>
