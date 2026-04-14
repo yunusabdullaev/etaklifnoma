@@ -88,29 +88,31 @@ async function handleStats() {
       Template.count(),
     ]);
 
-    // Get invitation breakdown by event type
+    // Get invitation breakdown by event type — use separate lookup to avoid GROUP BY issue
+    const { Sequelize } = require('sequelize');
     const invByType = await Invitation.findAll({
       attributes: [
         'eventTypeId',
-        [require('sequelize').fn('COUNT', '*'), 'count'],
+        [Sequelize.fn('COUNT', Sequelize.col('Invitation.id')), 'count'],
       ],
       group: ['eventTypeId'],
-      include: [{ association: 'eventType', attributes: ['label'] }],
       raw: true,
     });
 
-    // Recent invitations (last 5)
+    // Fetch event type labels separately
+    const { EventType: ET } = require('../models');
+    const eventTypes = await ET.findAll({ attributes: ['id', 'label'], raw: true });
+    const etMap = {};
+    eventTypes.forEach(e => { etMap[e.id] = e.label; });
+
+    // Total views & recent invitations
+    const totalViews = await Invitation.sum('viewCount') || 0;
     const recentInvs = await Invitation.findAll({
       order: [['created_at', 'DESC']],
       limit: 5,
       attributes: ['hostName', 'eventTitle', 'slug', 'createdAt', 'viewCount'],
-      include: [
-        { association: 'user', attributes: ['name'] },
-      ],
+      include: [{ association: 'user', attributes: ['name'] }],
     });
-
-    // Total views
-    const totalViews = await Invitation.sum('viewCount') || 0;
 
     let msg = `📊 <b>eTaklifnoma Statistika</b>\n\n`;
     msg += `👥 Foydalanuvchilar: <b>${userCount}</b>\n`;
@@ -122,7 +124,7 @@ async function handleStats() {
     if (invByType.length > 0) {
       msg += `\n📈 <b>Tadbir turlari bo'yicha:</b>\n`;
       invByType.forEach(row => {
-        const label = row['eventType.label'] || 'Noma\'lum';
+        const label = etMap[row.eventTypeId] || "Noma'lum";
         msg += `  • ${label}: <b>${row.count}</b>\n`;
       });
     }
