@@ -198,9 +198,28 @@ export default function Dashboard({ token, onCreateNew }) {
     } catch (err) { console.error(err); }
   };
 
+  const localeMap = { uz: 'uz-UZ', qq: 'kk-KZ', ru: 'ru-RU', en: 'en-US' };
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('uz-UZ', { year: 'numeric', month: 'long', day: 'numeric' });
+    const locale = localeMap[lang] || 'en-US';
+    return new Date(dateStr).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  const formatTime = (timeStr) => {
+    if (!timeStr) return '';
+    return timeStr.substring(0, 5); // "20:00:00" → "20:00"
+  };
+
+  // Event type translations for dashboard
+  const eventTypeLabels = {
+    wedding: { uz: "To'y taklifi", qq: 'Toy shaqırıwı', ru: 'Свадьба', en: 'Wedding' },
+    birthday: { uz: "Tug'ilgan kun", qq: 'Tuwılǵan kún', ru: 'День рождения', en: 'Birthday' },
+    jubilee: { uz: 'Yubiley', qq: 'Yubilej', ru: 'Юбилей', en: 'Anniversary' },
+    graduation: { uz: 'Bitiruvchilar', qq: 'Pitkeriwshiler', ru: 'Выпускной', en: 'Graduation' },
+  };
+  const getEventLabel = (inv) => {
+    const name = inv.eventType?.name;
+    return eventTypeLabels[name]?.[lang] || inv.eventType?.label || 'Invitation';
   };
 
   const eventIcons = { wedding: '💍', birthday: '🎂', graduation: '🎓', jubilee: '🎉' };
@@ -267,7 +286,7 @@ export default function Dashboard({ token, onCreateNew }) {
                     <span className="text-2xl">{eventIcons[inv.eventType?.name] || '📨'}</span>
                     <div>
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-primary-400">
-                        {inv.eventType?.label || 'Taklif'}
+                        {getEventLabel(inv)}
                       </span>
                       <h3 className="text-white font-semibold text-sm leading-tight mt-0.5">
                         {inv.eventTitle || inv.hostName || 'Taklifnoma'}
@@ -288,7 +307,7 @@ export default function Dashboard({ token, onCreateNew }) {
                 )}
                 {inv.eventTime && (
                   <div className="flex items-center gap-2 text-xs text-surface-300">
-                    <Clock size={12} className="text-primary-400 flex-shrink-0" /> {inv.eventTime}
+                    <Clock size={12} className="text-primary-400 flex-shrink-0" /> {formatTime(inv.eventTime)}
                   </div>
                 )}
                 {inv.location && (
@@ -435,8 +454,8 @@ export default function Dashboard({ token, onCreateNew }) {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-white">{r.guestName}</p>
                         <p className="text-[10px] text-surface-500">
-                          {r.guestCount > 1 ? `${r.guestCount} kishi · ` : ''}
-                          {new Date(r.createdAt).toLocaleDateString('uz-UZ')}
+                          {r.guestCount > 1 ? `${r.guestCount} ${lang === 'en' ? 'guests' : lang === 'ru' ? 'чел.' : 'kishi'} · ` : ''}
+                          {new Date(r.createdAt).toLocaleDateString(localeMap[lang] || 'en-US')}
                         </p>
                       </div>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full ${
@@ -444,7 +463,11 @@ export default function Dashboard({ token, onCreateNew }) {
                           : r.status === 'maybe' ? 'bg-amber-500/10 text-amber-400'
                           : 'bg-rose-500/10 text-rose-400'
                       }`}>
-                        {r.status === 'attending' ? '✅ Keladi' : r.status === 'maybe' ? '🤔 Noaniq' : '❌ Kelmaydi'}
+                        {r.status === 'attending'
+                          ? (lang === 'en' ? '✅ Attending' : lang === 'ru' ? '✅ Придёт' : '✅ Keladi')
+                          : r.status === 'maybe'
+                          ? (lang === 'en' ? '🤔 Maybe' : lang === 'ru' ? '🤔 Возможно' : '🤔 Noaniq')
+                          : (lang === 'en' ? '❌ Declined' : lang === 'ru' ? '❌ Не придёт' : '❌ Kelmaydi')}
                       </span>
                     </div>
                   ))
