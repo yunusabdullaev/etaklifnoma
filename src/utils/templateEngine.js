@@ -270,15 +270,23 @@ function renderInvitation(invitation, eventType, template) {
 </head>
 <body>
   ${(() => {
-    // Inject gallery, wishes, rsvp INSIDE the main wrapper (before </main>)
+    // Inject gallery, wishes, rsvp BEFORE the footer section (so footer is always last)
     const gallery = buildPhotoGallery(photos);
     const rsvp = invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug, invitation.customFields?.rsvpLang || 'uz') : '';
     const extras = gallery + wishesForm + rsvp;
     
+    // Try to inject before footer (keeps footer at bottom)
+    if (renderedBody.includes('<!-- ====== FOOTER ====== -->')) {
+      return renderedBody.replace('<!-- ====== FOOTER ====== -->', extras + '\n  <!-- ====== FOOTER ====== -->');
+    }
+    // Fallback: try before <footer
+    if (renderedBody.includes('<footer')) {
+      return renderedBody.replace('<footer', extras + '\n  <footer');
+    }
+    // Last fallback: before </main>
     if (renderedBody.includes('</main>')) {
       return renderedBody.replace('</main>', extras + '</main>');
     }
-    // Fallback: append after body if no main wrapper
     return renderedBody + extras;
   })()}
   ${musicPlayer}
