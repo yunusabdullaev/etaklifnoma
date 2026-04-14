@@ -889,7 +889,7 @@ function buildRsvpForm(slug, lang = 'uz') {
       name: 'Your name',
       yes: 'Attending',
       maybe: 'Maybe',
-      no: 'Can\\'t make it',
+      no: "Can't make it",
       person: 'guest(s)',
       submit: 'Confirm',
       sending: 'Sending...',
@@ -900,19 +900,19 @@ function buildRsvpForm(slug, lang = 'uz') {
   };
   const t = txt[lang] || txt.uz;
 
-  return \`
+  return `
   <section class="section rsvp-section" id="rsvp" style="text-align:center;padding:60px 0;position:relative">
     <div style="max-width:460px;margin:0 auto;padding:0 24px">
       <div style="margin-bottom:28px">
         <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(76,175,80,0.2)">
           <span style="font-size:28px">💌</span>
         </div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#e8e2d6;margin:0 0 8px">\${t.title}</h2>
-        <p style="font-size:0.85rem;color:rgba(232,226,214,0.4);margin:0">\${t.subtitle}</p>
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#e8e2d6;margin:0 0 8px">${t.title}</h2>
+        <p style="font-size:0.85rem;color:rgba(232,226,214,0.4);margin:0">${t.subtitle}</p>
       </div>
 
       <form id="rsvpForm" onsubmit="submitRsvp(event)" style="display:flex;flex-direction:column;gap:14px">
-        <input type="text" name="guestName" placeholder="\${t.name}" required
+        <input type="text" name="guestName" placeholder="${t.name}" required
           style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#e8e2d6;font-size:0.95rem;outline:none;backdrop-filter:blur(8px);transition:border-color 0.3s;font-family:inherit"
           onfocus="this.style.borderColor='rgba(76,175,80,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" />
 
@@ -921,38 +921,38 @@ function buildRsvpForm(slug, lang = 'uz') {
             <input type="radio" name="status" value="attending" checked style="display:none" />
             <div class="rsvp-opt rsvp-active" onclick="selectRsvp(this,'attending')"
               style="padding:14px 8px;border-radius:14px;border:1px solid rgba(76,175,80,0.3);background:rgba(76,175,80,0.12);color:#66bb6a;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
-              <span style="display:block;font-size:1.3rem;margin-bottom:4px">✅</span>\${t.yes}
+              <span style="display:block;font-size:1.3rem;margin-bottom:4px">✅</span>${t.yes}
             </div>
           </label>
           <label style="cursor:pointer">
             <input type="radio" name="status" value="maybe" style="display:none" />
             <div class="rsvp-opt" onclick="selectRsvp(this,'maybe')"
               style="padding:14px 8px;border-radius:14px;border:1px solid rgba(255,193,7,0.15);background:rgba(255,193,7,0.04);color:#ffa726;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
-              <span style="display:block;font-size:1.3rem;margin-bottom:4px">🤔</span>\${t.maybe}
+              <span style="display:block;font-size:1.3rem;margin-bottom:4px">🤔</span>${t.maybe}
             </div>
           </label>
           <label style="cursor:pointer">
             <input type="radio" name="status" value="not_attending" style="display:none" />
             <div class="rsvp-opt" onclick="selectRsvp(this,'not_attending')"
               style="padding:14px 8px;border-radius:14px;border:1px solid rgba(244,67,54,0.15);background:rgba(244,67,54,0.04);color:#ef5350;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
-              <span style="display:block;font-size:1.3rem;margin-bottom:4px">❌</span>\${t.no}
+              <span style="display:block;font-size:1.3rem;margin-bottom:4px">❌</span>${t.no}
             </div>
           </label>
         </div>
 
         <select name="guestCount"
           style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#e8e2d6;font-size:0.95rem;outline:none;font-family:inherit;appearance:auto">
-          <option value="1">1 \${t.person}</option>
-          <option value="2">2 \${t.person}</option>
-          <option value="3">3 \${t.person}</option>
-          <option value="4">4 \${t.person}</option>
-          <option value="5">5+ \${t.person}</option>
+          <option value="1">1 ${t.person}</option>
+          <option value="2">2 ${t.person}</option>
+          <option value="3">3 ${t.person}</option>
+          <option value="4">4 ${t.person}</option>
+          <option value="5">5+ ${t.person}</option>
         </select>
 
-        <input type="hidden" name="slug" value="\${slug}" />
+        <input type="hidden" name="slug" value="${slug}" />
         <button type="submit" id="rsvpBtn"
           style="padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,#4caf50,#2e7d32);color:white;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 24px rgba(76,175,80,0.2);font-family:inherit;letter-spacing:0.02em">
-          \${t.submit}
+          ${t.submit}
         </button>
         <p id="rsvpStatus" style="font-size:0.85rem;margin-top:4px"></p>
       </form>
@@ -1011,7 +1011,7 @@ function buildRsvpForm(slug, lang = 'uz') {
       btn.style.opacity = '1';
     });
   }
-  </script>\`;
+  </script>`;
 }
 
 module.exports = {
