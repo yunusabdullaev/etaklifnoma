@@ -15,19 +15,23 @@ const features = [
     titleUz: '200+ premium shablon',
     titleQq: '200+ premium shablon',
     titleRu: '200+ премиум шаблонов',
+    titleEn: '200+ premium templates',
     descUz: "To'y, tug'ilgan kun, yubiley va bitiruvchilar kechasi uchun 200 dan ortiq zamonaviy dizayn",
     descQq: "Toy, tuwılǵan kún, yubilej hám pitkeriwshiler keshesi ushın 200 den artıq dizayn",
     descRu: 'Более 200 шаблонов для свадьбы, дня рождения, юбилея и выпускного',
+    descEn: 'Over 200 modern designs for weddings, birthdays, anniversaries & graduations',
   },
   {
     icon: Languages,
     color: 'from-blue-500 to-indigo-600',
-    titleUz: '3 tilda qo\'llab-quvvatlash',
-    titleQq: '3 tilde qollab-quwatlaw',
-    titleRu: 'Поддержка 3 языков',
-    descUz: "O'zbek, qaraqalpoq va rus tillarida taklifnomalar — mehmonlaringiz o'z tilida o'qiydi",
-    descQq: "Ózbek, qaraqalpaq hám rus tillerinde mırájatlar — mexmanlarıńız óz tilinde oqıydı",
-    descRu: 'Приглашения на узбекском, каракалпакском и русском — каждый гость прочитает на своём языке',
+    titleUz: '4 tilda qo\'llab-quvvatlash',
+    titleQq: '4 tilde qollab-quwatlaw',
+    titleRu: 'Поддержка 4 языков',
+    titleEn: '4 language support',
+    descUz: "O'zbek, qaraqalpoq, rus va ingliz tillarida taklifnomalar",
+    descQq: "Ózbek, qaraqalpaq, rus hám aǵılshın tillerinde mırájatlar",
+    descRu: 'Приглашения на узбекском, каракалпакском, русском и английском',
+    descEn: 'Invitations in Uzbek, Karakalpak, Russian & English',
   },
   {
     icon: Music,
@@ -35,9 +39,11 @@ const features = [
     titleUz: 'Fon musiqasi',
     titleQq: 'Fon muzıkası',
     titleRu: 'Фоновая музыка',
+    titleEn: 'Background Music',
     descUz: "Sevimli musiqangizni qo'shing — taklifnoma ochilganda avtomatik o'ynaydi",
     descQq: "Súyikli muzıkańızdı qosıń — mırájat ashılǵanda avtomatik oynaydı",
     descRu: 'Добавьте любимую музыку — она автоматически заиграет при открытии приглашения',
+    descEn: 'Add your favorite music — it plays automatically when the invitation opens',
   },
   {
     icon: MapPin,
@@ -45,9 +51,11 @@ const features = [
     titleUz: 'Xarita integratsiyasi',
     titleQq: 'Karta integratsiyası',
     titleRu: 'Интеграция с картой',
+    titleEn: 'Map Integration',
     descUz: "Google Maps havolasi — mehmonlaringiz yo'lni osongina topadi",
     descQq: "Google Maps siltemesi — mexmanlarıńız jolın ańsat tabadı",
     descRu: 'Ссылка на Google Maps — гости легко найдут место проведения',
+    descEn: 'Google Maps link — guests can easily find the venue',
   },
   {
     icon: Smartphone,
@@ -55,9 +63,11 @@ const features = [
     titleUz: 'Mobil moslashgan',
     titleQq: 'Mobil moslanǵan',
     titleRu: 'Мобильная адаптация',
+    titleEn: 'Mobile Responsive',
     descUz: "Barcha qurilmalarda mukammal ko'rinadi — telefon, planshet, kompyuter",
     descQq: "Barlıq qurilmalarda múkemmel kórinedi — telefon, planshet, kompyuter",
     descRu: 'Идеально выглядит на всех устройствах — телефоне, планшете, компьютере',
+    descEn: 'Looks perfect on all devices — phone, tablet, desktop',
   },
   {
     icon: MessageCircle,
@@ -65,24 +75,26 @@ const features = [
     titleUz: 'Telegram tilaklar',
     titleQq: 'Telegram tilekler',
     titleRu: 'Пожелания в Telegram',
+    titleEn: 'Telegram Wishes',
     descUz: "Mehmonlar to'g'ridan-to'g'ri taklifnomadan tilak yozib, sizga Telegram orqali yuboradi",
     descQq: "Mexmanlar tuwrıdan-tuwrı mırájattan tilek jazıp, sizge Telegram arqalı jiberedi",
     descRu: 'Гости пишут пожелания прямо в приглашении, а вы получаете их в Telegram',
+    descEn: 'Guests write wishes directly in the invitation and you receive them via Telegram',
   },
 ];
 
 const stats = [
-  { value: '200+', labelUz: 'Shablonlar', labelQq: 'Shablonlar', labelRu: 'Шаблонов' },
-  { value: '3', labelUz: 'Til', labelQq: 'Til', labelRu: 'Языка' },
-  { value: '4', labelUz: 'Tadbir turi', labelQq: 'Ilaje túri', labelRu: 'Типа событий' },
-  { value: '∞', labelUz: 'Taklifnomalar', labelQq: 'Mırájatlar', labelRu: 'Приглашений' },
+  { value: '200+', labelUz: 'Shablonlar', labelQq: 'Shablonlar', labelRu: 'Шаблонов', labelEn: 'Templates' },
+  { value: '4', labelUz: 'Til', labelQq: 'Til', labelRu: 'Языка', labelEn: 'Languages' },
+  { value: '4', labelUz: 'Tadbir turi', labelQq: 'Ilaje túri', labelRu: 'Типа событий', labelEn: 'Event Types' },
+  { value: '∞', labelUz: 'Taklifnomalar', labelQq: 'Mırájatlar', labelRu: 'Приглашений', labelEn: 'Invitations' },
 ];
 
 export default function LandingPage({ onEnter }) {
   const { lang } = useLang();
   const [hoveredFeature, setHoveredFeature] = useState(null);
 
-  const tx = (uz, qq, ru) => lang === 'ru' ? ru : lang === 'qq' ? qq : uz;
+  const tx = (uz, qq, ru, en) => lang === 'en' ? (en || uz) : lang === 'ru' ? ru : lang === 'qq' ? qq : uz;
 
   return (
     <div className="min-h-screen bg-surface-950 relative overflow-hidden">
@@ -131,15 +143,17 @@ export default function LandingPage({ onEnter }) {
             {tx(
               "Premium raqamli taklifnomalar — to'y, tug'ilgan kun, yubiley va bitiruvchilar kechasi uchun",
               "Premium sanli mırájatlar — toy, tuwılǵan kún, yubilej hám pitkeriwshiler keshesi ushın",
-              "Премиум цифровые приглашения — для свадьбы, дня рождения, юбилея и выпускного"
+              "Премиум цифровые приглашения — для свадьбы, дня рождения, юбилея и выпускного",
+              "Premium digital invitations — for weddings, birthdays, anniversaries & graduations"
             )}
           </p>
 
           <p className="text-sm text-surface-500 mb-10 max-w-lg mx-auto">
             {tx(
-              "200+ zamonaviy shablon · 3 tilda · musiqa · animatsiyalar · Telegram tilaklar",
-              "200+ zámanagóy shablon · 3 tilde · muzıka · animatsiyalar · Telegram tilekler",
-              "200+ шаблонов · 3 языка · музыка · анимации · пожелания в Telegram"
+              "200+ zamonaviy shablon · 4 tilda · musiqa · animatsiyalar · Telegram tilaklar",
+              "200+ zámanagóy shablon · 4 tilde · muzıka · animatsiyalar · Telegram tilekler",
+              "200+ шаблонов · 4 языка · музыка · анимации · пожелания в Telegram",
+              "200+ templates · 4 languages · music · animations · Telegram wishes"
             )}
           </p>
 
@@ -153,7 +167,7 @@ export default function LandingPage({ onEnter }) {
               shadow-2xl shadow-primary-500/25 hover:shadow-primary-500/40
               transition-all duration-300"
           >
-            {tx('Kirish', 'Kiriw', 'Войти')}
+            {tx('Kirish', 'Kiriw', 'Войти', 'Get Started')}
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </motion.div>
@@ -191,7 +205,7 @@ export default function LandingPage({ onEnter }) {
                   {stat.value}
                 </div>
                 <p className="text-sm text-surface-400 mt-1">
-                  {tx(stat.labelUz, stat.labelQq, stat.labelRu)}
+                  {tx(stat.labelUz, stat.labelQq, stat.labelRu, stat.labelEn)}
                 </p>
               </motion.div>
             ))}
@@ -209,13 +223,14 @@ export default function LandingPage({ onEnter }) {
             className="text-center mb-16"
           >
             <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
-              {tx('Imkoniyatlar', 'Imkaniyatlar', 'Возможности')}
+              {tx('Imkoniyatlar', 'Imkaniyatlar', 'Возможности', 'Features')}
             </h2>
             <p className="text-surface-400 max-w-lg mx-auto">
               {tx(
                 "Bir necha daqiqada professional taklifnoma yarating",
                 "Bir neshe daqıyqada professional mırájat jaratıń",
-                "Создайте профессиональное приглашение за несколько минут"
+                "Создайте профессиональное приглашение за несколько минут",
+                "Create a professional invitation in minutes"
               )}
             </p>
           </motion.div>
@@ -240,10 +255,10 @@ export default function LandingPage({ onEnter }) {
                     <Icon size={20} className="text-white" />
                   </div>
                   <h3 className="text-base font-semibold text-white mb-2">
-                    {tx(feature.titleUz, feature.titleQq, feature.titleRu)}
+                    {tx(feature.titleUz, feature.titleQq, feature.titleRu, feature.titleEn)}
                   </h3>
                   <p className="text-sm text-surface-400 leading-relaxed">
-                    {tx(feature.descUz, feature.descQq, feature.descRu)}
+                    {tx(feature.descUz, feature.descQq, feature.descRu, feature.descEn)}
                   </p>
                 </motion.div>
               );
@@ -262,7 +277,7 @@ export default function LandingPage({ onEnter }) {
             className="text-center mb-16"
           >
             <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
-              {tx('Qanday ishlaydi?', 'Qalay isleydi?', 'Как это работает?')}
+              {tx('Qanday ishlaydi?', 'Qalay isleydi?', 'Как это работает?', 'How It Works')}
             </h2>
           </motion.div>
 
@@ -273,9 +288,11 @@ export default function LandingPage({ onEnter }) {
                 titleUz: 'Shablon tanlang',
                 titleQq: 'Shablon tańlań',
                 titleRu: 'Выберите шаблон',
+                titleEn: 'Choose Template',
                 descUz: "200+ premium shablonlardan o'zingizga yoqqanini tanlang",
-                descQq: "200+ premium shablonlardan ózińizge jaqqanın tańlań",
+                descQq: "200+ premium shablonlardan ózıńizge jaqqanın tańlań",
                 descRu: 'Выберите понравившийся из 200+ премиум шаблонов',
+                descEn: 'Pick your favorite from 200+ premium templates',
                 icon: Palette,
               },
               {
@@ -283,9 +300,11 @@ export default function LandingPage({ onEnter }) {
                 titleUz: "Ma'lumot kiriting",
                 titleQq: 'Maǵlıwmat kiritiń',
                 titleRu: 'Заполните данные',
+                titleEn: 'Fill in Details',
                 descUz: "Ism, sana, joy, xabar — barchasini o'zingiz yozing",
-                descQq: "Atı, sána, orın, xabar — bárshesin ózińiz jazıń",
+                descQq: "Atı, sána, orın, xabar — bárshesin ózıńiz jazıń",
                 descRu: 'Имя, дата, место, сообщение — заполните всё сами',
+                descEn: 'Name, date, venue, message — fill it all in yourself',
                 icon: Zap,
               },
               {
@@ -293,9 +312,11 @@ export default function LandingPage({ onEnter }) {
                 titleUz: 'Ulashing',
                 titleQq: 'Bólisiń',
                 titleRu: 'Поделитесь',
+                titleEn: 'Share',
                 descUz: "Havola oling va Telegram, WhatsApp orqali yuboring",
                 descQq: "Silteme alıń hám Telegram, WhatsApp arqalı jiberiń",
                 descRu: 'Получите ссылку и отправьте через Telegram или WhatsApp',
+                descEn: 'Get the link and share via Telegram or WhatsApp',
                 icon: Share2,
               },
             ].map((item, i) => {
@@ -314,13 +335,13 @@ export default function LandingPage({ onEnter }) {
                     <Icon size={28} className="text-primary-400" />
                   </div>
                   <div className="text-[10px] font-bold text-primary-500 tracking-widest mb-2">
-                    {tx('QADAM', 'QADAM', 'ШАГ')} {item.step}
+                    {tx('QADAM', 'QADAM', 'ШАГ', 'STEP')} {item.step}
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">
-                    {tx(item.titleUz, item.titleQq, item.titleRu)}
+                    {tx(item.titleUz, item.titleQq, item.titleRu, item.titleEn)}
                   </h3>
                   <p className="text-sm text-surface-400">
-                    {tx(item.descUz, item.descQq, item.descRu)}
+                    {tx(item.descUz, item.descQq, item.descRu, item.descEn)}
                   </p>
                 </motion.div>
               );
@@ -344,14 +365,16 @@ export default function LandingPage({ onEnter }) {
             {tx(
               "Hoziroq premium taklifnoma yarating!",
               "Házir premium mırájat jaratıń!",
-              "Создайте премиум приглашение прямо сейчас!"
+              "Создайте премиум приглашение прямо сейчас!",
+              "Create your premium invitation now!"
             )}
           </h2>
           <p className="text-surface-400 mb-8">
             {tx(
               "Bepul · Tez · Professional",
               "Tegin · Tez · Professional",
-              "Бесплатно · Быстро · Профессионально"
+              "Бесплатно · Быстро · Профессионально",
+              "Free · Fast · Professional"
             )}
           </p>
           <motion.button
@@ -363,7 +386,7 @@ export default function LandingPage({ onEnter }) {
               shadow-2xl shadow-primary-500/25 hover:shadow-primary-500/40
               transition-all duration-300"
           >
-            {tx('Boshlash', 'Baslaw', 'Начать')}
+            {tx('Boshlash', 'Baslaw', 'Начать', 'Get Started')}
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </motion.div>
@@ -375,7 +398,8 @@ export default function LandingPage({ onEnter }) {
           © 2026 eTaklifnoma.uz — {tx(
             'Barcha huquqlar himoyalangan',
             'Barlıq huqıqlar qorǵalǵan',
-            'Все права защищены'
+            'Все права защищены',
+            'All rights reserved'
           )}
         </p>
       </footer>

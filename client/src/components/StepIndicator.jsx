@@ -18,6 +18,20 @@ const stepsConfig = {
     { id: 4, short: 'Просмотр', icon: Eye },
     { id: 5, short: 'Ссылка', icon: Link2 },
   ],
+  qq: [
+    { id: 1, short: 'Tur', icon: LayoutGrid },
+    { id: 2, short: 'Shablon', icon: Palette },
+    { id: 3, short: 'Mazmun', icon: FileText },
+    { id: 4, short: 'Koriw', icon: Eye },
+    { id: 5, short: 'Silteme', icon: Link2 },
+  ],
+  en: [
+    { id: 1, short: 'Type', icon: LayoutGrid },
+    { id: 2, short: 'Template', icon: Palette },
+    { id: 3, short: 'Content', icon: FileText },
+    { id: 4, short: 'Preview', icon: Eye },
+    { id: 5, short: 'Link', icon: Link2 },
+  ],
 };
 
 export default function StepIndicator({ currentStep, onStepClick }) {
