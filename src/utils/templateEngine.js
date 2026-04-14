@@ -921,21 +921,21 @@ function buildRsvpForm(slug, lang = 'uz') {
             <input type="radio" name="status" value="attending" checked style="display:none" />
             <div class="rsvp-opt rsvp-active" onclick="selectRsvp(this,'attending')"
               style="padding:14px 8px;border-radius:14px;border:1px solid rgba(76,175,80,0.3);background:rgba(76,175,80,0.12);color:#66bb6a;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
-              <span style="display:block;font-size:1.3rem;margin-bottom:4px">✅</span>${t.yes}
+              ${t.yes}
             </div>
           </label>
           <label style="cursor:pointer">
             <input type="radio" name="status" value="maybe" style="display:none" />
             <div class="rsvp-opt" onclick="selectRsvp(this,'maybe')"
               style="padding:14px 8px;border-radius:14px;border:1px solid rgba(255,193,7,0.15);background:rgba(255,193,7,0.04);color:#ffa726;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
-              <span style="display:block;font-size:1.3rem;margin-bottom:4px">🤔</span>${t.maybe}
+              ${t.maybe}
             </div>
           </label>
           <label style="cursor:pointer">
             <input type="radio" name="status" value="not_attending" style="display:none" />
             <div class="rsvp-opt" onclick="selectRsvp(this,'not_attending')"
               style="padding:14px 8px;border-radius:14px;border:1px solid rgba(244,67,54,0.15);background:rgba(244,67,54,0.04);color:#ef5350;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
-              <span style="display:block;font-size:1.3rem;margin-bottom:4px">❌</span>${t.no}
+              ${t.no}
             </div>
           </label>
         </div>
