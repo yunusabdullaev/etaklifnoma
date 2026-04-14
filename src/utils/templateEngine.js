@@ -808,7 +808,7 @@ function buildPhotoGallery(photos) {
   return `
   <section class="section photo-gallery-section" id="gallery" style="background:var(--dark, #0b0d17);padding:60px 0;text-align:center">
     <div class="container" style="max-width:600px;margin:0 auto;padding:0 24px">
-      <h2 class="section-heading light" style="margin-bottom:24px">📸 Foto lavhalar</h2>
+      <h2 class="section-heading light" style="margin-bottom:24px">Foto lavhalar</h2>
       <div style="display:grid;grid-template-columns:repeat(${photos.length === 1 ? 1 : photos.length === 2 ? 2 : 3},1fr);gap:8px">
         ${photoItems}
       </div>
