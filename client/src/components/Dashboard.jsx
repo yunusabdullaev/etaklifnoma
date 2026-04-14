@@ -89,7 +89,7 @@ export default function Dashboard({ token, onCreateNew }) {
         qrImg.crossOrigin = 'anonymous';
         qrImg.onload = () => {
           const canvas = document.createElement('canvas');
-          const W = 600, H = 780;
+          const W = 600, H = 720;
           canvas.width = W; canvas.height = H;
           const ctx = canvas.getContext('2d');
 
@@ -115,22 +115,22 @@ export default function Dashboard({ token, onCreateNew }) {
 
           // Top decorative line
           ctx.fillStyle = '#d4a85340';
-          ctx.fillRect(W / 2 - 40, 30, 80, 2);
+          ctx.fillRect(W / 2 - 50, 32, 100, 2);
 
-          // Title
+          // Title — Russian
           ctx.fillStyle = '#d4a853';
-          ctx.font = 'bold 18px "Montserrat", sans-serif';
+          ctx.font = 'bold 24px "Montserrat", sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('TAKLIFNOMA', W / 2, 65);
+          ctx.fillText('ПРИГЛАШЕНИЕ', W / 2, 70);
 
-          // Subtitle
+          // Subtitle — Russian
           ctx.fillStyle = '#8b8fa3';
-          ctx.font = '13px "Montserrat", sans-serif';
-          ctx.fillText('Premium raqamli taklifnoma', W / 2, 88);
+          ctx.font = '16px "Montserrat", sans-serif';
+          ctx.fillText('Премиум цифровое приглашение', W / 2, 98);
 
           // QR white card background
-          const qrSize = 380;
-          const qrX = (W - qrSize) / 2, qrY = 115;
+          const qrSize = 400;
+          const qrX = (W - qrSize) / 2, qrY = 125;
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
           ctx.roundRect(qrX, qrY, qrSize, qrSize, 16);
@@ -146,31 +146,26 @@ export default function Dashboard({ token, onCreateNew }) {
           ctx.shadowBlur = 0;
 
           // QR code image
-          ctx.drawImage(qrImg, qrX + 30, qrY + 30, qrSize - 60, qrSize - 60);
+          ctx.drawImage(qrImg, qrX + 25, qrY + 25, qrSize - 50, qrSize - 50);
 
-          // Scan text
-          ctx.fillStyle = '#6b7280';
-          ctx.font = '12px "Montserrat", sans-serif';
-          ctx.fillText('Telefoningiz bilan skanerlang', W / 2, qrY + qrSize + 30);
+          // Scan text — Russian
+          ctx.fillStyle = '#9ca3af';
+          ctx.font = '16px "Montserrat", sans-serif';
+          ctx.fillText('Отсканируйте камерой телефона', W / 2, qrY + qrSize + 35);
 
           // Bottom decorative line
           ctx.fillStyle = '#d4a85340';
-          ctx.fillRect(W / 2 - 60, qrY + qrSize + 50, 120, 1);
-
-          // URL
-          ctx.fillStyle = '#818cf8';
-          ctx.font = '11px "Montserrat", sans-serif';
-          ctx.fillText(data.data.url, W / 2, qrY + qrSize + 75);
+          ctx.fillRect(W / 2 - 60, qrY + qrSize + 55, 120, 1);
 
           // Brand
           ctx.fillStyle = '#d4a853';
-          ctx.font = 'bold 20px "Montserrat", sans-serif';
+          ctx.font = 'bold 28px "Montserrat", sans-serif';
           ctx.fillText('eTaklifnoma.uz', W / 2, H - 55);
 
-          // Bottom tagline
-          ctx.fillStyle = '#4b5563';
-          ctx.font = '10px "Montserrat", sans-serif';
-          ctx.fillText('Premium raqamli taklifnomalar xizmati', W / 2, H - 32);
+          // Bottom tagline — Russian
+          ctx.fillStyle = '#6b7280';
+          ctx.font = '13px "Montserrat", sans-serif';
+          ctx.fillText('Сервис премиум приглашений', W / 2, H - 28);
 
           setQrModal({ ...data.data, qrCode: canvas.toDataURL('image/png') });
         };
@@ -373,10 +368,9 @@ export default function Dashboard({ token, onCreateNew }) {
                 <h3 className="text-lg font-display font-semibold bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">📱 QR Kod</h3>
                 <button onClick={() => setQrModal(null)} className="text-surface-500 hover:text-white"><X size={18} /></button>
               </div>
-              <div className="rounded-2xl overflow-hidden mb-4 border border-amber-500/10 shadow-xl shadow-amber-500/5">
+              <div className="rounded-2xl overflow-hidden mb-5 border border-amber-500/10 shadow-xl shadow-amber-500/5">
                 <img src={qrModal.qrCode} alt="QR Code" className="w-full" />
               </div>
-              <p className="text-[10px] text-surface-600 mb-4 break-all">{qrModal.url}</p>
               <button onClick={downloadQr}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl
                   bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold
