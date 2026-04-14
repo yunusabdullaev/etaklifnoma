@@ -100,6 +100,14 @@ exports.create = catchAsync(async (req, res) => {
       throw AppError.badRequest('Template does not belong to the selected event type');
     }
   }
+  // Validate event date — must be today or future, max 89 days
+  if (req.body.eventDate) {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const eventDate = new Date(req.body.eventDate);
+    const maxDate = new Date(today.getTime() + 89 * 24 * 60 * 60 * 1000);
+    if (eventDate < today) throw AppError.badRequest('O\'tgan sanani tanlash mumkin emas');
+    if (eventDate > maxDate) throw AppError.badRequest('Maximum 89 kundan keyin bo\'lishi mumkin');
+  }
 
   // Clean empty strings to null and strip invalid fields
   const cleanData = { ...req.body };

@@ -60,6 +60,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           <div>
             <label className="label">{t('step3.date')} *</label>
             <input type="date" value={data.eventDate || ''}
+              min={new Date().toISOString().split('T')[0]}
+              max={new Date(Date.now() + 89 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
               onChange={(e) => handleChange('eventDate', e.target.value)}
               className="input-field" />
           </div>
