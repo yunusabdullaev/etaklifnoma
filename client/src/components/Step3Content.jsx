@@ -78,9 +78,29 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
         <div>
           <label className="label flex items-center gap-1.5"><Link2 size={13} /> {t('step3.mapLink')}</label>
-          <input type="url" placeholder="https://maps.google.com/..."
+          <input type="url" placeholder="https://yandex.uz/maps/..."
             value={data.locationUrl || ''} onChange={(e) => handleChange('locationUrl', e.target.value)}
             className="input-field" />
+          <div className="flex gap-2 mt-1.5">
+            <a
+              href={`https://yandex.uz/maps/?text=${encodeURIComponent(data.location || '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
+                bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all"
+            >
+              📍 Yandex Maps'da qidirish
+            </a>
+            <a
+              href={`https://www.google.com/maps/search/${encodeURIComponent(data.location || '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
+                bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-all"
+            >
+              📍 Google Maps
+            </a>
+          </div>
         </div>
       </div>
 
