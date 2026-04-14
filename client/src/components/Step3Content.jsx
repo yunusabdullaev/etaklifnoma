@@ -22,9 +22,15 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
   const templateFields = data.template?.structure?.fields || [];
 
+  const isUzOn = data.customFields?.langUz !== false && (data.customFields?.langUz ?? true);
+  const isQqOn = !!data.customFields?.langQq;
+  const isRuOn = !!data.customFields?.langRu;
+  const activeHostName = isUzOn ? data.hostName : (isRuOn ? data.customFields?.hostNameRu : (isQqOn ? data.customFields?.hostNameQq : null));
+
   const formContent = (
     <div className="space-y-5">
       {/* Core fields */}
+      {isUzOn && (
       <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           <User size={13} /> {t('step3.basicInfo')}
@@ -50,6 +56,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             className="input-field" />
         </div>
       </div>
+      )}
 
       {/* Date & location */}
       <div className="glass p-5 space-y-4">
@@ -107,6 +114,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       </div>
 
       {/* Message */}
+      {isUzOn && (
       <div className="glass p-5 space-y-3">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           <MessageSquare size={13} /> {t('step3.message')}
@@ -115,6 +123,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
           className="input-field resize-none" />
       </div>
+      )}
 
       {/* Language Toggle settings */}
       <div className="glass p-5 space-y-4">
@@ -678,7 +687,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         <div className="flex justify-between items-center gap-3">
           <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">{t('step3.back')}</button>
           <button onClick={onNext}
-            disabled={!data.hostName || !data.eventDate || !data.location}
+            disabled={!activeHostName || !data.eventDate || !data.location}
             className="btn-primary flex-1 sm:flex-none min-w-[160px] text-center py-3.5">
             {t('step3.next')}
           </button>

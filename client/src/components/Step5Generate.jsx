@@ -18,9 +18,9 @@ export default function Step5Generate({ data, onReset, onBack }) {
       const payload = {
         eventTypeId: data.eventTypeId,
         templateId: data.templateId,
-        hostName: data.hostName,
-        guestName: data.guestName || undefined,
-        eventTitle: data.eventTitle || undefined,
+        hostName: data.hostName || data.customFields?.hostNameRu || data.customFields?.hostNameQq || 'Mezbon',
+        guestName: data.guestName || data.customFields?.guestNameRu || data.customFields?.guestNameQq || undefined,
+        eventTitle: data.eventTitle || data.customFields?.eventTitleRu || data.customFields?.eventTitleQq || undefined,
         eventDate: data.eventDate,
         eventTime: data.eventTime || undefined,
         location: data.location,
