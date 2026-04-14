@@ -571,6 +571,30 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </button>
         </div>
 
+        {/* RSVP language selector */}
+        {data.customFields?.enableRsvp && (
+          <div className="p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+            <label className="label flex items-center gap-1.5 !mb-2">🌐 RSVP tili</label>
+            <div className="flex gap-2">
+              {[
+                { code: 'uz', label: "O'zbekcha" },
+                { code: 'ru', label: 'Русский' },
+                { code: 'en', label: 'English' },
+              ].map(l => (
+                <button key={l.code} type="button"
+                  onClick={() => handleCustomFieldChange('rsvpLang', l.code)}
+                  className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium border transition-all ${
+                    (data.customFields?.rsvpLang || 'uz') === l.code
+                      ? 'bg-primary-500/20 border-primary-500/40 text-primary-300'
+                      : 'bg-white/[0.03] border-white/[0.08] text-surface-400 hover:bg-white/[0.06]'
+                  }`}>
+                  {l.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
           <div>
             <label className="label flex items-center gap-1.5 !mb-0">💌 {t('step3.wishes')}</label>

@@ -272,7 +272,7 @@ function renderInvitation(invitation, eventType, template) {
   ${(() => {
     // Inject gallery, wishes, rsvp INSIDE the main wrapper (before </main>)
     const gallery = buildPhotoGallery(photos);
-    const rsvp = invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug) : '';
+    const rsvp = invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug, invitation.customFields?.rsvpLang || 'uz') : '';
     const extras = gallery + wishesForm + rsvp;
     
     if (renderedBody.includes('</main>')) {
@@ -845,51 +845,123 @@ function buildPhotoGallery(photos) {
 /**
  * Build RSVP attendance form
  */
-function buildRsvpForm(slug) {
-  return `
-  <section class="section rsvp-section" id="rsvp" style="background:var(--countdown-bg, linear-gradient(135deg,#12152a,#1a1e38));text-align:center;padding:60px 0">
-    <div class="container" style="max-width:500px;margin:0 auto;padding:0 24px">
-      <h2 class="section-heading light" style="margin-bottom:8px">✅ Qatnashishni tasdiqlang</h2>
-      <p style="font-size:0.9rem;color:rgba(232,226,214,0.5);margin-bottom:24px">Iltimos, qatnashishingizni tasdiqlang</p>
-      <form id="rsvpForm" onsubmit="submitRsvp(event)" style="display:flex;flex-direction:column;gap:12px">
-        <input type="text" name="guestName" placeholder="Ismingiz" required style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e8e2d6;font-size:0.95rem;outline:none" />
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="rsvpButtons">
-          <label style="flex:1;min-width:100px">
+function buildRsvpForm(slug, lang = 'uz') {
+  const txt = {
+    uz: {
+      title: 'Qatnashishni tasdiqlang',
+      subtitle: 'Iltimos, qatnashishingizni tasdiqlang',
+      name: 'Ismingiz',
+      yes: 'Kelaman',
+      maybe: 'Bilmayman',
+      no: 'Kelolmayman',
+      person: 'kishi',
+      submit: 'Tasdiqlash',
+      sending: 'Yuborilmoqda...',
+      success: 'Javobingiz qabul qilindi! Rahmat! 🎉',
+      error: 'Xatolik yuz berdi',
+      network: 'Tarmoq xatoligi',
+    },
+    ru: {
+      title: 'Подтвердите участие',
+      subtitle: 'Пожалуйста, подтвердите ваше присутствие',
+      name: 'Ваше имя',
+      yes: 'Приду',
+      maybe: 'Не уверен(а)',
+      no: 'Не смогу',
+      person: 'чел.',
+      submit: 'Подтвердить',
+      sending: 'Отправка...',
+      success: 'Ваш ответ принят! Спасибо! 🎉',
+      error: 'Произошла ошибка',
+      network: 'Ошибка сети',
+    },
+    en: {
+      title: 'Confirm Attendance',
+      subtitle: 'Please confirm your attendance',
+      name: 'Your name',
+      yes: 'Attending',
+      maybe: 'Maybe',
+      no: 'Can\\'t make it',
+      person: 'guest(s)',
+      submit: 'Confirm',
+      sending: 'Sending...',
+      success: 'Your response has been received! Thank you! 🎉',
+      error: 'An error occurred',
+      network: 'Network error',
+    },
+  };
+  const t = txt[lang] || txt.uz;
+
+  return \`
+  <section class="section rsvp-section" id="rsvp" style="text-align:center;padding:60px 0;position:relative">
+    <div style="max-width:460px;margin:0 auto;padding:0 24px">
+      <div style="margin-bottom:28px">
+        <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(76,175,80,0.2)">
+          <span style="font-size:28px">💌</span>
+        </div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#e8e2d6;margin:0 0 8px">\${t.title}</h2>
+        <p style="font-size:0.85rem;color:rgba(232,226,214,0.4);margin:0">\${t.subtitle}</p>
+      </div>
+
+      <form id="rsvpForm" onsubmit="submitRsvp(event)" style="display:flex;flex-direction:column;gap:14px">
+        <input type="text" name="guestName" placeholder="\${t.name}" required
+          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#e8e2d6;font-size:0.95rem;outline:none;backdrop-filter:blur(8px);transition:border-color 0.3s;font-family:inherit"
+          onfocus="this.style.borderColor='rgba(76,175,80,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'" />
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="rsvpButtons">
+          <label style="cursor:pointer">
             <input type="radio" name="status" value="attending" checked style="display:none" />
-            <div class="rsvp-opt rsvp-active" onclick="selectRsvp(this,'attending')" style="padding:10px;border-radius:10px;border:1px solid rgba(76,175,80,0.3);background:rgba(76,175,80,0.15);color:#66bb6a;cursor:pointer;font-size:0.85rem;text-align:center;transition:all 0.3s">✅ Kelaman</div>
+            <div class="rsvp-opt rsvp-active" onclick="selectRsvp(this,'attending')"
+              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(76,175,80,0.3);background:rgba(76,175,80,0.12);color:#66bb6a;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
+              <span style="display:block;font-size:1.3rem;margin-bottom:4px">✅</span>\${t.yes}
+            </div>
           </label>
-          <label style="flex:1;min-width:100px">
+          <label style="cursor:pointer">
             <input type="radio" name="status" value="maybe" style="display:none" />
-            <div class="rsvp-opt" onclick="selectRsvp(this,'maybe')" style="padding:10px;border-radius:10px;border:1px solid rgba(255,193,7,0.3);background:rgba(255,193,7,0.05);color:#ffa726;cursor:pointer;font-size:0.85rem;text-align:center;transition:all 0.3s">🤔 Bilmayman</div>
+            <div class="rsvp-opt" onclick="selectRsvp(this,'maybe')"
+              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(255,193,7,0.15);background:rgba(255,193,7,0.04);color:#ffa726;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
+              <span style="display:block;font-size:1.3rem;margin-bottom:4px">🤔</span>\${t.maybe}
+            </div>
           </label>
-          <label style="flex:1;min-width:100px">
+          <label style="cursor:pointer">
             <input type="radio" name="status" value="not_attending" style="display:none" />
-            <div class="rsvp-opt" onclick="selectRsvp(this,'not_attending')" style="padding:10px;border-radius:10px;border:1px solid rgba(244,67,54,0.3);background:rgba(244,67,54,0.05);color:#ef5350;cursor:pointer;font-size:0.85rem;text-align:center;transition:all 0.3s">❌ Kelolmayman</div>
+            <div class="rsvp-opt" onclick="selectRsvp(this,'not_attending')"
+              style="padding:14px 8px;border-radius:14px;border:1px solid rgba(244,67,54,0.15);background:rgba(244,67,54,0.04);color:#ef5350;text-align:center;transition:all 0.3s;font-size:0.82rem;font-weight:600">
+              <span style="display:block;font-size:1.3rem;margin-bottom:4px">❌</span>\${t.no}
+            </div>
           </label>
         </div>
-        <select name="guestCount" style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e8e2d6;font-size:0.95rem;outline:none">
-          <option value="1">1 kishi</option>
-          <option value="2">2 kishi</option>
-          <option value="3">3 kishi</option>
-          <option value="4">4 kishi</option>
-          <option value="5">5+ kishi</option>
+
+        <select name="guestCount"
+          style="padding:14px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#e8e2d6;font-size:0.95rem;outline:none;font-family:inherit;appearance:auto">
+          <option value="1">1 \${t.person}</option>
+          <option value="2">2 \${t.person}</option>
+          <option value="3">3 \${t.person}</option>
+          <option value="4">4 \${t.person}</option>
+          <option value="5">5+ \${t.person}</option>
         </select>
-        <input type="hidden" name="slug" value="${slug}" />
-        <button type="submit" id="rsvpBtn" style="padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#4caf50,#66bb6a);color:white;font-weight:600;font-size:0.95rem;cursor:pointer;transition:all 0.3s">
-          Tasdiqlash
+
+        <input type="hidden" name="slug" value="\${slug}" />
+        <button type="submit" id="rsvpBtn"
+          style="padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,#4caf50,#2e7d32);color:white;font-weight:700;font-size:0.95rem;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 24px rgba(76,175,80,0.2);font-family:inherit;letter-spacing:0.02em">
+          \${t.submit}
         </button>
         <p id="rsvpStatus" style="font-size:0.85rem;margin-top:4px"></p>
       </form>
     </div>
   </section>
   <script>
+  var _rsvpTxt = ${JSON.stringify(t)};
   function selectRsvp(el, val) {
     document.querySelectorAll('.rsvp-opt').forEach(function(o){
-      o.style.background = o.style.background.replace(/0\\.15/,'0.05');
+      o.style.borderColor = o.style.borderColor.replace(/0\\.3/,'0.15');
+      o.style.background = o.style.background.replace(/0\\.12/,'0.04');
       o.classList.remove('rsvp-active');
     });
     el.classList.add('rsvp-active');
-    el.style.background = el.style.background.replace(/0\\.05/,'0.15');
+    if(val==='attending'){el.style.borderColor='rgba(76,175,80,0.3)';el.style.background='rgba(76,175,80,0.12)';}
+    else if(val==='maybe'){el.style.borderColor='rgba(255,193,7,0.3)';el.style.background='rgba(255,193,7,0.12)';}
+    else{el.style.borderColor='rgba(244,67,54,0.3)';el.style.background='rgba(244,67,54,0.12)';}
     el.closest('label').querySelector('input[type=radio]').checked = true;
   }
   function submitRsvp(e) {
@@ -897,8 +969,9 @@ function buildRsvpForm(slug) {
     var f = e.target;
     var btn = document.getElementById('rsvpBtn');
     var st = document.getElementById('rsvpStatus');
-    btn.textContent = 'Yuborilmoqda...';
+    btn.textContent = _rsvpTxt.sending;
     btn.disabled = true;
+    btn.style.opacity = '0.7';
     var status = f.querySelector('input[name=status]:checked')?.value || 'attending';
     fetch('/api/invitations/' + f.slug.value + '/rsvp', {
       method: 'POST',
@@ -912,23 +985,25 @@ function buildRsvpForm(slug) {
     .then(function(r){return r.json()})
     .then(function(d){
       if(d.success){
-        st.textContent = '✅ Javobingiz qabul qilindi! Rahmat!';
+        st.textContent = _rsvpTxt.success;
         st.style.color = '#66bb6a';
+        btn.style.background = 'linear-gradient(135deg,#2e7d32,#1b5e20)';
       } else {
-        st.textContent = '❌ Xatolik yuz berdi';
+        st.textContent = '❌ ' + _rsvpTxt.error;
         st.style.color = '#ef5350';
       }
     })
     .catch(function(){
-      st.textContent = '❌ Tarmoq xatoligi';
+      st.textContent = '❌ ' + _rsvpTxt.network;
       st.style.color = '#ef5350';
     })
     .finally(function(){
-      btn.textContent = 'Tasdiqlash';
+      btn.textContent = _rsvpTxt.submit;
       btn.disabled = false;
+      btn.style.opacity = '1';
     });
   }
-  </script>`;
+  </script>\`;
 }
 
 module.exports = {
