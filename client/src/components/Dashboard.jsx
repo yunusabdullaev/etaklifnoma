@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ExternalLink, Copy, Eye, Calendar, MapPin, Clock, Trash2, Check, LayoutGrid, Pencil, X, Save, Loader2, QrCode, Users, Download, UserCheck, UserX, HelpCircle, MessageSquare, Copy as CopyIcon } from 'lucide-react';
+import { Plus, ExternalLink, Copy, Eye, Calendar, MapPin, Clock, Trash2, Check, LayoutGrid, Pencil, X, Save, Loader2, QrCode, Users, Download, UserCheck, UserX, HelpCircle, MessageSquare, Copy as CopyIcon, Share2, Send } from 'lucide-react';
 import { useLang } from '../i18n';
 
 export default function Dashboard({ token, onCreateNew }) {
@@ -38,6 +38,18 @@ export default function Dashboard({ token, onCreateNew }) {
     navigator.clipboard.writeText(url);
     setCopiedSlug(slug);
     setTimeout(() => setCopiedSlug(null), 2000);
+  };
+
+  const shareViaWhatsApp = (slug, title) => {
+    const url = `${APP_URL}/invite/${slug}/view`;
+    const text = encodeURIComponent(`💍 ${title || 'Taklifnoma'}\n${url}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  };
+
+  const shareViaTelegram = (slug, title) => {
+    const url = encodeURIComponent(`${APP_URL}/invite/${slug}/view`);
+    const text = encodeURIComponent(`💍 ${title || 'Taklifnoma'}`);
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
   };
 
   const deleteInvitation = async (id) => {
@@ -372,20 +384,57 @@ export default function Dashboard({ token, onCreateNew }) {
                 )}
               </div>
 
+              {/* ── Share Panel ── */}
+              <div className="px-3 pb-1">
+                <p className="text-[9px] font-semibold uppercase tracking-widest text-surface-600 mb-1.5">📤 Ulashish</p>
+                <div className="flex gap-1.5">
+                  {/* WhatsApp */}
+                  <button
+                    onClick={() => shareViaWhatsApp(inv.slug, inv.eventTitle || inv.hostName)}
+                    title="WhatsApp orqali ulashish"
+                    className="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-medium
+                      bg-emerald-500/10 text-emerald-400 border border-emerald-500/15
+                      hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all"
+                  >
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2c-5.514 0-9.993 4.478-9.993 9.993 0 1.76.463 3.464 1.344 4.97L2 22l5.184-1.361a9.945 9.945 0 004.82 1.232h.004c5.512 0 9.991-4.48 9.991-9.994 0-2.67-1.039-5.18-2.927-7.069A9.952 9.952 0 0012.004 2z"/></svg>
+                    WhatsApp
+                  </button>
+
+                  {/* Telegram */}
+                  <button
+                    onClick={() => shareViaTelegram(inv.slug, inv.eventTitle || inv.hostName)}
+                    title="Telegram orqali ulashish"
+                    className="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-medium
+                      bg-sky-500/10 text-sky-400 border border-sky-500/15
+                      hover:bg-sky-500/20 hover:border-sky-500/30 transition-all"
+                  >
+                    <Send size={11} />
+                    Telegram
+                  </button>
+
+                  {/* Copy Link */}
+                  <button
+                    onClick={() => copyLink(inv.slug)}
+                    title="Link nusxalash"
+                    className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-[11px] font-medium border transition-all ${
+                      copiedSlug === inv.slug
+                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25'
+                        : 'bg-white/[0.04] text-surface-400 border-white/[0.06] hover:bg-white/[0.08] hover:text-white'
+                    }`}
+                  >
+                    {copiedSlug === inv.slug ? <Check size={11} /> : <Copy size={11} />}
+                    {copiedSlug === inv.slug ? 'Nusxalandi!' : 'Link'}
+                  </button>
+                </div>
+              </div>
+
               {/* Actions */}
-              <div className="p-3 pt-0 flex gap-2 flex-wrap">
+              <div className="p-3 pt-1 flex gap-2 flex-wrap">
                 <a href={`${APP_URL}/invite/${inv.slug}/view`} target="_blank" rel="noopener"
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg
                     bg-primary-500/10 text-primary-400 text-xs font-medium hover:bg-primary-500/20 transition-colors">
                   <ExternalLink size={12} /> {t('dashboard.view')}
                 </a>
-                <button onClick={() => copyLink(inv.slug)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                    copiedSlug === inv.slug ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/5 text-surface-300 hover:bg-white/10'
-                  }`}>
-                  {copiedSlug === inv.slug ? <Check size={12} /> : <Copy size={12} />}
-                  {copiedSlug === inv.slug ? t('dashboard.copied') : t('dashboard.copyLink')}
-                </button>
               </div>
               <div className="px-3 pb-3 flex gap-1.5">
                 <button onClick={() => openQr(inv.slug)} title="QR Kod"
