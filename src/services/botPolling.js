@@ -1,4 +1,3 @@
-const BotConnection = require('../models/BotConnection');
 
 let isPolling = false;
 let lastUpdateId = 0;
@@ -46,14 +45,13 @@ async function poll(token) {
             const rawToken = msg.text.split(' ')[1]; // "tks_ABC123"
             if (rawToken) {
               const chatId = String(msg.chat.id);
-              // Baza
-              const doc = await BotConnection.findOneAndUpdate(
-                { token: rawToken, chatId: null },
-                { $set: { chatId } },
-                { new: true }
+              const { BotConnection } = require('../models');
+              const [updatedCount] = await BotConnection.update(
+                { chatId },
+                { where: { token: rawToken, chatId: null } }
               );
 
-              if (doc) {
+              if (updatedCount > 0) {
                 const botNameRes = await fetchWithTimeout(`https://api.telegram.org/bot${token}/getMe`);
                 const botData = await botNameRes.json();
                 const botName = botData.ok ? (botData.result.first_name || 'Bot') : 'Bot';

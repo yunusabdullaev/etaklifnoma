@@ -139,7 +139,7 @@ router.post('/api/bot/test', async (req, res) => {
 // ── Telegram Bot Link Generator ──────────────────────────
 router.post('/api/bot/generate-link', async (req, res) => {
   try {
-    const BotConnection = require('../models/BotConnection');
+    const { BotConnection } = require('../models');
     const token = 'tks_' + Math.random().toString(36).substring(2, 9).toUpperCase();
     
     await BotConnection.create({ token });
@@ -163,11 +163,11 @@ router.post('/api/bot/generate-link', async (req, res) => {
 
 router.get('/api/bot/check-link', async (req, res) => {
   try {
-    const BotConnection = require('../models/BotConnection');
+    const { BotConnection } = require('../models');
     const { token } = req.query;
     if (!token) return res.json({ success: false });
 
-    const doc = await BotConnection.findOne({ token });
+    const doc = await BotConnection.findOne({ where: { token } });
     if (doc && doc.chatId) {
       return res.json({ success: true, chatId: doc.chatId });
     }

@@ -1,9 +1,28 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
 
-const schema = new mongoose.Schema({
-  token: { type: String, required: true, unique: true },
-  chatId: { type: String, default: null },
-  createdAt: { type: Date, default: Date.now, expires: 3600 } // Auto-delete documents after 1 hour
-});
+module.exports = (sequelize) => {
+  const BotConnection = sequelize.define('BotConnection', {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    token: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      unique: true,
+    },
+    chatId: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      defaultValue: null,
+      field: 'chat_id'
+    },
+  }, {
+    tableName: 'bot_connections',
+    underscored: true,
+    timestamps: true,
+  });
 
-module.exports = mongoose.model('BotConnection', schema);
+  return BotConnection;
+};
