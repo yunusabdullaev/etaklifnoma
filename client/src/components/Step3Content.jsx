@@ -735,6 +735,35 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             }`} />
           </button>
         </div>
+
+        {/* ─── Floating Elements Toggles ─── */}
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+          <div className="px-3 py-2.5 border-b border-white/[0.04]">
+            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">⚙️ Suzuvchi tugmalar</p>
+          </div>
+          {[
+            { key: 'envelopeAnim',  label: '🎭 Konvert animatsiyasi',     hint: 'Sahifa ochilganda konvert effekti', defaultOn: true },
+            { key: 'showShareWa',   label: '💬 WhatsApp ulashish tugmasi', hint: 'Invitation sahifasida WhatsApp tugmasi', defaultOn: true },
+            { key: 'showShareTg',   label: '✈️ Telegram ulashish tugmasi', hint: 'Invitation sahifasida Telegram tugmasi', defaultOn: true },
+            { key: 'showCalendarBtn', label: '📅 Kalendar tugmasi',        hint: 'Google Calendar ga qo\'shish tugmasi', defaultOn: true },
+            { key: 'showPrintBtn',  label: '🖨️ Chop etish tugmasi',       hint: 'PDF sifatida saqlash tugmasi', defaultOn: true },
+          ].map(({ key, label, hint, defaultOn }) => {
+            const isOn = data.customFields?.[key] === undefined ? defaultOn : !!data.customFields[key];
+            return (
+              <div key={key} className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.03] last:border-0">
+                <div>
+                  <p className="text-xs text-surface-300 font-medium">{label}</p>
+                  <p className="text-[10px] text-surface-500">{hint}</p>
+                </div>
+                <button type="button"
+                  onClick={() => handleCustomFieldChange(key, !isOn)}
+                  className={`w-10 h-5 rounded-full transition-all duration-300 relative flex-shrink-0 ${isOn ? 'bg-primary-500' : 'bg-surface-700'}`}>
+                  <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-300 ${isOn ? 'left-[22px]' : 'left-0.5'}`} />
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

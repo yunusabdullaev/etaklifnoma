@@ -336,10 +336,10 @@ function renderInvitation(invitation, eventType, template) {
     locationDisplay: context['location'] || '',
   })};</script>
   ${buildLanguageToggle()}
-  ${buildShareButtons()}
-  ${buildCalendarButton()}
-  ${buildPrintButton()}
-  ${invitation.customFields?.envelopeAnim !== false ? buildEnvelopeAnimation() : ''}
+  ${buildShareButtons(invitation.customFields)}
+  ${(invitation.customFields?.showCalendarBtn !== false) ? buildCalendarButton() : ''}
+  ${(invitation.customFields?.showPrintBtn !== false) ? buildPrintButton() : ''}
+  ${(invitation.customFields?.envelopeAnim !== false) ? buildEnvelopeAnimation() : ''}
   ${buildColorPaletteCss(invitation.customFields?.colorPalette || 'gold')}
   ${buildBrandingFooter()}
 </body>
@@ -431,42 +431,51 @@ function buildMusicPlayer(musicUrl) {
 
 /**
  * Builds floating WhatsApp + Telegram share buttons.
+ * @param {object} cf - customFields from invitation (optional)
  */
-function buildShareButtons() {
-  return `
-  <div id="sharePanel" style="position:fixed;bottom:88px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:8px;">
+function buildShareButtons(cf) {
+  const showWa = !cf || cf.showShareWa !== false;
+  const showTg = !cf || cf.showShareTg !== false;
+  if (!showWa && !showTg) return '';
+
+  const waBtn = showWa ? `
     <a id="waShareBtn" href="#" target="_blank" rel="noopener"
       title="WhatsApp orqali ulashish"
       style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
              background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.25);backdrop-filter:blur(12px);
-             cursor:pointer;transition:all 0.3s ease;text-decoration:none;font-size:20px;
-             box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+             cursor:pointer;transition:all 0.3s ease;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.3);">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2c-5.514 0-9.993 4.478-9.993 9.993 0 1.76.463 3.464 1.344 4.97L2 22l5.184-1.361a9.945 9.945 0 004.82 1.232h.004c5.512 0 9.991-4.48 9.991-9.994 0-2.67-1.039-5.18-2.927-7.069A9.952 9.952 0 0012.004 2z"/></svg>
-    </a>
+    </a>` : '';
+
+  const tgBtn = showTg ? `
     <a id="tgShareBtn" href="#" target="_blank" rel="noopener"
       title="Telegram orqali ulashish"
       style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
              background:rgba(36,162,222,0.12);border:1px solid rgba(36,162,222,0.25);backdrop-filter:blur(12px);
-             cursor:pointer;transition:all 0.3s ease;text-decoration:none;font-size:20px;
-             box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+             cursor:pointer;transition:all 0.3s ease;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.3);">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="#24a2de"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
-    </a>
+    </a>` : '';
+
+  return `
+  <div id="sharePanel" style="position:fixed;bottom:88px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:8px;">
+    ${waBtn}
+    ${tgBtn}
   </div>
   <script>
   (function(){
     var url = encodeURIComponent(window.location.href);
     var text = encodeURIComponent('💍 Sizni taklifnomamizga taklif etamiz!');
-    document.getElementById('waShareBtn').href = 'https://wa.me/?text=' + text + '%20' + url;
-    document.getElementById('tgShareBtn').href = 'https://t.me/share/url?url=' + url + '&text=' + text;
-    // Hover effects
+    ${showWa ? "var wa=document.getElementById('waShareBtn');if(wa)wa.href='https://wa.me/?text='+text+'%20'+url;" : ''}
+    ${showTg ? "var tg=document.getElementById('tgShareBtn');if(tg)tg.href='https://t.me/share/url?url='+url+'&text='+text;" : ''}
     ['waShareBtn','tgShareBtn'].forEach(function(id){
-      var el = document.getElementById(id);
-      el.addEventListener('mouseenter', function(){ this.style.transform='scale(1.12)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.4)'; });
-      el.addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.3)'; });
+      var el=document.getElementById(id);if(!el)return;
+      el.addEventListener('mouseenter',function(){this.style.transform='scale(1.12)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.4)';});
+      el.addEventListener('mouseleave',function(){this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.3)';});
     });
   })();
-  </script>`;
+  <\/script>`;
 }
+
 
 /**
  * Builds the Telegram wishes form HTML.
