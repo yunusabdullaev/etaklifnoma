@@ -337,8 +337,8 @@ function renderInvitation(invitation, eventType, template) {
   })};</script>
   ${buildLanguageToggle()}
   ${buildShareButtons(invitation.customFields)}
-  ${(invitation.customFields?.showCalendarBtn !== false) ? buildCalendarButton() : ''}
-  ${(invitation.customFields?.showPrintBtn !== false) ? buildPrintButton() : ''}
+  ${(invitation.customFields?.showCalendarBtn === true) ? buildCalendarButton() : ''}
+  ${(invitation.customFields?.showPrintBtn === true) ? buildPrintButton() : ''}
   ${(invitation.customFields?.envelopeAnim !== false) ? buildEnvelopeAnimation(eventType) : ''}
   ${buildColorPaletteCss(invitation.customFields?.colorPalette || 'gold')}
   ${buildBrandingFooter()}
@@ -434,8 +434,8 @@ function buildMusicPlayer(musicUrl) {
  * @param {object} cf - customFields from invitation (optional)
  */
 function buildShareButtons(cf) {
-  const showWa = !cf || cf.showShareWa !== false;
-  const showTg = !cf || cf.showShareTg !== false;
+  const showWa = cf && cf.showShareWa === true;
+  const showTg = cf && cf.showShareTg === true;
   if (!showWa && !showTg) return '';
 
   const waBtn = showWa ? `
