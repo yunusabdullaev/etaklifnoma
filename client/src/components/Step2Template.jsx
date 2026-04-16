@@ -151,7 +151,7 @@ function renderTemplatePreview(template, eventTypeName = '', lang = 'uz') {
     uz: {
       wedding: {
         brideName: 'Madina', groomName: 'Sardor',
-        eventTitle: 'Nikoh to\\'yi', eventTypeLabel: 'Nikoh taklifi',
+        eventTitle: "Nikoh to'yi", eventTypeLabel: 'Nikoh taklifi',
         message: "Sizni farzandlarimiz nikoh to'yiga taklif qilamiz. Kelishingizni kutib qolamiz!",
         hostName: 'Karimov va Rahimov oilasi',
         guestName: 'Hurmatli mehmonlar!',
