@@ -3,41 +3,65 @@ import re
 with open('client/src/components/Dashboard.jsx', 'r') as f:
     text = f.read()
 
-# Insert the handleCreateNew function around line 23 right before useEffect
-search_insert = "  useEffect(() => { fetchInvitations(); }, []);"
-replace_insert = """
-  const handleCreateNew = () => {
-    let defaultSettings = null;
-    if (invitations && invitations.length > 0) {
-      const lastInv = invitations[0];
-      if (lastInv.customFields) {
-        defaultSettings = {
-          telegramChatId: lastInv.customFields.telegramChatId,
-          telegramBot: lastInv.customFields.telegramBot,
-          langUz: lastInv.customFields.langUz,
-          langQq: lastInv.customFields.langQq,
-          langRu: lastInv.customFields.langRu,
-          defaultLang: lastInv.customFields.defaultLang,
-          showShareWa: lastInv.customFields.showShareWa,
-          showShareTg: lastInv.customFields.showShareTg,
-          showCalendarBtn: lastInv.customFields.showCalendarBtn,
-          showPrintBtn: lastInv.customFields.showPrintBtn,
-          enableWishes: lastInv.customFields.enableWishes,
-          musicUrl: lastInv.customFields.musicUrl,
-        };
-      }
-    }
-    onCreateNew(defaultSettings);
-  };
+# Update signature
+search1 = """export default function Dashboard({ token, onCreateNew }) {"""
+replace1 = """export default function Dashboard({ token, onCreateNew, onContinueDraft }) {"""
+text = text.replace(search1, replace1)
 
-  useEffect(() => { fetchInvitations(); }, []);"""
+# Update state
+search2 = """  const [duplicating, setDuplicating] = useState(null); // slug being duplicated"""
+replace2 = """  const [duplicating, setDuplicating] = useState(null); // slug being duplicated
+  const [hasDraft, setHasDraft] = useState(false);"""
+text = text.replace(search2, replace2)
 
-text = text.replace(search_insert, replace_insert)
+# Update useEffect
+search3 = """  useEffect(() => { fetchInvitations(); }, []);"""
+replace3 = """  useEffect(() => { 
+    try {
+      const draft = localStorage.getItem('etaklifnoma_wizard_draft');
+      if (draft && JSON.parse(draft).step) setHasDraft(true);
+    } catch(e){}
+    fetchInvitations(); 
+  }, []);"""
+text = text.replace(search3, replace3)
 
-# Replace all onClick={onCreateNew} with onClick={handleCreateNew}
-text = text.replace('onClick={onCreateNew}', 'onClick={handleCreateNew}')
+# Update top button
+search4 = """        <button onClick={handleCreateNew} className="btn-primary flex items-center gap-2 px-5 py-2.5">
+          <Plus size={16} /> {t('dashboard.newBtn')}
+        </button>
+      </div>"""
+replace4 = """        <div className="flex gap-3">
+          {hasDraft && (
+            <button onClick={onContinueDraft} className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20 shadow-sm shadow-accent-500/10">
+              <Pencil size={16} /> Davom etish
+            </button>
+          )}
+          <button onClick={handleCreateNew} className="btn-primary flex items-center gap-2 px-5 py-2.5">
+            <Plus size={16} /> {t('dashboard.newBtn')}
+          </button>
+        </div>
+      </div>"""
+text = text.replace(search4, replace4)
+
+# Update body empty button
+search5 = """          <button onClick={handleCreateNew} className="btn-primary inline-flex items-center gap-2 px-6 py-3">
+            <Plus size={18} /> {t('dashboard.createBtn')}
+          </button>
+        </motion.div>"""
+replace5 = """          <div className="flex justify-center gap-3">
+            {hasDraft && (
+              <button onClick={onContinueDraft} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20">
+                <Pencil size={18} /> Davom etish
+              </button>
+            )}
+            <button onClick={handleCreateNew} className="btn-primary inline-flex items-center gap-2 px-6 py-3">
+              <Plus size={18} /> {t('dashboard.createBtn')}
+            </button>
+          </div>
+        </motion.div>"""
+text = text.replace(search5, replace5)
 
 with open('client/src/components/Dashboard.jsx', 'w') as f:
     f.write(text)
 
-print("Dashboard updated seamlessly.")
+print("SUCCESS: Dashboard updated.")

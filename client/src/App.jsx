@@ -37,6 +37,14 @@ export default function App() {
   const [token, setToken] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [view, setView] = useState('dashboard'); // 'dashboard' | 'wizard' | 'support'
+  const GLOBAL_DRAFT_KEY = 'etaklifnoma_wizard_draft';
+
+  // Global wizard draft auto-save
+  useEffect(() => {
+    if (view === 'wizard' && step >= 1 && step < 5 && user) {
+      localStorage.setItem(GLOBAL_DRAFT_KEY, JSON.stringify({ step, data }));
+    }
+  }, [step, data, view, user]);
   const [showAuth, setShowAuth] = useState(false); // landing → auth transition
 
   // Check saved auth on mount
@@ -84,9 +92,11 @@ export default function App() {
     setData(INITIAL_DATA);
     setStep(1);
     setView('dashboard');
+    localStorage.removeItem(GLOBAL_DRAFT_KEY);
   };
 
   const startWizard = (defaultSettings = null) => {
+    localStorage.removeItem(GLOBAL_DRAFT_KEY);
     let freshData = { ...INITIAL_DATA };
     if (defaultSettings && Object.keys(defaultSettings).length > 0) {
         freshData.customFields = { ...defaultSettings };
@@ -94,6 +104,21 @@ export default function App() {
     setData(freshData);
     setStep(1);
     setView('wizard');
+  };
+
+  const continueWizard = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(GLOBAL_DRAFT_KEY));
+      if (saved && saved.data) {
+        setData(saved.data);
+        setStep(saved.step || 1);
+        setView('wizard');
+      } else {
+        startWizard();
+      }
+    } catch (e) {
+      startWizard();
+    }
   };
 
   const renderStep = () => {
@@ -234,7 +259,7 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <Dashboard token={token} onCreateNew={startWizard} />
+              <Dashboard token={token} onCreateNew={startWizard} onContinueDraft={continueWizard} />
             </motion.div>
           ) : showSupport ? (
             <motion.div

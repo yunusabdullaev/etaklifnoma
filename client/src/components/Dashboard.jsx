@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ExternalLink, Copy, Eye, Calendar, MapPin, Clock, Trash2, Check, LayoutGrid, Pencil, X, Save, Loader2, QrCode, Users, Download, UserCheck, UserX, HelpCircle, MessageSquare, Copy as CopyIcon, Share2, Send } from 'lucide-react';
 import { useLang } from '../i18n';
 
-export default function Dashboard({ token, onCreateNew }) {
+export default function Dashboard({ token, onCreateNew, onContinueDraft }) {
   const [invitations, setInvitations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedSlug, setCopiedSlug] = useState(null);
@@ -15,6 +15,7 @@ export default function Dashboard({ token, onCreateNew }) {
   const [rsvpModal, setRsvpModal] = useState(null); // { slug, rsvps, stats }
   const [wishesModal, setWishesModal] = useState(null); // { slug, wishes }
   const [duplicating, setDuplicating] = useState(null); // slug being duplicated
+  const [hasDraft, setHasDraft] = useState(false);
 
   const API = import.meta.env.VITE_API_URL || '';
   const APP_URL = window.location.origin;
@@ -45,7 +46,13 @@ export default function Dashboard({ token, onCreateNew }) {
     onCreateNew(defaultSettings);
   };
 
-  useEffect(() => { fetchInvitations(); }, []);
+  useEffect(() => { 
+    try {
+      const draft = localStorage.getItem('etaklifnoma_wizard_draft');
+      if (draft && JSON.parse(draft).step) setHasDraft(true);
+    } catch(e){}
+    fetchInvitations(); 
+  }, []);
 
   const fetchInvitations = async () => {
     try {
@@ -322,9 +329,16 @@ export default function Dashboard({ token, onCreateNew }) {
             {invitations.length > 0 ? `${invitations.length} ${t('dashboard.total')}` : t('dashboard.empty')}
           </p>
         </div>
-        <button onClick={handleCreateNew} className="btn-primary flex items-center gap-2 px-5 py-2.5">
-          <Plus size={16} /> {t('dashboard.newBtn')}
-        </button>
+        <div className="flex gap-3">
+          {hasDraft && (
+            <button onClick={onContinueDraft} className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20 shadow-sm shadow-accent-500/10">
+              <Pencil size={16} /> Davom etish
+            </button>
+          )}
+          <button onClick={handleCreateNew} className="btn-primary flex items-center gap-2 px-5 py-2.5">
+            <Plus size={16} /> {t('dashboard.newBtn')}
+          </button>
+        </div>
       </div>
 
       {/* Success */}
@@ -343,9 +357,16 @@ export default function Dashboard({ token, onCreateNew }) {
           <div className="text-6xl mb-4">📨</div>
           <h3 className="text-xl font-display font-semibold text-white mb-2">{t('dashboard.emptyTitle')}</h3>
           <p className="text-surface-400 text-sm mb-6 max-w-md mx-auto">{t('dashboard.emptyDesc')}</p>
-          <button onClick={handleCreateNew} className="btn-primary inline-flex items-center gap-2 px-6 py-3">
-            <Plus size={18} /> {t('dashboard.createBtn')}
-          </button>
+          <div className="flex justify-center gap-3">
+            {hasDraft && (
+              <button onClick={onContinueDraft} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20">
+                <Pencil size={18} /> Davom etish
+              </button>
+            )}
+            <button onClick={handleCreateNew} className="btn-primary inline-flex items-center gap-2 px-6 py-3">
+              <Plus size={18} /> {t('dashboard.createBtn')}
+            </button>
+          </div>
         </motion.div>
       )}
 
