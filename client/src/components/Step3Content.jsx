@@ -6,6 +6,45 @@ import { useLang } from '../i18n';
 import { uploadImage, uploadAudio } from '../utils/cloudinary';
 import TelegramConnector from './TelegramConnector';
 
+const trStep3 = {
+  uz: {
+    qqFields: 'Qaraqalpoqsha matnlar', ruFields: 'Ruscha matnlar',
+    qqHostName: 'Mezban atı', qqGuestName: 'Mehman atı', qqEventTitle: 'Ilaje atı',
+    ruHostName: 'Имя хозяина', ruGuestName: 'Имя гостя', ruEventTitle: 'Название мероприятия', msg: 'Xabar',
+    
+    age: 'Yoshi', theme: 'Bayram mavzusi', years: 'Yillar (Masalan: 50)', school: "Ta'lim muassasasi", graduationYear: 'Bitiruv yili', brideName: 'Kelinning ismi', groomName: 'Kuyovning ismi',
+    palette: '🎨 Rang palitasi',
+    gold: 'Oltin', silver: 'Kumush', ocean: 'Okean', rose: 'Gul', lavender: 'Lavanda', teal: 'Yashil', amber: 'Sariq', emerald: 'Zumrad'
+  },
+  ru: {
+    qqFields: 'Тексты на каракалпакском', ruFields: 'Тексты на русском',
+    qqHostName: 'Имя хозяина (Qaraqalpaq)', qqGuestName: 'Имя гостя (Qaraqalpaq)', qqEventTitle: 'Событие (Qaraqalpaq)',
+    ruHostName: 'Имя хозяина', ruGuestName: 'Имя гостя', ruEventTitle: 'Название мероприятия', msg: 'Сообщение',
+
+    age: 'Возраст', theme: 'Тема праздника', years: 'Лет (Например: 50)', school: "Учебное заведение", graduationYear: 'Год выпуска', brideName: 'Имя невесты', groomName: 'Имя жениха',
+    palette: '🎨 Цветовая палитра',
+    gold: 'Золото', silver: 'Серебро', ocean: 'Океан', rose: 'Роза', lavender: 'Лаванда', teal: 'Бирюза', amber: 'Янтарь', emerald: 'Изумруд'
+  },
+  qq: {
+    qqFields: 'Qaraqalpaqsha tekstler', ruFields: 'Russha tekstler',
+    qqHostName: 'Mezban atı', qqGuestName: 'Mehman atı', qqEventTitle: 'Ilaje atı',
+    ruHostName: 'Mezban atı (Rus)', ruGuestName: 'Mehman atı (Rus)', ruEventTitle: 'Ilaje atı (Rus)', msg: 'Xabar',
+
+    age: 'Jası', theme: 'Bayram temasi', years: 'Jıllar (Mısalı: 50)', school: "Oqıw ornı", graduationYear: 'Pitkeriw jılı', brideName: 'Kelinniń atı', groomName: 'Kúyewdiń atı',
+    palette: '🎨 Reńler palitrası',
+    gold: 'Altın', silver: 'Gúmis', ocean: 'Okean', rose: 'Gúl', lavender: 'Lavanda', teal: 'Máviy', amber: 'Sarı', emerald: 'Zúmret'
+  },
+  en: {
+    qqFields: 'Karakalpak Texts', ruFields: 'Russian Texts',
+    qqHostName: 'Host Name (QQ)', qqGuestName: 'Guest Name (QQ)', qqEventTitle: 'Event Title (QQ)',
+    ruHostName: 'Host Name (RU)', ruGuestName: 'Guest Name (RU)', ruEventTitle: 'Event Title (RU)', msg: 'Message',
+
+    age: 'Age', theme: 'Theme', years: 'Years (e.g. 50)', school: "School", graduationYear: 'Graduation Year', brideName: 'Bride Name', groomName: 'Groom Name',
+    palette: '🎨 Color palette',
+    gold: 'Gold', silver: 'Silver', ocean: 'Ocean', rose: 'Rose', lavender: 'Lavender', teal: 'Teal', amber: 'Amber', emerald: 'Emerald'
+  }
+};
+
 /**
  * Sends a real test message to the configured Telegram bot.
  * Shows success/error with human-readable Uzbek messages.
@@ -77,7 +116,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [draftSaved, setDraftSaved] = useState(false);
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
   const saveTimerRef = useRef(null);
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const trLocal = trStep3[lang] || trStep3['uz'];
 
   const DRAFT_KEY = `etaklifnoma_draft_${data.eventTypeId || 'default'}`;
 
@@ -162,31 +202,31 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {data.customFields?.langQq && (
           <div className="space-y-3 border-t border-white/5 pt-4">
             <p className="text-[11px] text-surface-500 flex items-center gap-1">
-              <span className="text-[9px] font-bold bg-white/10 px-1 py-0.5 rounded">QQ</span> Qaraqalpoqsha matnlar
+              <span className="text-[9px] font-bold bg-white/10 px-1 py-0.5 rounded">QQ</span> {trLocal.qqFields}
             </p>
             <div>
-              <label className="label">👤 Mezban atı</label>
+              <label className="label">👤 {trLocal.qqHostName}</label>
               <input type="text" placeholder="Aliyev Jasur"
                 value={data.customFields?.hostNameQq || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">👥 Mehman atı</label>
+              <label className="label">👥 {trLocal.qqGuestName}</label>
               <input type="text" placeholder="Húrmetli mexmanlar"
                 value={data.customFields?.guestNameQq || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">✏️ Ilaje atı</label>
+              <label className="label">✏️ {trLocal.qqEventTitle}</label>
               <input type="text" placeholder="Nikax márásimi"
                 value={data.customFields?.eventTitleQq || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">💬 Xabar</label>
+              <label className="label">💬 {trLocal.msg}</label>
               <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
                 value={data.customFields?.messageQq || ''}
                 onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
@@ -199,31 +239,31 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {data.customFields?.langRu && (
           <div className="space-y-3 border-t border-white/5 pt-4">
             <p className="text-[11px] text-surface-500 flex items-center gap-1">
-              <span className="text-[9px] font-bold bg-white/10 px-1 py-0.5 rounded">RU</span> Тексты на русском
+              <span className="text-[9px] font-bold bg-white/10 px-1 py-0.5 rounded">RU</span> {trLocal.ruFields}
             </p>
             <div>
-              <label className="label">👤 Имя хозяина</label>
+              <label className="label">👤 {trLocal.ruHostName}</label>
               <input type="text" placeholder="Абдуллаев Юнус"
                 value={data.customFields?.hostNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">👥 Имя гостя</label>
+              <label className="label">👥 {trLocal.ruGuestName}</label>
               <input type="text" placeholder="Уважаемые гости"
                 value={data.customFields?.guestNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">✏️ Название мероприятия</label>
+              <label className="label">✏️ {trLocal.ruEventTitle}</label>
               <input type="text" placeholder="Свадебное торжество"
                 value={data.customFields?.eventTitleRu || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
                 className="input-field" />
             </div>
             <div>
-              <label className="label">💬 Сообщение</label>
+              <label className="label">💬 {trLocal.msg}</label>
               <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
                 value={data.customFields?.messageRu || ''}
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
@@ -243,16 +283,16 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             {templateFields.map((field) => (
               <div key={field.key} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
                 <label className="label">
-                  {field.label} {field.required && <span className="text-rose-400">*</span>}
+                  {trLocal[field.key] || field.label} {field.required && <span className="text-rose-400">*</span>}
                 </label>
                 {field.type === 'textarea' ? (
-                  <textarea rows={3} placeholder={field.label}
+                  <textarea rows={3} placeholder={trLocal[field.key] || field.label}
                     value={data.customFields?.[field.key] || ''}
                     onChange={(e) => handleCustomFieldChange(field.key, e.target.value)}
                     className="input-field resize-none" />
                 ) : (
                   <input type={field.type === 'number' ? 'number' : 'text'}
-                    placeholder={field.label}
+                    placeholder={trLocal[field.key] || field.label}
                     value={data.customFields?.[field.key] || ''}
                     onChange={(e) => handleCustomFieldChange(field.key, e.target.value)}
                     className="input-field" />
@@ -698,17 +738,17 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
         {/* Color Palette */}
         <div>
-          <label className="label flex items-center gap-1.5">🎨 Rang palitasi</label>
+          <label className="label flex items-center gap-1.5">{trLocal.palette}</label>
           <div className="grid grid-cols-4 gap-2">
             {[
-              { id: 'gold',     label: 'Oltin',    color: '#d4a853', dark: '#0b0d17' },
-              { id: 'silver',   label: 'Kumush',   color: '#9da8b8', dark: '#0d1018' },
-              { id: 'ocean',    label: 'Okean',    color: '#4a9fe8', dark: '#060e1a' },
-              { id: 'rose',     label: 'Gul',      color: '#e8749a', dark: '#150810' },
-              { id: 'lavender', label: 'Lavanda',  color: '#a07ee8', dark: '#0e0a18' },
-              { id: 'teal',     label: 'Yashil',   color: '#3bbdaa', dark: '#060f0d' },
-              { id: 'amber',    label: 'Sariq',    color: '#e8a84a', dark: '#110c02' },
-              { id: 'emerald',  label: 'Zumrad',   color: '#4ae898', dark: '#040f08' },
+              { id: 'gold',     label: trLocal.gold,    color: '#d4a853', dark: '#0b0d17' },
+              { id: 'silver',   label: trLocal.silver,   color: '#9da8b8', dark: '#0d1018' },
+              { id: 'ocean',    label: trLocal.ocean,    color: '#4a9fe8', dark: '#060e1a' },
+              { id: 'rose',     label: trLocal.rose,      color: '#e8749a', dark: '#150810' },
+              { id: 'lavender', label: trLocal.lavender,  color: '#a07ee8', dark: '#0e0a18' },
+              { id: 'teal',     label: trLocal.teal,     color: '#3bbdaa', dark: '#060f0d' },
+              { id: 'amber',    label: trLocal.amber,    color: '#e8a84a', dark: '#110c02' },
+              { id: 'emerald',  label: trLocal.emerald,  color: '#4ae898', dark: '#040f08' },
             ].map((p) => {
               const isSelected = (data.customFields?.colorPalette || 'gold') === p.id;
               return (
