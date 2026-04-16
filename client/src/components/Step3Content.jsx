@@ -439,9 +439,16 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         )}
       </div>
 
-      {/* Template custom fields */}
+      
+      {/* GLOBAL SETTINGS COMPONENT */}
+      <div className="glass p-5 space-y-6">
+        <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
+          ⚙️ O'zgarmas ma'lumotlar va Sozlamalar
+        </h3>
+        
+        {/* Template custom fields */}
       {templateFields.length > 0 && (
-        <div className="glass p-5 space-y-4">
+        <div className="space-y-4 mb-4">
           <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
             <span className="text-base">{data.eventType?.icon}</span> {t('step3.templateFields')}
           </h3>
@@ -811,7 +818,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           })}
         </div>
       </div>
-    </div>
+
+      </div>    </div>
   );
 
   return (
