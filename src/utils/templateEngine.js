@@ -492,7 +492,7 @@ function buildWishesForm(chatId, invitationSlug) {
         <input type="hidden" name="slug" value="${invitationSlug}" />
         <input type="hidden" name="chatId" value="${chatId}" />
         <button type="submit" class="wishes-btn" id="wishesBtn">
-          <span id="wishesBtnText">Yuborish 💬</span>
+          <span id="wishesBtnText">Yuborish</span>
         </button>
         <p class="wishes-status" id="wishesStatus"></p>
       </form>
@@ -526,20 +526,20 @@ function buildWishesForm(chatId, invitationSlug) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.success) {
-        status.textContent = '✅ Tilaklaringiz yuborildi! Rahmat!';
+        status.textContent = 'Tilaklaringiz yuborildi! Rahmat!';
         status.style.color = 'var(--accent-bright, #e8d07e)';
         form.reset();
       } else {
-        status.textContent = '❌ Xatolik yuz berdi. Qayta urinib ko\\'ring.';
+        status.textContent = 'Xatolik yuz berdi. Qayta urinib ko\\'ring.';
         status.style.color = '#ef4444';
       }
     })
     .catch(function() {
-      status.textContent = '❌ Tarmoq xatoligi.';
+      status.textContent = 'Tarmoq xatoligi.';
       status.style.color = '#ef4444';
     })
     .finally(function() {
-      btnText.textContent = 'Yuborish 💬';
+      btnText.textContent = 'Yuborish';
       btn.disabled = false;
     });
   }
@@ -635,9 +635,9 @@ function buildLanguageToggle() {
         wishesSubtitle: 'Tilak va tabriklaringizni qoldiring',
         wishesName: 'Ismingiz',
         wishesMessage: 'Tilaklaringiz...',
-        wishesSend: 'Yuborish 💬',
-        wishesSent: '✅ Tilaklaringiz yuborildi! Rahmat!',
-        wishesError: '❌ Xatolik yuz berdi.',
+        wishesSend: 'Yuborish',
+        wishesSent: 'Tilaklaringiz yuborildi! Rahmat!',
+        wishesError: 'Xatolik yuz berdi.',
 
         bdEventLabel: "Tug'ilgan kun taklifi",
         bdCountdownTitle: "Bayramgacha qolgan vaqt",
@@ -672,9 +672,9 @@ function buildLanguageToggle() {
         wishesSubtitle: 'Tilek hém qutlıqlawlarıńızdı qaldırıń',
         wishesName: 'Atıńız',
         wishesMessage: 'Tilekleriniz...',
-        wishesSend: 'Jiberiw 💬',
-        wishesSent: '✅ Tilekleriniz jiberildi! Raxmet!',
-        wishesError: '❌ Qátelik júz berdi.',
+        wishesSend: 'Jiberiw',
+        wishesSent: 'Tilekleriniz jiberildi! Raxmet!',
+        wishesError: 'Qátelik júz berdi.',
 
         bdEventLabel: 'Tuwılǵan kún shaqırıwı',
         bdCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
@@ -709,9 +709,9 @@ function buildLanguageToggle() {
         wishesSubtitle: 'Оставьте ваши пожелания',
         wishesName: 'Ваше имя',
         wishesMessage: 'Ваши пожелания...',
-        wishesSend: 'Отправить 💬',
-        wishesSent: '✅ Ваши пожелания отправлены! Спасибо!',
-        wishesError: '❌ Произошла ошибка.',
+        wishesSend: 'Отправить',
+        wishesSent: 'Ваши пожелания отправлены! Спасибо!',
+        wishesError: 'Произошла ошибка.',
 
         bdEventLabel: 'Приглашение на день рождения',
         bdCountdownTitle: 'До праздника осталось',
