@@ -339,7 +339,7 @@ function renderInvitation(invitation, eventType, template) {
   ${buildShareButtons(invitation.customFields)}
   ${(invitation.customFields?.showCalendarBtn !== false) ? buildCalendarButton() : ''}
   ${(invitation.customFields?.showPrintBtn !== false) ? buildPrintButton() : ''}
-  ${(invitation.customFields?.envelopeAnim !== false) ? buildEnvelopeAnimation() : ''}
+  ${(invitation.customFields?.envelopeAnim !== false) ? buildEnvelopeAnimation(eventType) : ''}
   ${buildColorPaletteCss(invitation.customFields?.colorPalette || 'gold')}
   ${buildBrandingFooter()}
 </body>
@@ -638,6 +638,7 @@ function buildLanguageToggle() {
         wishesSend: 'Yuborish',
         wishesSent: 'Tilaklaringiz yuborildi! Rahmat!',
         wishesError: 'Xatolik yuz berdi.',
+        envOpen: 'Ochish uchun bosing',
 
         bdEventLabel: "Tug'ilgan kun taklifi",
         bdCountdownTitle: "Bayramgacha qolgan vaqt",
@@ -675,6 +676,7 @@ function buildLanguageToggle() {
         wishesSend: 'Jiberiw',
         wishesSent: 'Tilekleriniz jiberildi! Raxmet!',
         wishesError: 'Qátelik júz berdi.',
+        envOpen: 'Ashıw ushın basıń',
 
         bdEventLabel: 'Tuwılǵan kún shaqırıwı',
         bdCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
@@ -712,6 +714,7 @@ function buildLanguageToggle() {
         wishesSend: 'Отправить',
         wishesSent: 'Ваши пожелания отправлены! Спасибо!',
         wishesError: 'Произошла ошибка.',
+        envOpen: 'Нажмите, чтобы открыть',
 
         bdEventLabel: 'Приглашение на день рождения',
         bdCountdownTitle: 'До праздника осталось',
@@ -927,7 +930,8 @@ function buildPrintButton() {
  * Builds the envelope opening animation overlay.
  * Shows once per device (localStorage flag). Fades away after animation.
  */
-function buildEnvelopeAnimation() {
+function buildEnvelopeAnimation(eventType) {
+  const icon = eventType && eventType.icon ? eventType.icon : '💍';
   return `
   <div id="envelopeOverlay" style="
     position:fixed;inset:0;z-index:99999;
@@ -958,10 +962,10 @@ function buildEnvelopeAnimation() {
            border:2px solid rgba(255,255,255,0.2);
            display:flex;align-items:center;justify-content:center;
            font-size:18px;box-shadow:0 2px 12px rgba(212,168,83,0.4);
-           transition:all 0.4s ease;">💍</div>
+           transition:all 0.4s ease;">${icon}</div>
     </div>
     <p style="color:rgba(212,168,83,0.8);font-size:13px;letter-spacing:2px;text-transform:uppercase;
-              font-family:'Montserrat',sans-serif;animation:float 2s ease-in-out infinite;">
+              font-family:'Montserrat',sans-serif;animation:float 2s ease-in-out infinite;" data-i18n="envOpen">
       Ochish uchun bosing
     </p>
     <style>
