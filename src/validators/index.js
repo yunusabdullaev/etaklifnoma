@@ -186,7 +186,7 @@ exports.getBySlug = [
   param('slug')
     .trim()
     .notEmpty().withMessage('Slug is required')
-    .isAlphanumeric().withMessage('Invalid slug format'),
+    .matches(/^[a-zA-Z0-9-_]+$/).withMessage('Invalid slug format'),
 ];
 
 exports.pagination = [
