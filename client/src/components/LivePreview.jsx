@@ -56,7 +56,31 @@ export default function LivePreview({ data, className = '' }) {
             transform: none !important;
             transition: none !important;
           }
-        </style>`;
+        </style>
+        <script>
+        window.__IS_PREVIEW__ = true;
+        // 1. Envelope: always show in preview — block env_seen_ reads+writes
+        (function(){
+          var origGet = Storage.prototype.getItem;
+          var origSet = Storage.prototype.setItem;
+          Storage.prototype.getItem = function(k) {
+            if (k && k.startsWith('env_seen_')) return null;
+            return origGet.call(this, k);
+          };
+          Storage.prototype.setItem = function(k, v) {
+            if (k && k.startsWith('env_seen_')) return;
+            return origSet.call(this, k, v);
+          };
+        })();
+        // 2. Force correct language from __INVITE_DATA__ flags (poll until switchLang is ready)
+        (function poll(n){
+          if (typeof window.switchLang === 'function') {
+            var d = window.__INVITE_DATA__ || {};
+            var lang = (d.langUz !== false) ? 'uz' : (d.langQq ? 'qq' : 'ru');
+            window.switchLang(lang);
+          } else if (n < 25) { setTimeout(function(){ poll(n+1); }, 80); }
+        })(0);
+        <\/script>`;
         const injectedHtml = html.replace('</head>', previewOverride + '</head>');
         setHtmlContent(injectedHtml);
       } else {
@@ -101,7 +125,7 @@ export default function LivePreview({ data, className = '' }) {
           title="Invitation Preview"
           srcDoc={htmlContent}
           className="w-full h-full border-0 rounded-2xl bg-[#0a0a12]"
-          sandbox="allow-scripts"
+          sandbox="allow-scripts allow-same-origin allow-forms"
         />
       ) : (
         <div className="w-full h-full rounded-2xl bg-[#0a0a12] flex items-center justify-center">
