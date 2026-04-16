@@ -228,16 +228,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
       {/* TEXT FIELDS COMPONENT */}
       <div className="glass p-5 flex flex-col gap-8">
-        <style dangerouslySetInnerHTML={{__html: `
-          .matnlar-block[style*="order: 0"] { margin-top: 0 !important; border-top: none !important; padding-top: 0 !important; }
-        `}} />
         <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
           ✍️ Matnlar (Barcha tillardagi yozuvlar)
         </h3>
 
         {/* UZ fields */}
         {isUzOn && (
-          <div className="space-y-4 matnlar-block pt-6 border-t border-white/5" style={{ order: orderArr.indexOf('uz') }}>
+          <div className={`space-y-4 ${orderArr.indexOf('uz') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('uz') }}>
             <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20 shadow-sm">🇺🇿 {trLocal.uzFields}</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -305,7 +302,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
         {/* QQ fields */}
         {data.customFields?.langQq && (
-          <div className="space-y-4 matnlar-block pt-6 border-t border-white/5" style={{ order: orderArr.indexOf('qq') }}>
+          <div className={`space-y-4 ${orderArr.indexOf('qq') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('qq') }}>
             <h4 className="text-[11px] font-bold text-amber-400 bg-amber-500/10 inline-block px-2.5 py-1 rounded-md border border-amber-500/20 shadow-sm">🇰🇦 {trLocal.qqFields}</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -377,7 +374,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
         {/* RU fields */}
         {data.customFields?.langRu && (
-          <div className="space-y-4 matnlar-block pt-6 border-t border-white/5" style={{ order: orderArr.indexOf('ru') }}>
+          <div className={`space-y-4 ${orderArr.indexOf('ru') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('ru') }}>
             <h4 className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 inline-block px-2.5 py-1 rounded-md border border-indigo-500/20 shadow-sm">🇷🇺 {trLocal.ruFields}</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
