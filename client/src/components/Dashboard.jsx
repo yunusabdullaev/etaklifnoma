@@ -32,7 +32,7 @@ export default function Dashboard({ token, onCreateNew }) {
           langUz: lastInv.customFields.langUz,
           langQq: lastInv.customFields.langQq,
           langRu: lastInv.customFields.langRu,
-          defaultLang: lastInv.customFields.defaultLang,
+          defaultLang: lastInv.customFields.defaultLang, langOrder: lastInv.customFields.langOrder,
           showShareWa: lastInv.customFields.showShareWa,
           showShareTg: lastInv.customFields.showShareTg,
           showCalendarBtn: lastInv.customFields.showCalendarBtn,

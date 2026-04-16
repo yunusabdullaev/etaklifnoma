@@ -603,13 +603,15 @@ function buildLanguageToggle() {
     if(hasQq) langs.push('qq');
     if(hasRu) langs.push('ru');
 
-    // Show/hide buttons
+    // Show/hide and visual ordering of layout buttons
     var uzBtn = document.getElementById('langUz');
     var qqBtn = document.getElementById('langQq');
     var ruBtn = document.getElementById('langRu');
-    if(uzBtn) uzBtn.style.display = hasUz ? '' : 'none';
-    if(qqBtn) qqBtn.style.display = hasQq ? '' : 'none';
-    if(ruBtn) ruBtn.style.display = hasRu ? '' : 'none';
+    
+    var orderArr = d.langOrder ? d.langOrder.split(',') : ['uz','ru','qq'];
+    if(uzBtn) { uzBtn.style.display = hasUz ? '' : 'none'; uzBtn.style.order = orderArr.indexOf('uz'); }
+    if(qqBtn) { qqBtn.style.display = hasQq ? '' : 'none'; qqBtn.style.order = orderArr.indexOf('qq'); }
+    if(ruBtn) { ruBtn.style.display = hasRu ? '' : 'none'; ruBtn.style.order = orderArr.indexOf('ru'); }
 
     // Hide toggle if only 1 language
     var toggle = document.getElementById('langToggle');
@@ -823,23 +825,26 @@ function buildLanguageToggle() {
     }
     window.switchLang = switchLang;
 
-    // Determine initial language
-    var configuredDefault = d.defaultLang || '';
-    var defaultLang = configuredDefault && ((configuredDefault === 'uz' && hasUz) || (configuredDefault === 'qq' && hasQq) || (configuredDefault === 'ru' && hasRu))
-      ? configuredDefault 
-      : (hasUz ? 'uz' : (hasQq ? 'qq' : 'ru'));
-
-    // Only RU mode → auto-switch
-    if(!hasUz && !hasQq && hasRu) {
-      switchLang('ru');
-    } else if(!hasUz && hasQq && !hasRu) {
-      switchLang('qq');
-    } else {
-      try {
-        var saved = localStorage.getItem('taklifnoma-lang');
-        if(saved && langs.indexOf(saved) !== -1) switchLang(saved);
-      } catch(e){}
+    // Determine initial language based on strictly defined order
+    var orderArr = d.langOrder ? d.langOrder.split(',') : ['uz','ru','qq'];
+    var defaultLang = null;
+    for(var i=0; i<orderArr.length; i++) {
+       if (orderArr[i] === 'uz' && hasUz) { defaultLang = 'uz'; break; }
+       if (orderArr[i] === 'qq' && hasQq) { defaultLang = 'qq'; break; }
+       if (orderArr[i] === 'ru' && hasRu) { defaultLang = 'ru'; break; }
     }
+    if(!defaultLang) defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : 'ru');
+
+    // Execute initialization
+    var saved = null;
+    try { saved = localStorage.getItem('taklifnoma-lang'); } catch(e){}
+    
+    // Auto-switch to strictly only language, OR use saved cache, OR fallback to configured priority default
+    if (!hasUz && !hasQq && hasRu) { switchLang('ru'); }
+    else if (!hasUz && hasQq && !hasRu) { switchLang('qq'); }
+    else if (!hasRu && !hasQq && hasUz) { switchLang('uz'); }
+    else if (saved && langs.indexOf(saved) !== -1) { switchLang(saved); }
+    else { switchLang(defaultLang); }
   })();
   </script>`
 }
