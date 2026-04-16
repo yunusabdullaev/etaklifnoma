@@ -10,13 +10,13 @@ import { uploadImage, uploadAudio } from '../utils/cloudinary';
  * Shows success/error with human-readable Uzbek messages.
  */
 function BotTestButton({ bot, apiBase }) {
-  const [status, setStatus] = useState(null); // null | 'loading' | 'ok' | 'err'
+  const [status, setStatus] = useState(null);
   const [msg, setMsg] = useState('');
 
   const test = async () => {
-    if (!bot || !bot.includes(':')) {
+    if (!bot || !/^-?\d+$/.test(bot.trim())) {
       setStatus('err');
-      setMsg('Avval TOKEN:CHAT_ID formatida kiriting');
+      setMsg('Avval Chat ID raqamini kiriting');
       return;
     }
     setStatus('loading');
@@ -25,7 +25,7 @@ function BotTestButton({ bot, apiBase }) {
       const res = await fetch(`${apiBase}/api/bot/test`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bot }),
+        body: JSON.stringify({ chatId: bot.trim() }),
       });
       const data = await res.json();
       if (data.success) {
@@ -737,31 +737,35 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
 
         <div>
-          <label className="label flex items-center gap-1.5">📱 {t('step3.telegram')}</label>
+          <label className="label flex items-center gap-1.5">📱 Telegram bildirishnoma</label>
 
-          {/* Step-by-step guide */}
           <div className="rounded-xl border border-sky-500/15 bg-sky-500/5 p-3 mb-2 space-y-1.5 text-[11px]">
-            <p className="text-sky-300 font-semibold mb-1">📖 Qanday ulash kerak:</p>
-            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">1.</span> @BotFather da yangi bot yarating → token oling</p>
-            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">2.</span> <span><strong className="text-white">Botingizga /start yuboring</strong> (muhim! aks holda ishlamaydi)</span></p>
-            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">3.</span> <span>Chat ID: <a href="https://t.me/userinfobot" target="_blank" rel="noopener" className="text-sky-400 underline">@userinfobot</a> ga /start yuboring → ID olasiz</span></p>
-            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">4.</span> <span>Quyiga kiriting: <code className="text-amber-400 bg-white/10 px-1 rounded">TOKEN:CHAT_ID</code></span></p>
+            <p className="text-sky-300 font-semibold mb-1">📖 2 qadam — Tilaklar Telegramga keladi:</p>
+            <p className="text-surface-400 flex items-start gap-1.5">
+              <span className="text-sky-400 font-bold shrink-0">1.</span>
+              <span><a href="https://t.me/userinfobot" target="_blank" rel="noopener" className="text-sky-400 underline">@userinfobot</a> ga Telegramda <strong className="text-white">/start</strong> yuboring</span>
+            </p>
+            <p className="text-surface-400 flex items-start gap-1.5">
+              <span className="text-sky-400 font-bold shrink-0">2.</span>
+              <span>U bergan <strong className="text-white">ID raqamni</strong> quyiga yozing</span>
+            </p>
           </div>
 
           <div className="flex gap-2">
             <input
               type="text"
-              placeholder="1234567890:AAHoim_abc123-xyz789:987654321"
-              value={data.customFields?.telegramBot || ''}
-              onChange={(e) => handleCustomFieldChange('telegramBot', e.target.value)}
-              className="input-field flex-1 font-mono text-xs"
+              placeholder="Masalan: 5887503077"
+              value={data.customFields?.telegramChatId || ''}
+              onChange={(e) => handleCustomFieldChange('telegramChatId', e.target.value.replace(/[^0-9-]/g, ''))}
+              className="input-field flex-1 font-mono text-sm"
+              inputMode="numeric"
             />
             <BotTestButton
-              bot={data.customFields?.telegramBot}
+              bot={data.customFields?.telegramChatId}
               apiBase={import.meta.env.VITE_API_URL || ''}
             />
           </div>
-          <p className="text-[11px] text-surface-500 mt-1">{t('step3.telegramHint')}</p>
+          <p className="text-[11px] text-surface-500 mt-1">Mehmonlar tilak yuborganda Telegramingizga xabar keladi</p>
         </div>
 
         <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">

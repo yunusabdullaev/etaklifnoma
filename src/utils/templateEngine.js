@@ -236,10 +236,10 @@ function renderInvitation(invitation, eventType, template) {
   photos = photos.map(fixFileUrl);
   const musicPlayer = musicUrl ? buildMusicPlayer(musicUrl) : '';
 
-  // Wishes form — always shown by default, Telegram bot is optional
-  const telegramBot = invitation.customFields?.telegramBot || '';
+  // Wishes form — always shown by default, Telegram chat ID is optional
+  const telegramChatId = invitation.customFields?.telegramChatId || invitation.customFields?.telegramBot || '';
   const wishesForm = invitation.customFields?.enableWishes !== false
-    ? buildWishesForm(telegramBot, invitation.slug) : '';
+    ? buildWishesForm(telegramChatId, invitation.slug) : '';
 
   // Build full page
   return `<!DOCTYPE html>
@@ -480,7 +480,7 @@ function buildShareButtons(cf) {
 /**
  * Builds the Telegram wishes form HTML.
  */
-function buildWishesForm(telegramBot, invitationSlug) {
+function buildWishesForm(chatId, invitationSlug) {
   return `
   <section class="section wishes-section" id="wishes">
     <div class="container">
@@ -490,7 +490,7 @@ function buildWishesForm(telegramBot, invitationSlug) {
         <input type="text" name="name" placeholder="Ismingiz" required class="wishes-input" />
         <textarea name="message" placeholder="Tilaklaringiz..." required rows="3" class="wishes-input wishes-textarea"></textarea>
         <input type="hidden" name="slug" value="${invitationSlug}" />
-        <input type="hidden" name="bot" value="${telegramBot}" />
+        <input type="hidden" name="chatId" value="${chatId}" />
         <button type="submit" class="wishes-btn" id="wishesBtn">
           <span id="wishesBtnText">Yuborish 💬</span>
         </button>
@@ -507,7 +507,7 @@ function buildWishesForm(telegramBot, invitationSlug) {
     var status = document.getElementById('wishesStatus');
     var name = form.name.value.trim();
     var message = form.message.value.trim();
-    var bot = form.bot.value;
+    var chatId = form.chatId ? form.chatId.value : '';
     var slug = form.slug.value;
 
     if (!name || !message) return;
@@ -521,7 +521,7 @@ function buildWishesForm(telegramBot, invitationSlug) {
     fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, message: message, bot: bot, slug: slug })
+      body: JSON.stringify({ name: name, message: message, chatId: chatId, slug: slug })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
