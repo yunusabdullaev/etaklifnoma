@@ -122,6 +122,12 @@ const templateNameQq = {
   'cinema-white':   { name: 'Kino Aq', desc: 'Minimalist aq kino stili' },
 };
 
+// Client-side translations for event types
+const eventTypeTranslations = {
+  qq: { wedding: 'Toy', birthday: 'Tuwılǵan kún', jubilee: 'Yubilej', graduation: 'Pitkeriwshiler' },
+  ru: { wedding: 'Свадьба', birthday: 'День рождения', jubilee: 'Юбилей', graduation: 'Выпускной' },
+  en: { wedding: 'Wedding', birthday: 'Birthday', jubilee: 'Anniversary', graduation: 'Graduation' },
+};
 function getTemplateSuffix(slug) {
   if (!slug) return '';
   // Remove event prefix: toy-dark-gold → dark-gold, tgk-pushti → pushti
@@ -132,7 +138,7 @@ function getTemplateSuffix(slug) {
  * Shared template renderer — mirrors server-side renderString logic.
  * Replaces {{key}}, {{key|default}}, {{#if key}}...{{/if}}, {{#unless}}
  */
-function renderTemplatePreview(template, eventTypeName = '') {
+function renderTemplatePreview(template, eventTypeName = '', lang = 'uz') {
   // Detect event type from slug prefix or explicit name
   const detectedType = eventTypeName ||
     (template.slug?.startsWith('toy-') ? 'wedding' :
@@ -140,39 +146,101 @@ function renderTemplatePreview(template, eventTypeName = '') {
      template.slug?.startsWith('grad-') ? 'graduation' :
      template.slug?.startsWith('jub-') ? 'jubilee' : 'wedding');
 
-  // Type-specific sample data
+  // Type-specific sample data translated into all languages
   const typeData = {
-    wedding: {
-      brideName: 'Madina', groomName: 'Sardor',
-      eventTitle: 'Nikoh to\'yi', eventTypeLabel: 'Nikoh taklifi',
-      eventTypeIcon: '💍', icon: '💍', eventTypeName: 'wedding',
-      message: "Sizni farzandlarimiz nikoh to'yiga taklif qilamiz. Kelishingizni kutib qolamiz!",
-      hostName: 'Karimov va Rahimov oilasi',
+    uz: {
+      wedding: {
+        brideName: 'Madina', groomName: 'Sardor',
+        eventTitle: 'Nikoh to\\'yi', eventTypeLabel: 'Nikoh taklifi',
+        message: "Sizni farzandlarimiz nikoh to'yiga taklif qilamiz. Kelishingizni kutib qolamiz!",
+        hostName: 'Karimov va Rahimov oilasi',
+        guestName: 'Hurmatli mehmonlar!',
+      },
+      birthday: {
+        age: '25', eventTitle: "Tug'ilgan kun bayrami",
+        eventTypeLabel: "Tug'ilgan kun",
+        message: "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!",
+        hostName: 'Karimov oilasi',
+        guestName: 'Hurmatli mehmonlar!',
+      },
+      graduation: {
+        graduationYear: '2026', school: 'Toshkent Davlat Universiteti',
+        eventTitle: 'Bitiruvchilar kechasi', eventTypeLabel: 'Bitiruvchilar',
+        message: "Bitiruvchilar kechasiga taklif qilamiz. Muvaffaqiyatni birga nishonlaymiz!",
+        hostName: "2026-yil bitiruvchilari",
+        guestName: 'Hurmatli mehmonlar!',
+      },
+      jubilee: {
+        years: '50', eventTitle: 'Oltin yubiley',
+        eventTypeLabel: 'Yubiley',
+        message: "Sizni yubiley tantanamizga taklif qilamiz. Kelishingiz sharaf!",
+        hostName: 'Karimov oilasi',
+        guestName: 'Hurmatli mehmonlar!',
+      },
     },
-    birthday: {
-      age: '25', eventTitle: "Tug'ilgan kun bayrami",
-      eventTypeLabel: "Tug'ilgan kun", eventTypeIcon: '🎂', icon: '🎂',
-      eventTypeName: 'birthday',
-      message: "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!",
-      hostName: 'Karimov oilasi',
+    ru: {
+      wedding: {
+        brideName: 'Мадина', groomName: 'Сардор',
+        eventTitle: 'Свадьба', eventTypeLabel: 'Свадебное приглашение',
+        message: "Приглашаем вас на свадьбу наших детей. Будем рады видеть вас!",
+        hostName: 'Семьи Каримовых и Рахимовых',
+        guestName: 'Уважаемые гости!',
+      },
+      birthday: {
+        age: '25', eventTitle: 'День рождения',
+        eventTypeLabel: 'День рождения',
+        message: "Приглашаем на наш праздник. Давайте веселиться вместе!",
+        hostName: 'Семья Каримовых',
+        guestName: 'Уважаемые гости!',
+      },
+      graduation: {
+        graduationYear: '2026', school: 'Ташкентский Гос. Университет',
+        eventTitle: 'Выпускной вечер', eventTypeLabel: 'Выпускной',
+        message: "Приглашаем вас отпраздновать наш выпускной. Отметим успех вместе!",
+        hostName: 'Выпускники 2026 года',
+        guestName: 'Уважаемые гости!',
+      },
+      jubilee: {
+        years: '50', eventTitle: 'Золотой юбилей',
+        eventTypeLabel: 'Юбилей',
+        message: "Приглашаем вас на торжественный юбилей. Ваше присутствие — честь для нас!",
+        hostName: 'Семья Каримовых',
+        guestName: 'Уважаемые гости!',
+      },
     },
-    graduation: {
-      graduationYear: '2026', school: 'Toshkent Davlat Universiteti',
-      eventTitle: 'Bitiruvchilar kechasi', eventTypeLabel: 'Bitiruvchilar',
-      eventTypeIcon: '🎓', icon: '🎓', eventTypeName: 'graduation',
-      message: "Bitiruvchilar kechasiga taklif qilamiz. Muvaffaqiyatni birga nishonlaymiz!",
-      hostName: "2026-yil bitiruvchilari",
-    },
-    jubilee: {
-      years: '50', eventTitle: 'Oltin yubiley',
-      eventTypeLabel: 'Yubiley', eventTypeIcon: '🎉', icon: '🎉',
-      eventTypeName: 'jubilee',
-      message: "Sizni yubiley tantanamizga taklif qilamiz. Kelishingiz sharaf!",
-      hostName: 'Karimov oilasi',
-    },
+    qq: {
+      wedding: {
+        brideName: 'Madina', groomName: 'Sardor',
+        eventTitle: 'Toy', eventTypeLabel: 'Nikax shaqırıwı',
+        message: "Sizdi perzentlerimizdiń nikax toyına shaqıramız. Keliwińizdi kútip qalamız!",
+        hostName: 'Karimovlar hám Rahimovlar',
+        guestName: 'Húrmetli miymanlar!',
+      },
+      birthday: {
+        age: '25', eventTitle: 'Tuwılǵan kún',
+        eventTypeLabel: 'Tuwılǵan kún',
+        message: "Sizdi bayramımızǵa shaqıramız. Birlik ishindemiz!",
+        hostName: 'Karimovlar shańaraǵı',
+        guestName: 'Húrmetli miymanlar!',
+      },
+      graduation: {
+        graduationYear: '2026', school: 'Tashkent Mámleketlik Universiteti',
+        eventTitle: 'Pitkeriwshiler keshesi', eventTypeLabel: 'Pitkeriwshiler',
+        message: "Pitkeriwshiler keshesine shaqıramız. Úlken unamlılıqtı birge atap ótemiz!",
+        hostName: '2026-jıl pitkeriwshileri',
+        guestName: 'Húrmetli miymanlar!',
+      },
+      jubilee: {
+        years: '50', eventTitle: 'Altın yubilej',
+        eventTypeLabel: 'Yubilej',
+        message: "Sizdi yubilej saltanatına shaqıramız. Keliwińiz sharaf!",
+        hostName: 'Karimovlar shańaraǵı',
+        guestName: 'Húrmetli miymanlar!',
+      },
+    }
   };
 
-  const specific = typeData[detectedType] || typeData.wedding;
+  const specific = (typeData[lang] && typeData[lang][detectedType]) ? typeData[lang][detectedType] : typeData['uz'][detectedType];
 
   const ctx = {
     ...specific,
@@ -180,7 +248,7 @@ function renderTemplatePreview(template, eventTypeName = '') {
     age: specific.age || '', graduationYear: specific.graduationYear || '',
     years: specific.years || '', school: specific.school || '',
     host_name: specific.hostName, name: specific.hostName,
-    guestName: 'Hurmatli mehmonlar!', guest_name: 'Hurmatli mehmonlar!',
+    guestName: specific.guestName, guest_name: specific.guestName,
     event_title: specific.eventTitle, event_type: specific.eventTypeLabel,
     eventDate: '2026-08-15', event_date: '2026-08-15',
     eventDateFormatted: '15 Avgust, 2026', event_date_formatted: '15 Avgust, 2026',
@@ -208,7 +276,7 @@ function renderTemplatePreview(template, eventTypeName = '') {
  * Mini iframe preview — renders scaled-down template HTML/CSS inside an iframe
  * Shows the hero (first visible section) of the invitation.
  */
-function TemplateThumbnail({ template }) {
+function TemplateThumbnail({ template, lang }) {
   const iframeRef = useRef(null);
   const containerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
@@ -232,7 +300,7 @@ function TemplateThumbnail({ template }) {
     const iframe = iframeRef.current;
     if (!iframe || !template.htmlContent || !template.cssContent) return;
 
-    const { html, css } = renderTemplatePreview(template);
+    const { html, css } = renderTemplatePreview(template, '', lang);
 
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!doc) return;
@@ -328,7 +396,7 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
           {t('step2.title')}
         </h2>
         <p className="text-surface-400">
-          {data.eventType?.label} — {templates.length} {t('step2.count')}
+          {eventTypeTranslations[lang]?.[data.eventType?.name] || data.eventType?.label} — {templates.length} {t('step2.count')}
         </p>
       </div>
 
@@ -383,7 +451,7 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
                 </button>
 
                 {/* Live template preview thumbnail */}
-                <TemplateThumbnail template={tmpl} />
+                <TemplateThumbnail template={tmpl} lang={lang} />
 
                 {/* Template name & description */}
                 <div className="p-3 pt-2">
@@ -477,7 +545,7 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          <FullPreview template={previewTemplate} />
+          <FullPreview template={previewTemplate} lang={lang} />
         </div>
       </div>
     )}
@@ -488,14 +556,14 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
 /**
  * Full-height scrollable preview inside modal
  */
-function FullPreview({ template }) {
+function FullPreview({ template, lang }) {
   const iframeRef = useRef(null);
 
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe || !template.htmlContent || !template.cssContent) return;
 
-    const { html, css } = renderTemplatePreview(template);
+    const { html, css } = renderTemplatePreview(template, '', lang);
 
     const timer = setTimeout(() => {
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
