@@ -24,24 +24,39 @@ exports.send = catchAsync(async (req, res) => {
 
   // If Telegram bot configured, also forward there
   if (bot && bot.includes(':')) {
-    const parts = bot.split(':');
-    const botToken = parts.slice(0, -1).join(':');
-    const chatId = parts[parts.length - 1];
+    // Format: FULL_BOT_TOKEN:CHAT_ID
+    // Bot token itself has ':', so chatId is everything after the LAST ':'
+    const lastColon = bot.lastIndexOf(':');
+    const botToken = bot.substring(0, lastColon);
+    const chatId = bot.substring(lastColon + 1);
 
     if (botToken && chatId) {
       try {
+        // Use HTML parse_mode — Markdown silently fails on special chars like _ * [ ]
+        const escapeHtml = (str) => str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
         const text = [
-          `💌 *Yangi tilak keldi!*`, '',
-          `👤 *Ism:* ${name}`,
-          `💬 *Tilak:* ${message}`, '',
-          `📎 _Taklifnoma: ${slug}_`,
+          `💌 <b>Yangi tilak keldi!</b>`,
+          ``,
+          `👤 <b>Ism:</b> ${escapeHtml(name)}`,
+          `💬 <b>Tilak:</b> ${escapeHtml(message)}`,
+          ``,
+          `📎 <i>Taklifnoma: ${escapeHtml(slug)}</i>`,
         ].join('\n');
 
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' }),
+          body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
         });
+
+        const tgData = await tgRes.json();
+        if (!tgData.ok) {
+          console.error('Telegram API error:', JSON.stringify(tgData));
+        }
       } catch (err) {
         console.error('Telegram wish forward error:', err.message);
       }
