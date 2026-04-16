@@ -285,7 +285,7 @@ function renderInvitation(invitation, eventType, template) {
   ${(() => {
     // Inject gallery, wishes, rsvp BEFORE the footer section (so footer is always last)
     const gallery = buildPhotoGallery(photos);
-    const rsvp = invitation.customFields?.enableRsvp !== false ? buildRsvpForm(invitation.slug, invitation.customFields?.rsvpLang || 'uz') : '';
+    const rsvp = invitation.customFields?.enableRsvp === true ? buildRsvpForm(invitation.slug, invitation.customFields?.rsvpLang || 'uz') : '';
     const extras = gallery + wishesForm + rsvp;
     
     // Try to inject before footer (keeps footer at bottom)
