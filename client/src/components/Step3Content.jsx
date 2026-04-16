@@ -4,6 +4,7 @@ import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff,
 import LivePreview from './LivePreview';
 import { useLang } from '../i18n';
 import { uploadImage, uploadAudio } from '../utils/cloudinary';
+import TelegramConnector from './TelegramConnector';
 
 /**
  * Sends a real test message to the configured Telegram bot.
@@ -736,44 +737,12 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </div>
         </div>
 
-        <div>
-          <label className="label flex items-center gap-1.5">📱 {t('step3.telegramLabel')}</label>
-
-          <div className="rounded-xl border border-sky-500/15 bg-sky-500/5 p-3 mb-2 space-y-1.5 text-[11px]">
-            <p className="text-sky-300 font-semibold mb-1">📖 {t('step3.telegramGuide')}</p>
-            <p className="text-surface-400 flex items-start gap-1.5">
-              <span className="text-sky-400 font-bold shrink-0">1.</span>
-              <span>{t('step3.telegramStep1').split('/start').map((part, i, arr) => (
-                <span key={i}>
-                  {part}
-                  {i < arr.length - 1 && <strong className="text-white">/start</strong>}
-                </span>
-              ))}</span>
-            </p>
-            <p className="text-surface-400 flex items-start gap-1.5">
-              <span className="text-sky-400 font-bold shrink-0">2.</span>
-              <span>{t('step3.telegramStep2')}</span>
-            </p>
-          </div>
-
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder={t('step3.telegramPlaceholder')}
-              value={data.customFields?.telegramChatId || ''}
-              onChange={(e) => handleCustomFieldChange('telegramChatId', e.target.value.replace(/[^0-9-]/g, ''))}
-              className="input-field flex-1 font-mono text-sm"
-              inputMode="numeric"
-            />
-            <BotTestButton
-              bot={data.customFields?.telegramChatId}
-              apiBase={import.meta.env.VITE_API_URL || ''}
-              t={t}
-            />
-          </div>
-          <p className="text-[11px] text-surface-500 mt-1">{t('step3.telegramDesc')}</p>
+        <div className="mb-2">
+          <TelegramConnector 
+            value={data.customFields?.telegramChatId} 
+            onChange={(val) => handleCustomFieldChange('telegramChatId', val)} 
+          />
         </div>
-
         <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
           <div>
             <label className="label flex items-center gap-1.5 !mb-0">✅ {t('step3.rsvp')}</label>

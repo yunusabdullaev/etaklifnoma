@@ -136,4 +136,46 @@ router.post('/api/bot/test', async (req, res) => {
   }
 });
 
+// ── Telegram Bot Link Generator ──────────────────────────
+router.post('/api/bot/generate-link', async (req, res) => {
+  try {
+    const BotConnection = require('../models/BotConnection');
+    const token = 'tks_' + Math.random().toString(36).substring(2, 9).toUpperCase();
+    
+    await BotConnection.create({ token });
+    
+    // Determine the bot username
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || '';
+    let botUsername = 'etaklifnoma_bot';
+    if (botToken) {
+       try {
+         const meRes = await fetch('https://api.telegram.org/bot' + botToken + '/getMe');
+         const meData = await meRes.json();
+         if (meData.ok) botUsername = meData.result.username;
+       } catch (e) {}
+    }
+
+    res.json({ success: true, token, botUrl: `https://t.me/${botUsername}?start=${token}` });
+  } catch (err) {
+    res.json({ success: false, message: 'Link generatsiya qilishda xatolik' });
+  }
+});
+
+router.get('/api/bot/check-link', async (req, res) => {
+  try {
+    const BotConnection = require('../models/BotConnection');
+    const { token } = req.query;
+    if (!token) return res.json({ success: false });
+
+    const doc = await BotConnection.findOne({ token });
+    if (doc && doc.chatId) {
+      return res.json({ success: true, chatId: doc.chatId });
+    }
+    
+    res.json({ success: false });
+  } catch (err) {
+    res.json({ success: false });
+  }
+});
+
 module.exports = router;

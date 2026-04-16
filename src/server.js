@@ -116,6 +116,10 @@ const start = async () => {
       const { pollUpdates: pollSupport } = require('./bot/supportBot');
       pollSupport();
 
+      // Start Platform linking bot
+      const { startBotPolling } = require('./services/botPolling');
+      startBotPolling();
+
       // Keep-alive ping — prevent Render free tier from sleeping
       if (appConfig.nodeEnv === 'production') {
         const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
