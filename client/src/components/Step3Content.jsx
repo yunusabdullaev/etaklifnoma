@@ -761,12 +761,23 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             <p className="text-[11px] text-surface-500 mt-0.5">{t('step3.wishesHint')}</p>
           </div>
           <button type="button"
-            onClick={() => handleCustomFieldChange('enableWishes', data.customFields?.enableWishes === false ? true : false)}
+            onClick={() => {
+              const isEnabled = data.customFields?.enableWishes === undefined ? !!data.customFields?.telegramChatId : data.customFields?.enableWishes;
+              if (isEnabled) {
+                 handleCustomFieldChange('enableWishes', false);
+              } else {
+                 if (!data.customFields?.telegramChatId) {
+                    alert(lang === 'ru' ? 'Сначала подключите Telegram бота!' : (lang === 'qq' ? 'Dáslep Telegram botqa jalǵań!' : 'Avval Telegram botga ulaning!'));
+                    return;
+                 }
+                 handleCustomFieldChange('enableWishes', true);
+              }
+            }}
             className={`w-11 h-6 rounded-full transition-all duration-300 relative flex-shrink-0 ${
-              data.customFields?.enableWishes !== false ? 'bg-primary-500' : 'bg-surface-700'
+              (data.customFields?.enableWishes === undefined ? !!data.customFields?.telegramChatId : data.customFields?.enableWishes) ? 'bg-primary-500' : 'bg-surface-700'
             }`}>
             <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
-              data.customFields?.enableWishes !== false ? 'left-[22px]' : 'left-0.5'
+              (data.customFields?.enableWishes === undefined ? !!data.customFields?.telegramChatId : data.customFields?.enableWishes) ? 'left-[22px]' : 'left-0.5'
             }`} />
           </button>
         </div>
@@ -778,10 +789,10 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </div>
           {[
             { key: 'envelopeAnim',  label: `🎭 ${t('step3.envelopeAnim')}`,     hint: t('step3.envelopeHint'), defaultOn: true },
-            { key: 'showShareWa',   label: `💬 ${t('step3.showShareWa')}`, hint: t('step3.showShareWaHint'), defaultOn: true },
-            { key: 'showShareTg',   label: `✈️ ${t('step3.showShareTg')}`, hint: t('step3.showShareTgHint'), defaultOn: true },
-            { key: 'showCalendarBtn', label: `📅 ${t('step3.showCalendar')}`,        hint: t('step3.showCalendarHint'), defaultOn: true },
-            { key: 'showPrintBtn',  label: `🖨️ ${t('step3.showPrint')}`,       hint: t('step3.showPrintHint'), defaultOn: true },
+            { key: 'showShareWa',   label: `💬 ${t('step3.showShareWa')}`, hint: t('step3.showShareWaHint'), defaultOn: false },
+            { key: 'showShareTg',   label: `✈️ ${t('step3.showShareTg')}`, hint: t('step3.showShareTgHint'), defaultOn: false },
+            { key: 'showCalendarBtn', label: `📅 ${t('step3.showCalendar')}`,        hint: t('step3.showCalendarHint'), defaultOn: false },
+            { key: 'showPrintBtn',  label: `🖨️ ${t('step3.showPrint')}`,       hint: t('step3.showPrintHint'), defaultOn: false },
           ].map(({ key, label, hint, defaultOn }) => {
             const isOn = data.customFields?.[key] === undefined ? defaultOn : !!data.customFields[key];
             return (

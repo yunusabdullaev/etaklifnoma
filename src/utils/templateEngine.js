@@ -236,10 +236,10 @@ function renderInvitation(invitation, eventType, template) {
   photos = photos.map(fixFileUrl);
   const musicPlayer = musicUrl ? buildMusicPlayer(musicUrl) : '';
 
-  // Wishes form — always shown by default, Telegram chat ID is optional
+  // Wishes form — requires Telegram Bot connection to be enabled
   const telegramChatId = invitation.customFields?.telegramChatId || invitation.customFields?.telegramBot || '';
-  const wishesForm = invitation.customFields?.enableWishes !== false
-    ? buildWishesForm(telegramChatId, invitation.slug) : '';
+  const isWishesEnabled = invitation.customFields?.enableWishes === undefined ? !!telegramChatId : invitation.customFields?.enableWishes;
+  const wishesForm = isWishesEnabled ? buildWishesForm(telegramChatId, invitation.slug) : '';
 
   // Build full page
   return `<!DOCTYPE html>
