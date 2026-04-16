@@ -86,8 +86,12 @@ export default function App() {
     setView('dashboard');
   };
 
-  const startWizard = () => {
-    setData(INITIAL_DATA);
+  const startWizard = (defaultSettings = null) => {
+    let freshData = { ...INITIAL_DATA };
+    if (defaultSettings && Object.keys(defaultSettings).length > 0) {
+        freshData.customFields = { ...defaultSettings };
+    }
+    setData(freshData);
     setStep(1);
     setView('wizard');
   };

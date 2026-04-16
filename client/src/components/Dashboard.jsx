@@ -20,6 +20,31 @@ export default function Dashboard({ token, onCreateNew }) {
   const APP_URL = window.location.origin;
   const { t, lang } = useLang();
 
+
+  const handleCreateNew = () => {
+    let defaultSettings = null;
+    if (invitations && invitations.length > 0) {
+      const lastInv = invitations[0];
+      if (lastInv.customFields) {
+        defaultSettings = {
+          telegramChatId: lastInv.customFields.telegramChatId,
+          telegramBot: lastInv.customFields.telegramBot,
+          langUz: lastInv.customFields.langUz,
+          langQq: lastInv.customFields.langQq,
+          langRu: lastInv.customFields.langRu,
+          defaultLang: lastInv.customFields.defaultLang,
+          showShareWa: lastInv.customFields.showShareWa,
+          showShareTg: lastInv.customFields.showShareTg,
+          showCalendarBtn: lastInv.customFields.showCalendarBtn,
+          showPrintBtn: lastInv.customFields.showPrintBtn,
+          enableWishes: lastInv.customFields.enableWishes,
+          musicUrl: lastInv.customFields.musicUrl,
+        };
+      }
+    }
+    onCreateNew(defaultSettings);
+  };
+
   useEffect(() => { fetchInvitations(); }, []);
 
   const fetchInvitations = async () => {
@@ -297,7 +322,7 @@ export default function Dashboard({ token, onCreateNew }) {
             {invitations.length > 0 ? `${invitations.length} ${t('dashboard.total')}` : t('dashboard.empty')}
           </p>
         </div>
-        <button onClick={onCreateNew} className="btn-primary flex items-center gap-2 px-5 py-2.5">
+        <button onClick={handleCreateNew} className="btn-primary flex items-center gap-2 px-5 py-2.5">
           <Plus size={16} /> {t('dashboard.newBtn')}
         </button>
       </div>
@@ -318,7 +343,7 @@ export default function Dashboard({ token, onCreateNew }) {
           <div className="text-6xl mb-4">📨</div>
           <h3 className="text-xl font-display font-semibold text-white mb-2">{t('dashboard.emptyTitle')}</h3>
           <p className="text-surface-400 text-sm mb-6 max-w-md mx-auto">{t('dashboard.emptyDesc')}</p>
-          <button onClick={onCreateNew} className="btn-primary inline-flex items-center gap-2 px-6 py-3">
+          <button onClick={handleCreateNew} className="btn-primary inline-flex items-center gap-2 px-6 py-3">
             <Plus size={18} /> {t('dashboard.createBtn')}
           </button>
         </motion.div>
