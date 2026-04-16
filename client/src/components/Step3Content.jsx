@@ -9,14 +9,14 @@ import { uploadImage, uploadAudio } from '../utils/cloudinary';
  * Sends a real test message to the configured Telegram bot.
  * Shows success/error with human-readable Uzbek messages.
  */
-function BotTestButton({ bot, apiBase }) {
+function BotTestButton({ bot, apiBase, t }) {
   const [status, setStatus] = useState(null);
   const [msg, setMsg] = useState('');
 
   const test = async () => {
     if (!bot || !/^-?\d+$/.test(bot.trim())) {
       setStatus('err');
-      setMsg('Avval Chat ID raqamini kiriting');
+      setMsg(t('step3.botTestWait') || 'Chat ID raqamini kiriting');
       return;
     }
     setStatus('loading');
@@ -33,11 +33,11 @@ function BotTestButton({ bot, apiBase }) {
         setMsg(data.message);
       } else {
         setStatus('err');
-        setMsg(data.message);
+        setMsg(data.message); // This might be from backend, keep as is
       }
     } catch (e) {
       setStatus('err');
-      setMsg('Server bilan bog\'lanib bo\'lmadi');
+      setMsg(t('common.error') || 'Server bilan bog\'lanib bo\'lmadi');
     }
     setTimeout(() => { setStatus(null); setMsg(''); }, 8000);
   };
@@ -59,7 +59,7 @@ function BotTestButton({ bot, apiBase }) {
          status === 'ok'      ? <CheckCircle2 size={12} /> :
          status === 'err'     ? <XCircle size={12} /> :
                                 <Zap size={12} />}
-        Sinab ko'r
+        {t('step3.botTest') || "Sinab ko'r"}
       </button>
       {msg && (
         <p className={`text-[10px] leading-tight max-w-[200px] ${status === 'ok' ? 'text-emerald-400' : 'text-rose-400'}`}>
@@ -737,24 +737,29 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
 
         <div>
-          <label className="label flex items-center gap-1.5">📱 Telegram bildirishnoma</label>
+          <label className="label flex items-center gap-1.5">📱 {t('step3.telegramLabel')}</label>
 
           <div className="rounded-xl border border-sky-500/15 bg-sky-500/5 p-3 mb-2 space-y-1.5 text-[11px]">
-            <p className="text-sky-300 font-semibold mb-1">📖 2 qadam — Tilaklar Telegramga keladi:</p>
+            <p className="text-sky-300 font-semibold mb-1">📖 {t('step3.telegramGuide')}</p>
             <p className="text-surface-400 flex items-start gap-1.5">
               <span className="text-sky-400 font-bold shrink-0">1.</span>
-              <span><a href="https://t.me/userinfobot" target="_blank" rel="noopener" className="text-sky-400 underline">@userinfobot</a> ga Telegramda <strong className="text-white">/start</strong> yuboring</span>
+              <span>{t('step3.telegramStep1').split('/start').map((part, i, arr) => (
+                <span key={i}>
+                  {part}
+                  {i < arr.length - 1 && <strong className="text-white">/start</strong>}
+                </span>
+              ))}</span>
             </p>
             <p className="text-surface-400 flex items-start gap-1.5">
               <span className="text-sky-400 font-bold shrink-0">2.</span>
-              <span>U bergan <strong className="text-white">ID raqamni</strong> quyiga yozing</span>
+              <span>{t('step3.telegramStep2')}</span>
             </p>
           </div>
 
           <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Masalan: 5887503077"
+              placeholder={t('step3.telegramPlaceholder')}
               value={data.customFields?.telegramChatId || ''}
               onChange={(e) => handleCustomFieldChange('telegramChatId', e.target.value.replace(/[^0-9-]/g, ''))}
               className="input-field flex-1 font-mono text-sm"
@@ -763,9 +768,10 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             <BotTestButton
               bot={data.customFields?.telegramChatId}
               apiBase={import.meta.env.VITE_API_URL || ''}
+              t={t}
             />
           </div>
-          <p className="text-[11px] text-surface-500 mt-1">Mehmonlar tilak yuborganda Telegramingizga xabar keladi</p>
+          <p className="text-[11px] text-surface-500 mt-1">{t('step3.telegramDesc')}</p>
         </div>
 
         <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
@@ -827,14 +833,14 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* ─── Floating Elements Toggles ─── */}
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
           <div className="px-3 py-2.5 border-b border-white/[0.04]">
-            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">⚙️ Suzuvchi tugmalar</p>
+            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">⚙️ {t('step3.floatingTitle')}</p>
           </div>
           {[
-            { key: 'envelopeAnim',  label: '🎭 Konvert animatsiyasi',     hint: 'Sahifa ochilganda konvert effekti', defaultOn: true },
-            { key: 'showShareWa',   label: '💬 WhatsApp ulashish tugmasi', hint: 'Invitation sahifasida WhatsApp tugmasi', defaultOn: true },
-            { key: 'showShareTg',   label: '✈️ Telegram ulashish tugmasi', hint: 'Invitation sahifasida Telegram tugmasi', defaultOn: true },
-            { key: 'showCalendarBtn', label: '📅 Kalendar tugmasi',        hint: 'Google Calendar ga qo\'shish tugmasi', defaultOn: true },
-            { key: 'showPrintBtn',  label: '🖨️ Chop etish tugmasi',       hint: 'PDF sifatida saqlash tugmasi', defaultOn: true },
+            { key: 'envelopeAnim',  label: `🎭 ${t('step3.envelopeAnim')}`,     hint: t('step3.envelopeHint'), defaultOn: true },
+            { key: 'showShareWa',   label: `💬 ${t('step3.showShareWa')}`, hint: t('step3.showShareWaHint'), defaultOn: true },
+            { key: 'showShareTg',   label: `✈️ ${t('step3.showShareTg')}`, hint: t('step3.showShareTgHint'), defaultOn: true },
+            { key: 'showCalendarBtn', label: `📅 ${t('step3.showCalendar')}`,        hint: t('step3.showCalendarHint'), defaultOn: true },
+            { key: 'showPrintBtn',  label: `🖨️ ${t('step3.showPrint')}`,       hint: t('step3.showPrintHint'), defaultOn: true },
           ].map(({ key, label, hint, defaultOn }) => {
             const isOn = data.customFields?.[key] === undefined ? defaultOn : !!data.customFields[key];
             return (
