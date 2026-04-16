@@ -835,15 +835,10 @@ function buildLanguageToggle() {
     }
     if(!defaultLang) defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : 'ru');
 
-    // Execute initialization
-    var saved = null;
-    try { saved = localStorage.getItem('taklifnoma-lang'); } catch(e){}
-    
-    // Auto-switch to strictly only language, OR use saved cache, OR fallback to configured priority default
+    // Execute initialization (no caching to respect host priority)
     if (!hasUz && !hasQq && hasRu) { switchLang('ru'); }
     else if (!hasUz && hasQq && !hasRu) { switchLang('qq'); }
     else if (!hasRu && !hasQq && hasUz) { switchLang('uz'); }
-    else if (saved && langs.indexOf(saved) !== -1) { switchLang(saved); }
     else { switchLang(defaultLang); }
   })();
   </script>`
