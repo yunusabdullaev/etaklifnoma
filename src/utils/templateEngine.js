@@ -506,7 +506,10 @@ function buildWishesForm(telegramBot, invitationSlug) {
     btnText.textContent = 'Yuborilmoqda...';
     btn.disabled = true;
 
-    fetch('/api/wishes', {
+    const serverUrl = '${process.env.APP_URL || ""}';
+    const apiUrl = serverUrl ? serverUrl + '/api/wishes' : '/api/wishes';
+
+    fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name, message: message, bot: bot, slug: slug })

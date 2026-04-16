@@ -8,32 +8,39 @@ const ApiResponse = require('../utils/ApiResponse');
  * POST /api/wishes
  */
 exports.send = catchAsync(async (req, res) => {
-  const { Wish } = require('../models');
   const { name, message, bot, slug } = req.body;
+
+  console.log('[wishes] Received:', { name, slug, hasBot: !!bot, botLen: bot?.length });
 
   if (!name || !message || !slug) {
     return ApiResponse.error(res, { message: 'Name, message and slug are required' }, 400);
   }
 
-  // Always save to DB
-  await Wish.create({
-    invitationSlug: slug,
-    guestName: name.trim(),
-    message: message.trim(),
-  });
+  // Try to save to DB (non-fatal if table doesn't exist yet)
+  try {
+    const { Wish } = require('../models');
+    await Wish.create({
+      invitationSlug: slug,
+      guestName: name.trim(),
+      message: message.trim(),
+    });
+    console.log('[wishes] Saved to DB OK');
+  } catch (dbErr) {
+    console.error('[wishes] DB save failed (continuing anyway):', dbErr.message);
+  }
 
-  // If Telegram bot configured, also forward there
-  if (bot && bot.includes(':')) {
-    // Format: FULL_BOT_TOKEN:CHAT_ID
-    // Bot token itself has ':', so chatId is everything after the LAST ':'
-    const lastColon = bot.lastIndexOf(':');
-    const botToken = bot.substring(0, lastColon);
-    const chatId = bot.substring(lastColon + 1);
+  // Forward to Telegram if bot configured
+  if (bot && String(bot).trim().includes(':')) {
+    const botStr = String(bot).trim();
+    const lastColon = botStr.lastIndexOf(':');
+    const botToken = botStr.substring(0, lastColon).trim();
+    const chatId = botStr.substring(lastColon + 1).trim();
+
+    console.log('[wishes] Telegram: botToken length:', botToken.length, '| chatId:', chatId);
 
     if (botToken && chatId) {
       try {
-        // Use HTML parse_mode — Markdown silently fails on special chars like _ * [ ]
-        const escapeHtml = (str) => str
+        const escapeHtml = (str) => String(str)
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;');
@@ -47,7 +54,10 @@ exports.send = catchAsync(async (req, res) => {
           `📎 <i>Taklifnoma: ${escapeHtml(slug)}</i>`,
         ].join('\n');
 
-        const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        console.log('[wishes] Calling Telegram API:', tgUrl.replace(botToken, 'BOT_TOKEN'));
+
+        const tgRes = await fetch(tgUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
@@ -55,12 +65,18 @@ exports.send = catchAsync(async (req, res) => {
 
         const tgData = await tgRes.json();
         if (!tgData.ok) {
-          console.error('Telegram API error:', JSON.stringify(tgData));
+          console.error('[wishes] Telegram API error:', JSON.stringify(tgData));
+        } else {
+          console.log('[wishes] Telegram message sent OK, message_id:', tgData.result?.message_id);
         }
-      } catch (err) {
-        console.error('Telegram wish forward error:', err.message);
+      } catch (tgErr) {
+        console.error('[wishes] Telegram fetch error:', tgErr.message);
       }
+    } else {
+      console.warn('[wishes] Could not parse botToken/chatId from bot string');
     }
+  } else {
+    console.log('[wishes] No Telegram bot configured (bot field empty or missing colon)');
   }
 
   ApiResponse.success(res, { sent: true }, 'Tilak qabul qilindi!');
@@ -70,10 +86,15 @@ exports.send = catchAsync(async (req, res) => {
  * GET /api/wishes/:slug — owner gets wishes list
  */
 exports.getBySlug = catchAsync(async (req, res) => {
-  const { Wish } = require('../models');
-  const wishes = await Wish.findAll({
-    where: { invitationSlug: req.params.slug },
-    order: [['created_at', 'DESC']],
-  });
-  ApiResponse.success(res, wishes);
+  try {
+    const { Wish } = require('../models');
+    const wishes = await Wish.findAll({
+      where: { invitationSlug: req.params.slug },
+      order: [['created_at', 'DESC']],
+    });
+    ApiResponse.success(res, wishes);
+  } catch (err) {
+    console.error('[wishes] getBySlug error:', err.message);
+    ApiResponse.success(res, []);
+  }
 });
