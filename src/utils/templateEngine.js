@@ -824,7 +824,10 @@ function buildLanguageToggle() {
     window.switchLang = switchLang;
 
     // Determine initial language
-    var defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : 'ru');
+    var configuredDefault = '${invitation.customFields?.defaultLang || ''}';
+    var defaultLang = configuredDefault && ((configuredDefault === 'uz' && hasUz) || (configuredDefault === 'qq' && hasQq) || (configuredDefault === 'ru' && hasRu))
+      ? configuredDefault 
+      : (hasUz ? 'uz' : (hasQq ? 'qq' : 'ru'));
 
     // Only RU mode → auto-switch
     if(!hasUz && !hasQq && hasRu) {
