@@ -198,6 +198,62 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           })}
         </div>
 
+      </div>
+
+      {/* TEXT FIELDS COMPONENT */}
+      <div className="glass p-5 space-y-8">
+        <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
+          ✍️ Matnlar (Barcha tillardagi yozuvlar)
+        </h3>
+
+        
+        {/* UZ fields */}
+        {isUzOn && (
+          <div className="space-y-4 pb-4 border-b border-white/5">
+            <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20 shadow-sm">🇺🇿 O'zbek tili</h4>
+{/* Core fields */}
+      {isUzOn && (
+      <div className="space-y-4">
+        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+          <User size={13} /> {t('step3.basicInfo')}
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="label">{t('step3.host')} *</label>
+            <input type="text" placeholder="Aliyev Jasur"
+              value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
+              className="input-field" />
+          </div>
+          <div>
+            <label className="label">{t('step3.guest')}</label>
+            <input type="text" placeholder="Hurmatli mehmon"
+              value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
+              className="input-field" />
+          </div>
+        </div>
+        <div>
+          <label className="label flex items-center gap-1.5"><Type size={13} /> {t('step3.eventTitle')}</label>
+          <input type="text" placeholder="Nikoh marosimi"
+            value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
+            className="input-field" />
+        </div>
+      </div>
+      )}
+
+{/* Message */}
+      {isUzOn && (
+      <div className="space-y-3">
+        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
+          <MessageSquare size={13} /> {t('step3.message')}
+        </h3>
+        <textarea rows={3} placeholder={t('step3.messagePlaceholder')}
+          value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
+          className="input-field resize-none" />
+      </div>
+      )}
+          </div>
+        )}
+
         {/* QQ fields — when Karakalpak is ON */}
         {data.customFields?.langQq && (
           <div className="space-y-3 border-t border-white/5 pt-4">
@@ -232,6 +288,61 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                 onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
                 className="input-field resize-none" />
             </div>
+
+{/* Karakalpak Program editor — when QQ is ON */}
+        {data.customFields?.langQq && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
+              <input
+                type="text"
+                placeholder="Sarlavha (QQ)"
+                value={data.customFields?.programCustomTitleQq || ''}
+                onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
+                className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
+              />
+            </div>
+            {(() => {
+              let items = [];
+              try {
+                items = data.customFields?.programQq ? JSON.parse(data.customFields.programQq) : [];
+              } catch { items = []; }
+              if (items.length === 0) {
+                items = [
+                  { time: data.eventTime || '18:00', text: 'Mexmanlar kútip alıw' },
+                  { time: '18:30', text: 'Rásimiy bólim' },
+                  { time: '19:00', text: 'Ziyapat dástúrxanı' },
+                  { time: '21:00', text: 'Muzıkalı waqıtlar' },
+                ];
+              }
+              const updateProgramQq = (newItems) => {
+                handleCustomFieldChange('programQq', JSON.stringify(newItems));
+              };
+              return (
+                <div className="space-y-2">
+                  {items.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input type="time" value={item.time}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
+                        className="input-field w-28 text-center" />
+                      <input type="text" value={item.text}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
+                        className="input-field flex-1" placeholder="Ilaje atı" />
+                      {items.length > 1 && (
+                        <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
+                          className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
+                    className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
+                    + Punkt qosıw
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+        )}
           </div>
         )}
 
@@ -269,6 +380,61 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
                 className="input-field resize-none" />
             </div>
+
+{/* Karakalpak Program editor — when QQ is ON */}
+        {data.customFields?.langQq && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
+              <input
+                type="text"
+                placeholder="Sarlavha (QQ)"
+                value={data.customFields?.programCustomTitleQq || ''}
+                onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
+                className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
+              />
+            </div>
+            {(() => {
+              let items = [];
+              try {
+                items = data.customFields?.programQq ? JSON.parse(data.customFields.programQq) : [];
+              } catch { items = []; }
+              if (items.length === 0) {
+                items = [
+                  { time: data.eventTime || '18:00', text: 'Mexmanlar kútip alıw' },
+                  { time: '18:30', text: 'Rásimiy bólim' },
+                  { time: '19:00', text: 'Ziyapat dástúrxanı' },
+                  { time: '21:00', text: 'Muzıkalı waqıtlar' },
+                ];
+              }
+              const updateProgramQq = (newItems) => {
+                handleCustomFieldChange('programQq', JSON.stringify(newItems));
+              };
+              return (
+                <div className="space-y-2">
+                  {items.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input type="time" value={item.time}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
+                        className="input-field w-28 text-center" />
+                      <input type="text" value={item.text}
+                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
+                        className="input-field flex-1" placeholder="Ilaje atı" />
+                      {items.length > 1 && (
+                        <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
+                          className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
+                    className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
+                    + Punkt qosıw
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+        )}
           </div>
         )}
       </div>
@@ -303,37 +469,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
       )}
 
-      {/* Core fields */}
-      {isUzOn && (
-      <div className="glass p-5 space-y-4">
-        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <User size={13} /> {t('step3.basicInfo')}
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="label">{t('step3.host')} *</label>
-            <input type="text" placeholder="Aliyev Jasur"
-              value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
-              className="input-field" />
-          </div>
-          <div>
-            <label className="label">{t('step3.guest')}</label>
-            <input type="text" placeholder="Hurmatli mehmon"
-              value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
-              className="input-field" />
-          </div>
-        </div>
-        <div>
-          <label className="label flex items-center gap-1.5"><Type size={13} /> {t('step3.eventTitle')}</label>
-          <input type="text" placeholder="Nikoh marosimi"
-            value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
-            className="input-field" />
-        </div>
-      </div>
-      )}
-
-      {/* Date & location */}
-      <div className="glass p-5 space-y-4">
+            {/* Date & location */}
+      <div className="space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           <Calendar size={13} /> {t('step3.dateLocation')}
         </h3>
@@ -387,20 +524,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
       </div>
 
-      {/* Message */}
-      {isUzOn && (
-      <div className="glass p-5 space-y-3">
-        <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          <MessageSquare size={13} /> {t('step3.message')}
-        </h3>
-        <textarea rows={3} placeholder={t('step3.messagePlaceholder')}
-          value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
-          className="input-field resize-none" />
-      </div>
-      )}
-
-      {/* Extra features: music + telegram */}
-      <div className="glass p-5 space-y-4">
+            {/* Extra features: music + telegram */}
+      <div className="space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           ⚙️ {t('step3.extras')}
         </h3>
@@ -473,200 +598,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           <p className="text-[11px] text-surface-500 mt-1">{t('step3.musicHint')}</p>
         </div>
 
-        {/* Program / Timeline editor */}
-        {isUzOn && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="label flex items-center gap-2 mb-0">📅 {t('step3.program')}</label>
-            <input
-              type="text"
-              placeholder="Sarlavha (ixtiyoriy)"
-              value={data.customFields?.programCustomTitle || ''}
-              onChange={(e) => handleCustomFieldChange('programCustomTitle', e.target.value)}
-              className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
-              title="Dastur sarlavhasini o'zgartirish (masalan: Bizning rejamiz)"
-            />
-          </div>
-          {(() => {
-            // Parse existing program or use defaults
-            let items = [];
-            try {
-              items = data.customFields?.program ? JSON.parse(data.customFields.program) : [];
-            } catch { items = []; }
-            if (items.length === 0) {
-              items = [
-                { time: data.eventTime || '18:00', text: 'Mehmonlarni kutib olish' },
-                { time: '18:30', text: 'Rasmiy qism' },
-                { time: '19:00', text: 'Ziyofat dasturxoni' },
-                { time: '21:00', text: 'Musiqali lahzalar' },
-              ];
-            }
-
-            const updateProgram = (newItems) => {
-              handleCustomFieldChange('program', JSON.stringify(newItems));
-            };
-
-            return (
-              <div className="space-y-2">
-                {items.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <input
-                      type="time"
-                      value={item.time}
-                      onChange={(e) => {
-                        const next = [...items];
-                        next[i] = { ...next[i], time: e.target.value };
-                        updateProgram(next);
-                      }}
-                      className="input-field w-28 text-center"
-                    />
-                    <input
-                      type="text"
-                      value={item.text}
-                      onChange={(e) => {
-                        const next = [...items];
-                        next[i] = { ...next[i], text: e.target.value };
-                        updateProgram(next);
-                      }}
-                      className="input-field flex-1"
-                      placeholder="Tadbir nomi"
-                    />
-                    {items.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const next = items.filter((_, j) => j !== i);
-                          updateProgram(next);
-                        }}
-                        className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0"
-                      >✕</button>
-                    )}
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => updateProgram([...items, { time: '', text: '' }])}
-                  className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1"
-                >
-                  + {t('step3.addItem')}
-                </button>
-              </div>
-            );
-          })()}
-        </div>
-        )}
-
-        {/* Karakalpak Program editor — when QQ is ON */}
-        {data.customFields?.langQq && (
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
-              <input
-                type="text"
-                placeholder="Sarlavha (QQ)"
-                value={data.customFields?.programCustomTitleQq || ''}
-                onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
-                className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
-              />
-            </div>
-            {(() => {
-              let items = [];
-              try {
-                items = data.customFields?.programQq ? JSON.parse(data.customFields.programQq) : [];
-              } catch { items = []; }
-              if (items.length === 0) {
-                items = [
-                  { time: data.eventTime || '18:00', text: 'Mexmanlar kútip alıw' },
-                  { time: '18:30', text: 'Rásimiy bólim' },
-                  { time: '19:00', text: 'Ziyapat dástúrxanı' },
-                  { time: '21:00', text: 'Muzıkalı waqıtlar' },
-                ];
-              }
-              const updateProgramQq = (newItems) => {
-                handleCustomFieldChange('programQq', JSON.stringify(newItems));
-              };
-              return (
-                <div className="space-y-2">
-                  {items.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <input type="time" value={item.time}
-                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
-                        className="input-field w-28 text-center" />
-                      <input type="text" value={item.text}
-                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
-                        className="input-field flex-1" placeholder="Ilaje atı" />
-                      {items.length > 1 && (
-                        <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
-                          className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>
-                      )}
-                    </div>
-                  ))}
-                  <button type="button" onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
-                    className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
-                    + Punkt qosıw
-                  </button>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-
-        {/* Russian Program editor — when RU is ON */}
-        {data.customFields?.langRu && (
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="label flex items-center gap-2 mb-0">📅 Программа (RU)</label>
-              <input
-                type="text"
-                placeholder="Название (RU)"
-                value={data.customFields?.programCustomTitleRu || ''}
-                onChange={(e) => handleCustomFieldChange('programCustomTitleRu', e.target.value)}
-                className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200"
-              />
-            </div>
-            {(() => {
-              let items = [];
-              try {
-                items = data.customFields?.programRu ? JSON.parse(data.customFields.programRu) : [];
-              } catch { items = []; }
-              if (items.length === 0) {
-                items = [
-                  { time: data.eventTime || '18:00', text: 'Встреча гостей' },
-                  { time: '18:30', text: 'Официальная часть' },
-                  { time: '19:00', text: 'Праздничный ужин' },
-                  { time: '21:00', text: 'Музыка и развлечения' },
-                ];
-              }
-              const updateProgramRu = (newItems) => {
-                handleCustomFieldChange('programRu', JSON.stringify(newItems));
-              };
-              return (
-                <div className="space-y-2">
-                  {items.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <input type="time" value={item.time}
-                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramRu(n); }}
-                        className="input-field w-28 text-center" />
-                      <input type="text" value={item.text}
-                        onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramRu(n); }}
-                        className="input-field flex-1" placeholder="Название" />
-                      {items.length > 1 && (
-                        <button type="button" onClick={() => updateProgramRu(items.filter((_, j) => j !== i))}
-                          className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>
-                      )}
-                    </div>
-                  ))}
-                  <button type="button" onClick={() => updateProgramRu([...items, { time: '', text: '' }])}
-                    className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">
-                    + Добавить пункт
-                  </button>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-
-        {/* Photo Gallery */}
+                                {/* Photo Gallery */}
         <div>
           <label className="label flex items-center gap-1.5">🖼 {t('step3.photos')}</label>
           <p className="text-[11px] text-surface-500 mb-2">{t('step3.photosHint')}</p>
