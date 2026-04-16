@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ExternalLink, Copy, Eye, Calendar, MapPin, Clock, Trash2, Check, LayoutGrid, Pencil, X, Save, Loader2, QrCode, Users, Download, UserCheck, UserX, HelpCircle } from 'lucide-react';
+import { Plus, ExternalLink, Copy, Eye, Calendar, MapPin, Clock, Trash2, Check, LayoutGrid, Pencil, X, Save, Loader2, QrCode, Users, Download, UserCheck, UserX, HelpCircle, MessageSquare, Copy as CopyIcon } from 'lucide-react';
 import { useLang } from '../i18n';
 
 export default function Dashboard({ token, onCreateNew }) {
@@ -13,6 +13,8 @@ export default function Dashboard({ token, onCreateNew }) {
   const [saveSuccess, setSaveSuccess] = useState('');
   const [qrModal, setQrModal] = useState(null); // { slug, qrCode, url }
   const [rsvpModal, setRsvpModal] = useState(null); // { slug, rsvps, stats }
+  const [wishesModal, setWishesModal] = useState(null); // { slug, wishes }
+  const [duplicating, setDuplicating] = useState(null); // slug being duplicated
 
   const API = import.meta.env.VITE_API_URL || '';
   const APP_URL = window.location.origin;
@@ -193,6 +195,49 @@ export default function Dashboard({ token, onCreateNew }) {
     } catch (err) { console.error(err); }
   };
 
+  // Wishes Modal
+  const openWishes = async (slug) => {
+    try {
+      const res = await fetch(`${API}/api/wishes/${slug}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) setWishesModal({ slug, wishes: data.data || [] });
+    } catch (err) { console.error(err); }
+  };
+
+  // Duplicate Invitation
+  const duplicateInvitation = async (inv) => {
+    if (duplicating) return;
+    setDuplicating(inv.slug);
+    try {
+      const res = await fetch(`${API}/api/invitations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          eventTypeId: inv.eventTypeId,
+          templateId: inv.templateId,
+          hostName: inv.hostName,
+          guestName: inv.guestName || undefined,
+          eventTitle: inv.eventTitle ? `${inv.eventTitle} (nusxa)` : undefined,
+          eventDate: inv.eventDate,
+          eventTime: inv.eventTime || undefined,
+          location: inv.location,
+          locationUrl: inv.locationUrl || undefined,
+          message: inv.message || undefined,
+          customFields: inv.customFields || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchInvitations();
+        setSaveSuccess('📋 Nusxa yaratildi!');
+        setTimeout(() => setSaveSuccess(''), 3000);
+      }
+    } catch (err) { console.error(err); }
+    finally { setDuplicating(null); }
+  };
+
   const localeMap = { uz: 'uz-UZ', qq: 'kk-KZ', ru: 'ru-RU', en: 'en-US' };
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -288,8 +333,17 @@ export default function Dashboard({ token, onCreateNew }) {
                       </h3>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 text-surface-500 text-[10px]">
-                    <Eye size={10} /> {inv.viewCount || 0}
+                  <div className="flex items-center gap-1.5">
+                    {/* Expired badge */}
+                    {inv.eventDate && new Date(inv.eventDate) < new Date(new Date().toDateString()) && (
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/20">O'tgan</span>
+                    )}
+                    <span className={`flex items-center gap-1 text-[10px] font-medium ${
+                      (inv.viewCount || 0) > 10 ? 'text-emerald-400' :
+                      (inv.viewCount || 0) > 0 ? 'text-amber-400' : 'text-surface-500'
+                    }`}>
+                      <Eye size={10} /> {inv.viewCount || 0}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -341,6 +395,15 @@ export default function Dashboard({ token, onCreateNew }) {
                 <button onClick={() => openRsvp(inv.slug)} title="RSVP"
                   className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] text-surface-400 bg-white/[0.03] hover:bg-white/[0.08] hover:text-white transition-all">
                   <Users size={12} /> RSVP
+                </button>
+                <button onClick={() => openWishes(inv.slug)} title="Tabriklar"
+                  className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] text-surface-400 bg-white/[0.03] hover:bg-white/[0.08] hover:text-primary-300 transition-all">
+                  <MessageSquare size={12} /> 💌
+                </button>
+                <button onClick={() => duplicateInvitation(inv)} title="Nusxa olish" disabled={duplicating === inv.slug}
+                  className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] text-surface-400 bg-white/[0.03] hover:bg-white/[0.08] hover:text-amber-300 transition-all disabled:opacity-40">
+                  {duplicating === inv.slug ? <Loader2 size={12} className="animate-spin" /> : <Copy size={12} />}
+                  📋
                 </button>
                 <button onClick={() => openEdit(inv)} title={t('dashboard.edit')}
                   className="p-1.5 rounded-lg text-surface-500 hover:text-amber-400 hover:bg-amber-400/10 transition-all">
@@ -463,6 +526,53 @@ export default function Dashboard({ token, onCreateNew }) {
                           ? (lang === 'en' ? '🤔 Maybe' : lang === 'ru' ? '🤔 Возможно' : '🤔 Noaniq')
                           : (lang === 'en' ? '❌ Declined' : lang === 'ru' ? '❌ Не придёт' : '❌ Kelmaydi')}
                       </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ WISHES MODAL ═══ */}
+      <AnimatePresence>
+        {wishesModal && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-950/80 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === e.currentTarget) setWishesModal(null); }}>
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
+              className="glass w-full max-w-lg max-h-[80vh] flex flex-col">
+              <div className="flex justify-between items-center p-5 border-b border-white/[0.06] shrink-0">
+                <h3 className="text-lg font-display font-semibold text-white flex items-center gap-2">
+                  <MessageSquare size={20} className="text-primary-400" />
+                  💌 Tabriklar
+                  {wishesModal.wishes.length > 0 && (
+                    <span className="text-xs font-normal bg-primary-500/20 text-primary-300 px-2 py-0.5 rounded-full">
+                      {wishesModal.wishes.length}
+                    </span>
+                  )}
+                </h3>
+                <button onClick={() => setWishesModal(null)} className="text-surface-500 hover:text-white"><X size={18} /></button>
+              </div>
+              <div className="overflow-y-auto flex-1 p-5 space-y-3">
+                {wishesModal.wishes.length === 0 ? (
+                  <div className="text-center py-12 text-surface-500">
+                    <MessageSquare size={40} className="mx-auto mb-3 opacity-20" />
+                    <p className="text-sm">Hali hech kim tabrik qoldirmagan</p>
+                  </div>
+                ) : (
+                  wishesModal.wishes.map((w) => (
+                    <div key={w.id} className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-semibold text-white flex items-center gap-1.5">
+                          👤 {w.guestName}
+                        </p>
+                        <p className="text-[10px] text-surface-500">
+                          {new Date(w.createdAt || w.created_at).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'long' })}
+                        </p>
+                      </div>
+                      <p className="text-sm text-surface-300 leading-relaxed">💬 {w.message}</p>
                     </div>
                   ))
                 )}

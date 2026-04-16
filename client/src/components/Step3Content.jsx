@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff, Loader2 } from 'lucide-react';
 import LivePreview from './LivePreview';
@@ -8,7 +8,32 @@ import { uploadImage, uploadAudio } from '../utils/cloudinary';
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [showPreview, setShowPreview] = useState(true);
   const [uploading, setUploading] = useState(null); // 'photo' | 'music' | null
+  const [draftSaved, setDraftSaved] = useState(false);
+  const [hasDraftRestored, setHasDraftRestored] = useState(false);
+  const saveTimerRef = useRef(null);
   const { t } = useLang();
+
+  const DRAFT_KEY = `etaklifnoma_draft_${data.eventTypeId || 'default'}`;
+
+  // Auto-Save: write to localStorage with 1.5s debounce
+  useEffect(() => {
+    if (!data.eventTypeId) return; // skip if no meaningful data
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+        setDraftSaved(true);
+        setTimeout(() => setDraftSaved(false), 2000);
+      } catch {}
+    }, 1500);
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
+  }, [data]);
+
+  const discardDraft = () => {
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    setHasDraftRestored(false);
+  };
+
 
   const handleChange = (field, value) => {
     onUpdate({ [field]: value });
