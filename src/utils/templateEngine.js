@@ -324,6 +324,7 @@ function renderInvitation(invitation, eventType, template) {
     langUz: context['langUz'] !== false && context['langUz'] !== 'false',
     langQq: context['langQq'] === true || context['langQq'] === 'true',
     langRu: context['langRu'] === true || context['langRu'] === 'true',
+    langOrder: context['langOrder'] || 'uz,ru,qq',
     program: context['program'] || '',
     programRu: context['programRu'] || '',
     programQq: context['programQq'] || '',
@@ -335,7 +336,7 @@ function renderInvitation(invitation, eventType, template) {
     eventTitleDisplay: context['eventTitle'] || context['hostName'] || '',
     locationDisplay: context['location'] || '',
   })};</script>
-  ${buildLanguageToggle()}
+  ${buildLanguageToggle(invitation.customFields)}
   ${buildShareButtons(invitation.customFields)}
   ${(invitation.customFields?.showCalendarBtn === true) ? buildCalendarButton() : ''}
   ${(invitation.customFields?.showPrintBtn === true) ? buildPrintButton() : ''}
@@ -575,12 +576,17 @@ function getWishesFormStyles() {
 /**
  * Language toggle button + translations system (UZ / QQ / RU)
  */
-function buildLanguageToggle() {
+function buildLanguageToggle(cf) {
+  var orderArr = (cf && cf.langOrder) ? cf.langOrder.split(',') : ['uz', 'ru', 'qq'];
+  var uzOrder = orderArr.indexOf('uz');
+  var ruOrder = orderArr.indexOf('ru');
+  var qqOrder = orderArr.indexOf('qq');
+
   return `
   <div class="lang-toggle" id="langToggle">
-    <button class="lang-btn active" id="langUz" onclick="switchLang('uz')">UZ</button>
-    <button class="lang-btn" id="langQq" onclick="switchLang('qq')" style="display:none">QQ</button>
-    <button class="lang-btn" id="langRu" onclick="switchLang('ru')" style="display:none">RU</button>
+    <button class="lang-btn active" id="langUz" onclick="switchLang('uz')" style="order:${uzOrder}">UZ</button>
+    <button class="lang-btn" id="langQq" onclick="switchLang('qq')" style="display:none; order:${qqOrder}">QQ</button>
+    <button class="lang-btn" id="langRu" onclick="switchLang('ru')" style="display:none; order:${ruOrder}">RU</button>
   </div>
   <script>
   (function(){

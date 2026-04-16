@@ -72,14 +72,7 @@ export default function LivePreview({ data, className = '' }) {
             return origSet.call(this, k, v);
           };
         })();
-        // 2. Force correct language from __INVITE_DATA__ flags (poll until switchLang is ready)
-        (function poll(n){
-          if (typeof window.switchLang === 'function') {
-            var d = window.__INVITE_DATA__ || {};
-            var lang = (d.langUz !== false) ? 'uz' : (d.langQq ? 'qq' : 'ru');
-            window.switchLang(lang);
-          } else if (n < 25) { setTimeout(function(){ poll(n+1); }, 80); }
-        })(0);
+
         <\/script>`;
         const injectedHtml = html.replace('</head>', previewOverride + '</head>');
         setHtmlContent(injectedHtml);
