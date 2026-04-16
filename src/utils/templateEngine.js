@@ -441,7 +441,7 @@ function buildShareButtons(cf) {
 
   const waBtn = showWa ? `
     <a id="waShareBtn" href="#" target="_blank" rel="noopener"
-      title="WhatsApp orqali ulashish"
+      title="WhatsApp orqali ulashish" data-i18n-title="shareWa"
       style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
              background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.25);backdrop-filter:blur(12px);
              cursor:pointer;transition:all 0.3s ease;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.3);">
@@ -450,7 +450,7 @@ function buildShareButtons(cf) {
 
   const tgBtn = showTg ? `
     <a id="tgShareBtn" href="#" target="_blank" rel="noopener"
-      title="Telegram orqali ulashish"
+      title="Telegram orqali ulashish" data-i18n-title="shareTg"
       style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
              background:rgba(36,162,222,0.12);border:1px solid rgba(36,162,222,0.25);backdrop-filter:blur(12px);
              cursor:pointer;transition:all 0.3s ease;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.3);">
@@ -647,6 +647,11 @@ function buildLanguageToggle(cf) {
         wishesSent: 'Tilaklaringiz yuborildi! Rahmat!',
         wishesError: 'Xatolik yuz berdi.',
         envOpen: 'Ochish uchun bosing',
+        shareWa: 'WhatsApp orqali ulashish',
+        shareTg: 'Telegram orqali ulashish',
+        calBtn: 'Kalendarimga qo\\'shish',
+        printBtn: 'PDF qilib saqlash',
+        inviteText: '💍 Sizni taklifnomamizga taklif etamiz!',
 
         bdEventLabel: "Tug'ilgan kun taklifi",
         bdCountdownTitle: "Bayramgacha qolgan vaqt",
@@ -685,6 +690,11 @@ function buildLanguageToggle(cf) {
         wishesSent: 'Tilekleriniz jiberildi! Raxmet!',
         wishesError: 'Qátelik júz berdi.',
         envOpen: 'Ashıw ushın basıń',
+        shareWa: 'WhatsApp tarmaǵında úlesiw',
+        shareTg: 'Telegram tarmaǵında úlesiw',
+        calBtn: 'Kalendarıma qosıw',
+        printBtn: 'PDF qılıp saqlaw',
+        inviteText: '💍 Sizdi taklifnamamızǵa shaqıramız!',
 
         bdEventLabel: 'Tuwılǵan kún shaqırıwı',
         bdCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
@@ -723,6 +733,11 @@ function buildLanguageToggle(cf) {
         wishesSent: 'Ваши пожелания отправлены! Спасибо!',
         wishesError: 'Произошла ошибка.',
         envOpen: 'Нажмите, чтобы открыть',
+        shareWa: 'Поделиться в WhatsApp',
+        shareTg: 'Поделиться в Telegram',
+        calBtn: 'Добавить в календарь',
+        printBtn: 'Сохранить как PDF',
+        inviteText: '💍 Приглашаем вас на наше торжество!',
 
         bdEventLabel: 'Приглашение на день рождения',
         bdCountdownTitle: 'До праздника осталось',
@@ -757,6 +772,10 @@ function buildLanguageToggle(cf) {
       var newData = langData[lang] || langData.uz;
 
       // 1. Translate data-i18n elements
+      document.querySelectorAll('[data-i18n-title]').forEach(function(el){
+        var key = el.getAttribute('data-i18n-title');
+        if(t[key]) el.setAttribute('title', t[key]);
+      });
       document.querySelectorAll('[data-i18n]').forEach(function(el){
         var key = el.getAttribute('data-i18n');
         if (key === 'programTitle' && newData.programTitle) {
@@ -817,6 +836,12 @@ function buildLanguageToggle(cf) {
       currentLang = lang;
       document.documentElement.lang = lang;
       try { localStorage.setItem('taklifnoma-lang', lang); } catch(e){}
+
+      // Update share links
+      var txtEnc = encodeURIComponent(t['inviteText'] || '💍 Sizni taklifnomamizga taklif etamiz!');
+      var curUrl = encodeURIComponent(window.location.href);
+      var wa = document.getElementById('waShareBtn'); if(wa) wa.href = 'https://wa.me/?text=' + txtEnc + '%20' + curUrl;
+      var tg = document.getElementById('tgShareBtn'); if(tg) tg.href = 'https://t.me/share/url?url=' + curUrl + '&text=' + txtEnc;
     }
 
     function swapTextInPage(from, to) {
@@ -866,7 +891,7 @@ function getLanguageToggleStyles() {
 function buildCalendarButton() {
   return `
   <a id="calendarBtn" href="#" target="_blank" rel="noopener"
-    title="Kalendarimga qo'shish"
+    title="Kalendarimga qo'shish" data-i18n-title="calBtn"
     style="position:fixed;bottom:88px;left:24px;z-index:9998;
            width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
            background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(12px);
@@ -906,7 +931,7 @@ function buildCalendarButton() {
 function buildPrintButton() {
   return `
   <button id="printBtn" onclick="window.print()"
-    title="Chop etish / PDF yuklab olish"
+    title="Chop etish / PDF yuklab olish" data-i18n-title="printBtn"
     style="position:fixed;bottom:140px;left:24px;z-index:9998;
            width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
            background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(12px);
