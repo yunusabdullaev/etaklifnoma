@@ -95,4 +95,55 @@ router.get('/health', (_req, res) => {
   });
 });
 
+// ── Telegram Bot Test endpoint ──────────────────────────
+router.post('/api/bot/test', async (req, res) => {
+  const { bot } = req.body;
+  if (!bot || !String(bot).includes(':')) {
+    return res.json({ success: false, message: 'Format noto\'g\'ri. BOT_TOKEN:CHAT_ID ko\'rinishida kiriting.' });
+  }
+  const botStr = String(bot).trim();
+  const lastColon = botStr.lastIndexOf(':');
+  const botToken = botStr.substring(0, lastColon).trim();
+  const chatId   = botStr.substring(lastColon + 1).trim();
+
+  if (!botToken || !chatId) {
+    return res.json({ success: false, message: 'Bot token yoki Chat ID topilmadi.' });
+  }
+
+  try {
+    // 1. Validate token via getMe
+    const meRes = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
+    const meData = await meRes.json();
+    if (!meData.ok) {
+      return res.json({ success: false, message: `Bot token noto'g'ri: ${meData.description}` });
+    }
+    const botName = meData.result.first_name || meData.result.username;
+
+    // 2. Send a real test message
+    const text = `✅ <b>eTaklifnoma ulanish tekshiruvi</b>\n\nBotingiz <b>${botName}</b> muvaffaqiyatli ulandi!\n\nEndi mehmonlar tilak yuborganda shu chatga xabar keladi. 🎉`;
+    const sendRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+    });
+    const sendData = await sendRes.json();
+    if (!sendData.ok) {
+      // Common errors explained in Uzbek
+      let msg = sendData.description || 'Xabar yuborib bo\'lmadi.';
+      if (sendData.error_code === 403) {
+        msg = '❌ Bot chat ga xabar yubora olmaydi. Avval botingizga /start yuboring yoki botni guruhga admin sifatida qo\'shing!';
+      } else if (sendData.error_code === 400 && msg.includes('chat not found')) {
+        msg = '❌ Chat topilmadi. Chat ID noto\'g\'ri. @userinfobot dan to\'g\'ri ID ni oling.';
+      } else if (sendData.error_code === 400 && msg.includes('chat_id')) {
+        msg = '❌ Chat ID noto\'g\'ri format. Faqat raqam bo\'lishi kerak (masalan: 123456789 yoki -1001234567890).';
+      }
+      return res.json({ success: false, message: msg, botName });
+    }
+
+    return res.json({ success: true, message: `✅ Bot muvaffaqiyatli ulandi! "${botName}" botidan test xabar yuborildi.`, botName });
+  } catch (err) {
+    return res.json({ success: false, message: `Server xatoligi: ${err.message}` });
+  }
+});
+
 module.exports = router;

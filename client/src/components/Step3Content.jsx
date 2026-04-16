@@ -1,9 +1,74 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff, Loader2, Zap, CheckCircle2, XCircle } from 'lucide-react';
 import LivePreview from './LivePreview';
 import { useLang } from '../i18n';
 import { uploadImage, uploadAudio } from '../utils/cloudinary';
+
+/**
+ * Sends a real test message to the configured Telegram bot.
+ * Shows success/error with human-readable Uzbek messages.
+ */
+function BotTestButton({ bot, apiBase }) {
+  const [status, setStatus] = useState(null); // null | 'loading' | 'ok' | 'err'
+  const [msg, setMsg] = useState('');
+
+  const test = async () => {
+    if (!bot || !bot.includes(':')) {
+      setStatus('err');
+      setMsg('Avval TOKEN:CHAT_ID formatida kiriting');
+      return;
+    }
+    setStatus('loading');
+    setMsg('');
+    try {
+      const res = await fetch(`${apiBase}/api/bot/test`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bot }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatus('ok');
+        setMsg(data.message);
+      } else {
+        setStatus('err');
+        setMsg(data.message);
+      }
+    } catch (e) {
+      setStatus('err');
+      setMsg('Server bilan bog\'lanib bo\'lmadi');
+    }
+    setTimeout(() => { setStatus(null); setMsg(''); }, 8000);
+  };
+
+  return (
+    <div className="flex flex-col gap-1 shrink-0">
+      <button
+        type="button"
+        onClick={test}
+        disabled={status === 'loading'}
+        title="Bot ulanishini tekshirish"
+        className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+          status === 'ok'  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+          status === 'err' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
+          'bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500/20'
+        }`}
+      >
+        {status === 'loading' ? <Loader2 size={12} className="animate-spin" /> :
+         status === 'ok'      ? <CheckCircle2 size={12} /> :
+         status === 'err'     ? <XCircle size={12} /> :
+                                <Zap size={12} />}
+        Sinab ko'r
+      </button>
+      {msg && (
+        <p className={`text-[10px] leading-tight max-w-[200px] ${status === 'ok' ? 'text-emerald-400' : 'text-rose-400'}`}>
+          {msg}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [showPreview, setShowPreview] = useState(true);
@@ -673,10 +738,29 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
         <div>
           <label className="label flex items-center gap-1.5">📱 {t('step3.telegram')}</label>
-          <input type="text" placeholder="BOT_TOKEN:CHAT_ID"
-            value={data.customFields?.telegramBot || ''}
-            onChange={(e) => handleCustomFieldChange('telegramBot', e.target.value)}
-            className="input-field" />
+
+          {/* Step-by-step guide */}
+          <div className="rounded-xl border border-sky-500/15 bg-sky-500/5 p-3 mb-2 space-y-1.5 text-[11px]">
+            <p className="text-sky-300 font-semibold mb-1">📖 Qanday ulash kerak:</p>
+            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">1.</span> @BotFather da yangi bot yarating → token oling</p>
+            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">2.</span> <span><strong className="text-white">Botingizga /start yuboring</strong> (muhim! aks holda ishlamaydi)</span></p>
+            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">3.</span> <span>Chat ID: <a href="https://t.me/userinfobot" target="_blank" rel="noopener" className="text-sky-400 underline">@userinfobot</a> ga /start yuboring → ID olasiz</span></p>
+            <p className="text-surface-400 flex items-start gap-1.5"><span className="text-sky-400 font-bold shrink-0">4.</span> <span>Quyiga kiriting: <code className="text-amber-400 bg-white/10 px-1 rounded">TOKEN:CHAT_ID</code></span></p>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="1234567890:AAHoim_abc123-xyz789:987654321"
+              value={data.customFields?.telegramBot || ''}
+              onChange={(e) => handleCustomFieldChange('telegramBot', e.target.value)}
+              className="input-field flex-1 font-mono text-xs"
+            />
+            <BotTestButton
+              bot={data.customFields?.telegramBot}
+              apiBase={import.meta.env.VITE_API_URL || ''}
+            />
+          </div>
           <p className="text-[11px] text-surface-500 mt-1">{t('step3.telegramHint')}</p>
         </div>
 
