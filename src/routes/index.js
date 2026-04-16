@@ -98,51 +98,73 @@ router.get('/health', (_req, res) => {
 // ── Telegram Bot Test endpoint ──────────────────────────
 router.post('/api/bot/test', async (req, res) => {
   const { bot } = req.body;
-  if (!bot || !String(bot).includes(':')) {
-    return res.json({ success: false, message: 'Format noto\'g\'ri. BOT_TOKEN:CHAT_ID ko\'rinishida kiriting.' });
+  console.log('[bot/test] Raw input:', JSON.stringify(bot));
+
+  if (!bot || typeof bot !== 'string' || !bot.includes(':')) {
+    return res.json({ success: false, message: "Format noto'g'ri. BOT_TOKEN:CHAT_ID ko'rinishida kiriting." });
   }
-  const botStr = String(bot).trim();
+
+  const botStr = bot.trim();
   const lastColon = botStr.lastIndexOf(':');
   const botToken = botStr.substring(0, lastColon).trim();
-  const chatId   = botStr.substring(lastColon + 1).trim();
+  const chatId = botStr.substring(lastColon + 1).trim();
 
-  if (!botToken || !chatId) {
-    return res.json({ success: false, message: 'Bot token yoki Chat ID topilmadi.' });
+  console.log('[bot/test] Parsed token length:', botToken.length, '| chatId:', chatId);
+
+  if (!botToken || botToken.length < 10) {
+    return res.json({ success: false, message: "Bot token juda qisqa. @BotFather dan to'liq tokenni nusxalab oling." });
+  }
+  if (!chatId || !/^-?\d+$/.test(chatId)) {
+    return res.json({ success: false, message: 'Chat ID noto\'g\'ri: "' + chatId + '". Faqat raqam bo\'lishi kerak. @userinfobot dan oling.' });
   }
 
   try {
     // 1. Validate token via getMe
-    const meRes = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
+    const meUrl = 'https://api.telegram.org/bot' + botToken + '/getMe';
+    console.log('[bot/test] Calling getMe...');
+    const meRes = await fetch(meUrl);
     const meData = await meRes.json();
+    console.log('[bot/test] getMe response:', JSON.stringify(meData));
+
     if (!meData.ok) {
-      return res.json({ success: false, message: `Bot token noto'g'ri: ${meData.description}` });
+      const preview = botToken.substring(0, 10) + '...' + botToken.substring(botToken.length - 5);
+      return res.json({
+        success: false,
+        message: 'Bot token ishlamayapti (' + preview + '). @BotFather ga /mybots yozing, tokenni qayta oling. Telegram javobi: ' + (meData.description || 'Unknown error'),
+      });
     }
     const botName = meData.result.first_name || meData.result.username;
+    console.log('[bot/test] Bot validated:', botName);
 
     // 2. Send a real test message
-    const text = `✅ <b>eTaklifnoma ulanish tekshiruvi</b>\n\nBotingiz <b>${botName}</b> muvaffaqiyatli ulandi!\n\nEndi mehmonlar tilak yuborganda shu chatga xabar keladi. 🎉`;
-    const sendRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    const text = '\u2705 <b>eTaklifnoma ulanish tekshiruvi</b>\n\nBotingiz <b>' + botName + '</b> muvaffaqiyatli ulandi!\n\nMehmonlar tilak yuborganda shu chatga xabar keladi. \ud83c\udf89';
+    console.log('[bot/test] Sending test message to chatId:', chatId);
+    const sendRes = await fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+      body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' }),
     });
     const sendData = await sendRes.json();
+    console.log('[bot/test] sendMessage response:', JSON.stringify(sendData));
+
     if (!sendData.ok) {
-      // Common errors explained in Uzbek
       let msg = sendData.description || 'Xabar yuborib bo\'lmadi.';
       if (sendData.error_code === 403) {
-        msg = '❌ Bot chat ga xabar yubora olmaydi. Avval botingizga /start yuboring yoki botni guruhga admin sifatida qo\'shing!';
-      } else if (sendData.error_code === 400 && msg.includes('chat not found')) {
-        msg = '❌ Chat topilmadi. Chat ID noto\'g\'ri. @userinfobot dan to\'g\'ri ID ni oling.';
-      } else if (sendData.error_code === 400 && msg.includes('chat_id')) {
-        msg = '❌ Chat ID noto\'g\'ri format. Faqat raqam bo\'lishi kerak (masalan: 123456789 yoki -1001234567890).';
+        msg = '\u274c Bot xabar yubora olmaydi. Telegramda botingizni oching va /start bosing! Guruh bo\'lsa \u2014 botni admin qiling.';
+      } else if (sendData.error_code === 400 && msg.toLowerCase().includes('not found')) {
+        msg = '\u274c Chat ID ' + chatId + ' topilmadi. @userinfobot ga /start yuboring va to\'g\'ri ID ni kiriting.';
       }
-      return res.json({ success: false, message: msg, botName });
+      return res.json({ success: false, message: msg, botName: botName });
     }
 
-    return res.json({ success: true, message: `✅ Bot muvaffaqiyatli ulandi! "${botName}" botidan test xabar yuborildi.`, botName });
+    return res.json({
+      success: true,
+      message: '\u2705 "' + botName + '" botidan test xabar yuborildi! Telegramni tekshiring.',
+      botName: botName,
+    });
   } catch (err) {
-    return res.json({ success: false, message: `Server xatoligi: ${err.message}` });
+    console.error('[bot/test] Error:', err);
+    return res.json({ success: false, message: 'Tarmoq xatoligi: ' + err.message });
   }
 });
 
