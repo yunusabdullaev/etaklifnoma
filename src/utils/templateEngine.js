@@ -326,9 +326,17 @@ function renderInvitation(invitation, eventType, template) {
     programCustomTitle: context['programCustomTitle'] || '',
     programCustomTitleRu: context['programCustomTitleRu'] || '',
     programCustomTitleQq: context['programCustomTitleQq'] || '',
+    eventDateRaw: invitation.eventDate || '',
+    eventTimeRaw: invitation.eventTime ? invitation.eventTime.substring(0, 5) : '',
+    eventTitleDisplay: context['eventTitle'] || context['hostName'] || '',
+    locationDisplay: context['location'] || '',
   })};</script>
   ${buildLanguageToggle()}
   ${buildShareButtons()}
+  ${buildCalendarButton()}
+  ${buildPrintButton()}
+  ${invitation.customFields?.envelopeAnim !== false ? buildEnvelopeAnimation() : ''}
+  ${buildColorPaletteCss(invitation.customFields?.colorPalette || 'gold')}
   ${buildBrandingFooter()}
 </body>
 </html>`;
@@ -822,6 +830,189 @@ function getLanguageToggleStyles() {
   .lang-btn.active{background:var(--accent, #c9a84c);color:var(--dark, #0b0d17)}
   .lang-btn:hover:not(.active){color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.05)}
   `;
+}
+
+/**
+ * Builds a Google Calendar "Add to Calendar" floating button.
+ */
+function buildCalendarButton() {
+  return `
+  <a id="calendarBtn" href="#" target="_blank" rel="noopener"
+    title="Kalendarimga qo'shish"
+    style="position:fixed;bottom:88px;left:24px;z-index:9998;
+           width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+           background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(12px);
+           cursor:pointer;transition:all 0.3s ease;text-decoration:none;
+           box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+  </a>
+  <script>
+  (function(){
+    var d = window.__INVITE_DATA__ || {};
+    if (!d.eventDateRaw) return;
+    // Build Google Calendar URL
+    var rawDate = d.eventDateRaw.replace(/-/g,'');
+    var startDt = rawDate + (d.eventTimeRaw ? 'T' + d.eventTimeRaw.replace(':','') + '00' : '');
+    var endDt   = rawDate + (d.eventTimeRaw ? 'T' + d.eventTimeRaw.replace(':','') + '00' : '');
+    var calUrl = 'https://calendar.google.com/calendar/r/eventedit?' +
+      'text=' + encodeURIComponent(d.eventTitleDisplay || 'Taklifnoma') +
+      '&dates=' + startDt + '/' + endDt +
+      '&location=' + encodeURIComponent(d.locationDisplay || '') +
+      '&details=' + encodeURIComponent('eTaklifnoma.uz orqali yuborildi');
+    var btn = document.getElementById('calendarBtn');
+    btn.href = calUrl;
+    btn.addEventListener('mouseenter', function(){ this.style.transform='scale(1.12)'; this.style.background='rgba(255,255,255,0.14)'; });
+    btn.addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; this.style.background='rgba(255,255,255,0.08)'; });
+  })();
+  </script>`;
+}
+
+/**
+ * Builds a Print / PDF floating button.
+ */
+function buildPrintButton() {
+  return `
+  <button id="printBtn" onclick="window.print()"
+    title="Chop etish / PDF yuklab olish"
+    style="position:fixed;bottom:140px;left:24px;z-index:9998;
+           width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+           background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(12px);
+           cursor:pointer;transition:all 0.3s ease;
+           box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2">
+      <polyline points="6 9 6 2 18 2 18 9"/>
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+      <rect x="6" y="14" width="12" height="8"/>
+    </svg>
+  </button>
+  <style>
+  @media print {
+    .lang-toggle, #sharePanel, #calendarBtn, #printBtn, .music-toggle, .etaklifnoma-branding { display:none!important; }
+    body { background:#fff!important; }
+    .inv { background:#fff!important; color:#111!important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
+  </style>
+  <script>
+  (function(){
+    var btn = document.getElementById('printBtn');
+    btn.addEventListener('mouseenter', function(){ this.style.transform='scale(1.12)'; this.style.background='rgba(255,255,255,0.14)'; });
+    btn.addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; this.style.background='rgba(255,255,255,0.08)'; });
+  })();
+  </script>`;
+}
+
+/**
+ * Builds the envelope opening animation overlay.
+ * Shows once per device (localStorage flag). Fades away after animation.
+ */
+function buildEnvelopeAnimation() {
+  return `
+  <div id="envelopeOverlay" style="
+    position:fixed;inset:0;z-index:99999;
+    background:linear-gradient(135deg,#0b0d17 0%,#1a1e38 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:24px;transition:opacity 0.8s ease;">
+    <div id="envelope" style="width:200px;height:140px;position:relative;cursor:pointer;" onclick="openInvite()">
+      <!-- Envelope body -->
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#1e2240,#2a2f58);
+           border:1px solid rgba(212,168,83,0.3);border-radius:4px;position:absolute;bottom:0;"></div>
+      <!-- Envelope flap (top triangle) -->
+      <div id="envFlap" style="width:0;height:0;
+           border-left:100px solid transparent;border-right:100px solid transparent;
+           border-top:70px solid #2a2f58;
+           position:absolute;top:0;left:0;
+           transform-origin:top center;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);
+           filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4));"></div>
+      <!-- V fold line inside -->
+      <div style="width:0;height:0;
+           border-left:100px solid transparent;border-right:100px solid transparent;
+           border-bottom:68px solid rgba(212,168,83,0.08);
+           position:absolute;top:0;left:0;"></div>
+      <!-- Gold seal -->
+      <div id="envSeal" style="
+           position:absolute;top:50%;left:50%;transform:translate(-50%,-30%);
+           width:40px;height:40px;border-radius:50%;
+           background:radial-gradient(circle,#f5d89a,#d4a853);
+           border:2px solid rgba(255,255,255,0.2);
+           display:flex;align-items:center;justify-content:center;
+           font-size:18px;box-shadow:0 2px 12px rgba(212,168,83,0.4);
+           transition:all 0.4s ease;">💍</div>
+    </div>
+    <p style="color:rgba(212,168,83,0.8);font-size:13px;letter-spacing:2px;text-transform:uppercase;
+              font-family:'Montserrat',sans-serif;animation:float 2s ease-in-out infinite;">
+      Ochish uchun bosing
+    </p>
+    <style>
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    @keyframes floatEnv { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    #envelope { animation: floatEnv 3s ease-in-out infinite; }
+    </style>
+  </div>
+  <script>
+  (function(){
+    var overlay = document.getElementById('envelopeOverlay');
+    if (!overlay) return;
+    // Skip animation if already seen
+    var slug = (window.location.pathname.match(/\\/invite\\/([^/]+)/) || [])[1] || 'inv';
+    var key = 'env_seen_' + slug;
+    if (localStorage.getItem(key)) {
+      overlay.style.display = 'none';
+      return;
+    }
+    // Prevent body scroll while overlay is shown
+    document.body.style.overflow = 'hidden';
+    window.openInvite = function() {
+      var flap = document.getElementById('envFlap');
+      var seal = document.getElementById('envSeal');
+      if (flap) flap.style.transform = 'rotateX(180deg)';
+      if (seal) { seal.style.transform = 'translate(-50%,-30%) scale(0)'; seal.style.opacity='0'; }
+      setTimeout(function(){
+        overlay.style.opacity = '0';
+        setTimeout(function(){
+          overlay.style.display = 'none';
+          document.body.style.overflow = '';
+          localStorage.setItem(key, '1');
+        }, 800);
+      }, 600);
+    };
+  })();
+  </script>`;
+}
+
+/**
+ * Builds CSS overrides for a named color palette.
+ * @param {string} palette - 'gold'|'silver'|'ocean'|'rose'|'lavender'|'teal'|'amber'
+ */
+function buildColorPaletteCss(palette) {
+  const palettes = {
+    gold:     null, // default, no override needed
+    silver:   { accent: '#9da8b8', accentBright: '#c8d0dc', glow: 'rgba(157,168,184,0.35)', btnBg: 'linear-gradient(135deg,#7a8599,#9da8b8)', dark: '#0d1018', glassBg: 'rgba(157,168,184,0.04)' },
+    ocean:    { accent: '#4a9fe8', accentBright: '#7bbdee', glow: 'rgba(74,159,232,0.35)', btnBg: 'linear-gradient(135deg,#2b7fd4,#4a9fe8)', dark: '#060e1a', glassBg: 'rgba(74,159,232,0.04)' },
+    rose:     { accent: '#e8749a', accentBright: '#f09ab8', glow: 'rgba(232,116,154,0.35)', btnBg: 'linear-gradient(135deg,#c4476c,#e8749a)', dark: '#150810', glassBg: 'rgba(232,116,154,0.04)' },
+    lavender: { accent: '#a07ee8', accentBright: '#bea0ee', glow: 'rgba(160,126,232,0.35)', btnBg: 'linear-gradient(135deg,#7a58c4,#a07ee8)', dark: '#0e0a18', glassBg: 'rgba(160,126,232,0.04)' },
+    teal:     { accent: '#3bbdaa', accentBright: '#60cebb', glow: 'rgba(59,189,170,0.35)', btnBg: 'linear-gradient(135deg,#1f9e8c,#3bbdaa)', dark: '#060f0d', glassBg: 'rgba(59,189,170,0.04)' },
+    amber:    { accent: '#e8a84a', accentBright: '#f0c070', glow: 'rgba(232,168,74,0.35)', btnBg: 'linear-gradient(135deg,#c47c20,#e8a84a)', dark: '#110c02', glassBg: 'rgba(232,168,74,0.04)' },
+    emerald:  { accent: '#4ae898', accentBright: '#70eeb0', glow: 'rgba(74,232,152,0.35)', btnBg: 'linear-gradient(135deg,#20c060,#4ae898)', dark: '#040f08', glassBg: 'rgba(74,232,152,0.04)' },
+  };
+  const p = palettes[palette];
+  if (!p) return ''; // default gold — no override
+  return `
+  <style>
+  :root {
+    --accent: ${p.accent} !important;
+    --accent-bright: ${p.accentBright} !important;
+    --glow: ${p.glow} !important;
+    --btn-bg: ${p.btnBg} !important;
+    --dark: ${p.dark} !important;
+    --glass-bg: ${p.glassBg} !important;
+  }
+  </style>`;
 }
 
 /**

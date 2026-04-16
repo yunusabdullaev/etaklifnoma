@@ -132,6 +132,23 @@ exports.create = catchAsync(async (req, res) => {
     }
   }
 
+  // Handle custom slug from customFields
+  if (cleanData.customFields?.customSlug) {
+    const rawSlug = cleanData.customFields.customSlug.trim().toLowerCase();
+    if (!/^[a-z0-9-]{3,30}$/.test(rawSlug)) {
+      throw AppError.badRequest('Maxsus manzil faqat lotin harflari, raqamlar va defisdan iborat bo\'lishi kerak (3-30 belgi)');
+    }
+    // Check uniqueness
+    const { Op } = require('sequelize');
+    const existing = await Invitation.findOne({ where: { slug: rawSlug } });
+    if (existing) {
+      throw AppError.badRequest(`"${rawSlug}" manzili allaqachon band. Boshqa nom tanlang.`);
+    }
+    cleanData.slug = rawSlug;
+    // Remove from customFields so it's not double-stored
+    delete cleanData.customFields.customSlug;
+  }
+
   let invitation;
   try {
     invitation = await Invitation.create(cleanData);

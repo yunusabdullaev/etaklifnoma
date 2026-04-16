@@ -610,6 +610,67 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           )}
         </div>
 
+        {/* Custom Slug */}
+        <div>
+          <label className="label flex items-center gap-1.5">🔗 Maxsus URL manzil (ixtiyoriy)</label>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-surface-500 shrink-0">etaklifnoma.uz/invite/</span>
+            <input
+              type="text"
+              placeholder="jasur-malika"
+              value={data.customFields?.customSlug || ''}
+              onChange={(e) => {
+                const val = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'');
+                handleCustomFieldChange('customSlug', val);
+              }}
+              maxLength={30}
+              className="input-field flex-1 font-mono text-sm"
+            />
+          </div>
+          <p className="text-[11px] text-surface-500 mt-1">Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika</p>
+        </div>
+
+        {/* Color Palette */}
+        <div>
+          <label className="label flex items-center gap-1.5">🎨 Rang palitasi</label>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { id: 'gold',     label: 'Oltin',    color: '#d4a853', dark: '#0b0d17' },
+              { id: 'silver',   label: 'Kumush',   color: '#9da8b8', dark: '#0d1018' },
+              { id: 'ocean',    label: 'Okean',    color: '#4a9fe8', dark: '#060e1a' },
+              { id: 'rose',     label: 'Gul',      color: '#e8749a', dark: '#150810' },
+              { id: 'lavender', label: 'Lavanda',  color: '#a07ee8', dark: '#0e0a18' },
+              { id: 'teal',     label: 'Yashil',   color: '#3bbdaa', dark: '#060f0d' },
+              { id: 'amber',    label: 'Sariq',    color: '#e8a84a', dark: '#110c02' },
+              { id: 'emerald',  label: 'Zumrad',   color: '#4ae898', dark: '#040f08' },
+            ].map((p) => {
+              const isSelected = (data.customFields?.colorPalette || 'gold') === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => handleCustomFieldChange('colorPalette', p.id)}
+                  className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all ${
+                    isSelected ? 'border-white/40 bg-white/10 scale-105' : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.06]'
+                  }`}
+                >
+                  <div className="relative">
+                    <div
+                      className="w-8 h-8 rounded-full border-2 shadow-lg"
+                      style={{ background: p.dark, borderColor: p.color, boxShadow: isSelected ? `0 0 10px ${p.color}60` : 'none' }}
+                    />
+                    <div
+                      className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border border-surface-900"
+                      style={{ background: p.color }}
+                    />
+                  </div>
+                  <span className="text-[9px] text-surface-400">{p.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div>
           <label className="label flex items-center gap-1.5">📱 {t('step3.telegram')}</label>
           <input type="text" placeholder="BOT_TOKEN:CHAT_ID"
