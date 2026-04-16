@@ -121,7 +121,7 @@ router.post('/api/bot/test', async (req, res) => {
 
     if (!sendData.ok) {
       if (sendData.error_code === 403) {
-        return res.json({ success: false, message: '\u274c Xabar yuborilib bo\'lmadi. Avval @asdasdadsadbot ga Telegramda /start yuboring!' });
+        return res.json({ success: false, message: '\u274c Xabar yuborilib bo\'lmadi. Avval ulanayotgan botga Telegramda /start yuboring!' });
       }
       if (sendData.error_code === 400) {
         return res.json({ success: false, message: '\u274c Chat ID ' + chatId + ' topilmadi. @userinfobot dan to\'g\'ri ID ni oling.' });
