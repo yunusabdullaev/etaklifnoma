@@ -199,9 +199,9 @@ export default function App() {
                 <span className="hidden sm:inline">{t('header.cabinet')}</span>
               </button>
               <button
-                onClick={startWizard}
+                onClick={() => startWizard()}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  !showDashboard
+                  !showDashboard && !showSupport
                     ? 'bg-primary-500/20 text-primary-400'
                     : 'text-surface-500 hover:text-white'
                 }`}
