@@ -760,12 +760,12 @@ exports.birthdayPremiumHtml = `
     </div>
     <div class="hero-inner">
       <div class="bd-emoji">🎂</div>
-      <p class="hero-label">{{eventTypeLabel|Tug'ilgan kun}}</p>
+      <p class="hero-label" data-i18n="bdEventLabel">{{eventTypeLabel|Tug'ilgan kun}}</p>
       <h1 class="bd-title">{{eventTitle|Tug'ilgan kun bayrami}}</h1>
       {{#if age}}
       <div class="bd-age-badge">
         <span class="bd-age-num">{{age}}</span>
-        <span class="bd-age-text">yosh</span>
+        <span class="bd-age-text" data-i18n="bdAge">yosh</span>
       </div>
       {{/if}}
       <div class="hero-date-badge">
@@ -804,9 +804,9 @@ exports.birthdayPremiumHtml = `
     <div class="container">
       <h2 class="section-heading cream-heading">Tafsilotlar</h2>
       <div class="cards-row">
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title">Manzil</div><div class="ic-value">{{location}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title" data-i18n="venueLabel">Manzil</div><div class="ic-value">{{location}}</div></div>
       </div>
     </div>
   </section>
@@ -817,7 +817,7 @@ exports.birthdayPremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn">Xaritada ko'rish</a>
+        <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
   </section>
@@ -924,12 +924,12 @@ exports.graduationPremiumHtml = `
     </div>
     <div class="hero-inner">
       <div class="grad-emoji">🎓</div>
-      <p class="hero-label">{{eventTypeLabel|Bitiruv kechasi}}</p>
+      <p class="hero-label" data-i18n="gradEventLabel">{{eventTypeLabel|Bitiruv kechasi}}</p>
       <h1 class="grad-title">{{eventTitle|Bitiruv kechasi}}</h1>
       {{#if graduationYear}}
       <div class="grad-year-badge">
         <span class="grad-year-num">{{graduationYear}}</span>
-        <span class="grad-year-text">bitiruvchilar</span>
+        <span class="grad-year-text" data-i18n="gradYear">bitiruvchilar</span>
       </div>
       {{/if}}
       <div class="hero-date-badge">
@@ -969,9 +969,9 @@ exports.graduationPremiumHtml = `
     <div class="container">
       <h2 class="section-heading cream-heading">Tafsilotlar</h2>
       <div class="cards-row">
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title">Manzil</div><div class="ic-value">{{location}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title" data-i18n="venueLabel">Manzil</div><div class="ic-value">{{location}}</div></div>
       </div>
     </div>
   </section>
@@ -982,7 +982,7 @@ exports.graduationPremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn">Xaritada ko'rish</a>
+        <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
   </section>
@@ -1048,12 +1048,12 @@ exports.jubileePremiumHtml = `
     </div>
     <div class="hero-inner">
       <div class="jub-emoji">🎉</div>
-      <p class="hero-label">{{eventTypeLabel|Yubiley}}</p>
+      <p class="hero-label" data-i18n="jubEventLabel">{{eventTypeLabel|Yubiley}}</p>
       <h1 class="jub-title">{{eventTitle|Yubiley bayramiga taklif}}</h1>
       {{#if years}}
       <div class="jub-years-badge">
         <span class="jub-years-num">{{years}}</span>
-        <span class="jub-years-text">yillik</span>
+        <span class="jub-years-text" data-i18n="jubYears">yillik</span>
       </div>
       {{/if}}
       <div class="hero-date-badge">
@@ -1093,9 +1093,9 @@ exports.jubileePremiumHtml = `
     <div class="container">
       <h2 class="section-heading cream-heading">Tafsilotlar</h2>
       <div class="cards-row">
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title">Manzil</div><div class="ic-value">{{location}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title" data-i18n="venueLabel">Manzil</div><div class="ic-value">{{location}}</div></div>
       </div>
     </div>
   </section>
@@ -1106,7 +1106,7 @@ exports.jubileePremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn">Xaritada ko'rish</a>
+        <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
   </section>
