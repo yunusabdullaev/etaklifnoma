@@ -306,7 +306,7 @@ function renderInvitation(invitation, eventType, template) {
   <script>window.__INVITE_DATA__=${JSON.stringify({
     dateUz: context['date'] || '',
     dateRu: context['dateRu'] || '',
-    message: context['message'] || (eventType==='wedding' ? 'Sizni farzandlarimiz nikoh to\\'yiga tashrif buyurishingizni so\\'rab qolamiz.' : eventType==='birthday' ? 'Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!' : eventType==='graduation' ? 'Universitetni tamomlash quvonchini biz bilan baham ko\\'ring!' : 'Orzular ushalgan yubiley oqshomimizga lutfan taklif etamiz!'),
+    message: context['message'] || (eventType==='wedding' ? 'Sizni farzandlarimiz nikoh to\'yiga tashrif buyurishingizni so\'rab qolamiz.' : eventType==='birthday' ? 'Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!' : eventType==='graduation' ? 'Universitetni tamomlash quvonchini biz bilan baham ko\'ring!' : 'Orzular ushalgan yubiley oqshomimizga lutfan taklif etamiz!'),
     messageRu: context['messageRu'] || (eventType==='wedding' ? 'Приглашаем вас разделить радость нашего бракосочетания.' : eventType==='birthday' ? 'Приглашаем вас на наш праздник. Если вы приедете, мы будем счастливы.' : eventType==='graduation' ? 'Разделите с нами радость окончания университета!' : 'Пожалуйста, приглашаем вас на наш юбилейный вечер!'),
     messageQq: context['messageQq'] || (eventType==='wedding' ? 'Sizdi perzentlerimizdeń neke toyına shaqırıp qalamız.' : eventType==='birthday' ? 'Sizdi bayramımızǵa shaqıramız. Qosılıp quwanayıq!' : eventType==='graduation' ? 'Universitetti pitiriw quwanıshın biz benen bólesiń!' : 'Ármanlar orınlanǵan yubiley aqshamımızǵa lutfan shaqıramız!'),
     location: context['location'] || '',
@@ -316,7 +316,7 @@ function renderInvitation(invitation, eventType, template) {
     guestName: context['guestName'] || 'Hurmatli mehmonlar!',
     guestNameRu: context['guestNameRu'] || 'Уважаемые гости!',
     guestNameQq: context['guestNameQq'] || 'Húrmetli miymanlar!',
-    eventTitle: context['eventTitle'] || (eventType==='birthday' ? 'Tug\\'ilgan kun bayrami' : eventType==='graduation' ? 'Bitiruv kechasi' : 'Yubiley bayramiga taklif'),
+    eventTitle: context['eventTitle'] || (eventType==='birthday' ? 'Tug\'ilgan kun bayrami' : eventType==='graduation' ? 'Bitiruv kechasi' : 'Yubiley bayramiga taklif'),
     eventTitleRu: context['eventTitleRu'] || (eventType==='birthday' ? 'Праздник дня рождения' : eventType==='graduation' ? 'Выпускной вечер' : 'Приглашение на юбилей'),
     eventTitleQq: context['eventTitleQq'] || (eventType==='birthday' ? 'Tuwılǵan kún bayramı' : eventType==='graduation' ? 'Pitiriw keshesi' : 'Yubileyge shaqırıw'),
     eventTime: context['time'] || '',
