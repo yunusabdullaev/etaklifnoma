@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, Lock, User, ArrowRight, Sparkles, ShieldCheck, ArrowLeft, Globe } from 'lucide-react';
+import { Phone, Lock, User, ArrowRight, Sparkles, ShieldCheck, ArrowLeft, Globe, Eye, EyeOff } from 'lucide-react';
 import { useLang } from '../i18n';
 
 export default function AuthPage({ onLogin, onBack }) {
@@ -12,6 +12,7 @@ export default function AuthPage({ onLogin, onBack }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
 
   const otpRefs = useRef([]);
   const API = import.meta.env.VITE_API_URL || '';
@@ -412,15 +413,25 @@ export default function AuthPage({ onLogin, onBack }) {
                     <label className="label flex items-center gap-1.5">
                       <Lock size={13} /> {t('auth.password')}
                     </label>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••"
-                      className="input-field"
-                      required
-                      minLength={4}
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••"
+                        className="input-field w-full pr-10"
+                        required
+                        minLength={4}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-white transition-colors p-1"
+                        tabIndex="-1"
+                      >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
 
                   {error && (
