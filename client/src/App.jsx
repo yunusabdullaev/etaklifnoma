@@ -111,7 +111,12 @@ export default function App() {
       const saved = JSON.parse(localStorage.getItem(GLOBAL_DRAFT_KEY));
       if (saved && saved.data) {
         setData(saved.data);
-        setStep(saved.step || 1);
+        let resolvedStep = saved.step || 1;
+        // If a template is already selected, resuming should bring them straight to the content step.
+        if (saved.data.templateId && resolvedStep < 3) {
+            resolvedStep = 3;
+        }
+        setStep(resolvedStep);
         setView('wizard');
       } else {
         startWizard();
