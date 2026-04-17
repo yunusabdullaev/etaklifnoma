@@ -229,7 +229,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {/* TEXT FIELDS COMPONENT */}
       <div className="glass p-5 flex flex-col gap-8">
         <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
-          ✍️ Matnlar (Barcha tillardagi yozuvlar)
+          ✍️ {t('step3.textGroupTitle')}
         </h3>
 
         {/* UZ fields */}
@@ -448,7 +448,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
       {/* GLOBAL SETTINGS COMPONENT */}
       <div className="glass p-5 space-y-6">
         <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
-          ⚙️ O'zgarmas ma'lumotlar va Sozlamalar
+          ⚙️ {t('step3.settingsGroupTitle')}
         </h3>
         
         {/* Template custom fields */}

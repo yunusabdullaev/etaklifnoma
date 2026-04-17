@@ -66,6 +66,8 @@ const translations = {
     'step2.back': '← Orqaga',
 
     // Step 3
+    'step3.textGroupTitle': 'Matnlar',
+    'step3.settingsGroupTitle': 'Sozlamalar',
     'step3.title': 'Taklif mazmunini kiriting',
     'step3.desc': "Taklifnoma tafsilotlarini to'ldiring",
     'step3.host': 'Mezbon ismi',
@@ -256,6 +258,8 @@ const translations = {
     'step2.back': '← Назад',
 
     // Step 3
+    'step3.textGroupTitle': 'Тексты',
+    'step3.settingsGroupTitle': 'Настройки',
     'step3.title': 'Заполните содержимое',
     'step3.desc': 'Укажите детали приглашения',
     'step3.host': 'Имя хозяина',
@@ -446,6 +450,8 @@ const translations = {
     'step2.back': '← Artqa',
 
     // Step 3
+    'step3.textGroupTitle': 'Tekstler',
+    'step3.settingsGroupTitle': 'Sazlawlar',
     'step3.title': 'Mazmunın kiritiń',
     'step3.desc': 'Mırájat maǵlıwmatların toltırıń',
     'step3.host': 'Mezban atı',
@@ -636,6 +642,8 @@ const translations = {
     'step2.back': '← Back',
 
     // Step 3
+    'step3.textGroupTitle': 'Texts',
+    'step3.settingsGroupTitle': 'Settings',
     'step3.title': 'Fill in Invitation Details',
     'step3.desc': 'Enter the details for your invitation',
     'step3.host': 'Host Name',
