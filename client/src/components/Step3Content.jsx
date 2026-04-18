@@ -579,9 +579,18 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
         <div>
           <label className="label flex items-center gap-1.5"><Link2 size={13} /> {t('step3.mapLink')}</label>
-          <input type="url" placeholder="https://yandex.uz/maps/..."
-            value={data.locationUrl || ''} onChange={(e) => handleChange('locationUrl', e.target.value)}
-            className="input-field" />
+          <input type="text" placeholder="https://yandex.uz/maps/..."
+            value={data.locationUrl || ''} 
+            onChange={(e) => {
+              let val = e.target.value;
+              const urlMatch = val.match(/(https?:\/\/[^\s]+)/i);
+              if (urlMatch) val = urlMatch[0];
+              handleChange('locationUrl', val.trim());
+            }}
+            className={`input-field ${data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) ? 'border-red-500/50 focus:border-red-500 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}`} />
+          {data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (
+             <p className="text-[10px] text-red-400 mt-1.5 font-medium">Noto'g'ri URL formati. Iltimos xarita linkini to'g'ri kiriting.</p>
+          )}
           <div className="flex gap-2 mt-1.5">
             <a
               href={`https://yandex.uz/maps/?text=${encodeURIComponent(data.location || '')}`}
