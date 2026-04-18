@@ -625,9 +625,18 @@ function buildLanguageToggle(cf) {
     if(qqBtn) { qqBtn.style.display = hasQq ? '' : 'none'; qqBtn.style.order = orderArr.indexOf('qq'); }
     if(ruBtn) { ruBtn.style.display = hasRu ? '' : 'none'; ruBtn.style.order = orderArr.indexOf('ru'); }
 
-    // Hide toggle if only 1 language
+    // Hide only the language switcher buttons if 1 language, keep toggle container for script toggle
     var toggle = document.getElementById('langToggle');
-    if(langs.length <= 1 && toggle) toggle.style.display = 'none';
+    var langBtnsContainer = toggle ? toggle.querySelector('div:first-child') : null;
+    if(langs.length <= 1 && langBtnsContainer) {
+      langBtnsContainer.style.display = 'none';
+      var scriptCont = document.getElementById('scriptToggle');
+      if (scriptCont) {
+        scriptCont.style.borderLeft = 'none';
+        scriptCont.style.paddingLeft = '0';
+      }
+      if(langs[0] === 'ru' && toggle) toggle.style.display = 'none';
+    }
 
     var currentLang = 'uz';
 
