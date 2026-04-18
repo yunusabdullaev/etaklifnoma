@@ -74,7 +74,7 @@ export default function Step4Preview({ data, onNext, onBack }) {
       title="Full Invitation Preview"
       srcDoc={htmlContent || '<html><body style="background:#0a0a12;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><p style="color:#555;font-size:14px">Yuklanmoqda...</p></body></html>'}
       className="w-full h-full border-0 rounded-2xl bg-[#0a0a12]"
-      sandbox="allow-scripts"
+      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
     />
   );
 

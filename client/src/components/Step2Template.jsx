@@ -609,7 +609,7 @@ function FullPreview({ template, lang }) {
       ref={iframeRef}
       title={`Preview: ${template.name}`}
       style={{ width: '100%', height: '100%', border: 'none' }}
-      sandbox="allow-same-origin allow-scripts"
+      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
     />
   );
 }
