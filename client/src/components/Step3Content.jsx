@@ -528,7 +528,20 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                   <input type={field.type === 'number' ? 'number' : 'text'}
                     placeholder={trLocal[field.key] || field.label}
                     value={data.customFields?.[field.key] || ''}
-                    onChange={(e) => handleCustomFieldChange(field.key, e.target.value)}
+                    min={field.key === 'age' ? '1' : undefined}
+                    max={field.key === 'age' ? '150' : undefined}
+                    onChange={(e) => {
+                      let val = e.target.value;
+                      if (field.type === 'number' && field.key === 'age' && val !== '') {
+                        let num = parseInt(val, 10);
+                        if (!isNaN(num)) {
+                          if (num <= 0) val = '';
+                          else if (num > 150) val = '150';
+                          else val = num.toString();
+                        }
+                      }
+                      handleCustomFieldChange(field.key, val);
+                    }}
                     className="input-field" />
                 )}
               </div>
