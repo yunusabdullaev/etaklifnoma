@@ -124,6 +124,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [draftSaved, setDraftSaved] = useState(false);
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
   const [slugState, setSlugState] = useState({ status: 'idle', message: '' });
+  const [locConfirmed, setLocConfirmed] = useState(false);
   const saveTimerRef = useRef(null);
   const { t, lang } = useLang();
   const trLocal = trStep3[lang] || trStep3['uz'];
@@ -586,11 +587,26 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
               const urlMatch = val.match(/(https?:\/\/[^\s]+)/i);
               if (urlMatch) val = urlMatch[0];
               handleChange('locationUrl', val.trim());
+              setLocConfirmed(false);
             }}
             className={`input-field ${data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) ? 'border-red-500/50 focus:border-red-500 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}`} />
           {data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (
              <p className="text-[10px] text-red-400 mt-1.5 font-medium">Noto'g'ri URL formati. Iltimos xarita linkini to'g'ri kiriting.</p>
           )}
+
+          {data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-3 mb-2 bg-surface-900 border border-white/10 rounded-xl overflow-hidden shadow-lg">
+               <iframe src={`https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(data.location || 'Tashkent')}`} width="100%" height="160" frameBorder="0" />
+               <div onClick={() => setLocConfirmed(!locConfirmed)} className="p-3 bg-surface-800 flex items-center justify-between cursor-pointer hover:bg-surface-800/80 transition-colors">
+                 <p className="text-[11px] sm:text-xs text-white font-medium">Tanlangan joy ushbu xaritaga mosmi?</p>
+                 <label className="flex items-center gap-2 pointer-events-none">
+                   <input type="checkbox" checked={locConfirmed} readOnly className="w-4 h-4 rounded bg-surface-900 border-white/20" />
+                   <span className={`text-[10px] sm:text-[11px] uppercase tracking-wider font-bold transition-colors ${locConfirmed ? 'text-primary-400' : 'text-surface-500'}`}>Tasdiqlash</span>
+                 </label>
+               </div>
+            </motion.div>
+          )}
+
           <div className="flex gap-2 mt-1.5">
             <a
               href={`https://yandex.uz/maps/?text=${encodeURIComponent(data.location || '')}`}
@@ -969,11 +985,23 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
         <div className="flex justify-between items-center gap-3">
           <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">{t('step3.back')}</button>
-          <button onClick={onNext}
-            disabled={!activeHostName || !data.eventDate || !data.location}
-            className="btn-primary flex-1 sm:flex-none min-w-[160px] text-center py-3.5">
-            {t('step3.next')}
-          </button>
+          <div className="flex flex-col sm:flex-row items-center justify-end w-full sm:w-auto relative group">
+            <button onClick={onNext}
+              disabled={
+                !activeHostName || 
+                !data.eventDate || 
+                !data.location || 
+                (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)
+              }
+              className={`btn-primary flex-1 sm:flex-none w-full min-w-[160px] text-center py-3.5 ${(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) ? 'bg-surface-700 text-surface-400 hover:scale-100 cursor-not-allowed' : ''}`}>
+              {t('step3.next')}
+            </button>
+            {(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) && (
+              <span className="absolute -top-10 right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 bg-black/80 backdrop-blur-md text-white text-[10px] whitespace-nowrap px-3 py-1.5 rounded-lg opacity-0 transition-opacity drop-shadow-xl pointer-events-none w-auto delay-200">
+                Lokal xaritani tasdiqlang!
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
