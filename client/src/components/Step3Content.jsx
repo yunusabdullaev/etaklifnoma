@@ -148,7 +148,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         const res = await fetch(`/api/invitations/check-slug?slug=${encodeURIComponent(slug)}`);
         const json = await res.json();
         if (json.available) {
-          setSlugState({ status: 'success', message: 'Manzil bo\\'sh!' });
+          setSlugState({ status: 'success', message: "Manzil bo'sh!" });
         } else {
           setSlugState({ status: 'error', message: json.error || 'Bu manzil band!' });
         }
