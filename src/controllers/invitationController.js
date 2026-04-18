@@ -236,8 +236,25 @@ exports.getBySlug = catchAsync(async (req, res) => {
     throw AppError.notFound('This invitation has expired');
   }
 
-  // Increment view count (fire-and-forget)
-  invitation.increment('viewCount');
-
   ApiResponse.success(res, invitation);
+});
+
+/**
+ * GET /api/invitations/check-slug
+ * Validates whether a custom slug is securely available and conforms to formatting rules
+ */
+exports.checkSlug = catchAsync(async (req, res) => {
+  let { slug } = req.query;
+  if (!slug) {
+    return res.json({ available: false, missing: true });
+  }
+  slug = slug.toLowerCase().trim();
+  if (!/^[a-z0-9-]{3,30}$/.test(slug)) {
+    return res.json({ available: false, error: "Lotin harflari, raqamlar va chiziqcha (-). Kamida 3ta belgi." });
+  }
+  const existing = await Invitation.findOne({ where: { slug } });
+  if (existing) {
+    return res.json({ available: false, error: "Bu manzil hozirda band. Iltimos, boshqasini tanlang." });
+  }
+  return res.json({ available: true });
 });

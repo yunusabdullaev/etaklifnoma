@@ -13,6 +13,7 @@ router
 
 // Must be before /:id route
 router.get('/my', protect, controller.getMyInvitations);
+router.get('/check-slug', controller.checkSlug);
 
 router
   .route('/:id')

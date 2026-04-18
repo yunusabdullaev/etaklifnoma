@@ -123,6 +123,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [uploading, setUploading] = useState(null); // 'photo' | 'music' | null
   const [draftSaved, setDraftSaved] = useState(false);
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
+  const [slugState, setSlugState] = useState({ status: 'idle', message: '' });
   const saveTimerRef = useRef(null);
   const { t, lang } = useLang();
   const trLocal = trStep3[lang] || trStep3['uz'];
@@ -130,7 +131,33 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
   const DRAFT_KEY = `etaklifnoma_draft_${data.eventTypeId || 'default'}`;
 
-
+  // Custom slug validation
+  useEffect(() => {
+    const slug = (data.customFields?.customSlug || '').trim();
+    if (!slug) {
+      setSlugState({ status: 'idle', message: '' });
+      return;
+    }
+    if (slug.length < 3) {
+      setSlugState({ status: 'idle', message: '' }); 
+      return;
+    }
+    setSlugState({ status: 'loading', message: '' });
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/invitations/check-slug?slug=${encodeURIComponent(slug)}`);
+        const json = await res.json();
+        if (json.available) {
+          setSlugState({ status: 'success', message: 'Manzil bo\\'sh!' });
+        } else {
+          setSlugState({ status: 'error', message: json.error || 'Bu manzil band!' });
+        }
+      } catch (err) {
+        setSlugState({ status: 'idle', message: '' });
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [data.customFields?.customSlug]);
 
   // Auto-Save: write to localStorage with 1.5s debounce
   useEffect(() => {
@@ -703,10 +730,20 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                 handleCustomFieldChange('customSlug', val);
               }}
               maxLength={30}
-              className="input-field flex-1 font-mono text-sm"
+              className={`input-field flex-1 font-mono text-sm ${slugState.status === 'error' ? 'border-red-500/50 focus:border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : slugState.status === 'success' ? 'border-emerald-500/50 focus:border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.1)]' : ''}`}
             />
+            {slugState.status === 'loading' && <Loader2 className="w-4 h-4 animate-spin text-surface-400" />}
+            {slugState.status === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+            {slugState.status === 'error' && <XCircle className="w-5 h-5 text-red-500" />}
           </div>
-          <p className="text-[11px] text-surface-500 mt-1">Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika</p>
+          <div className="flex items-start justify-between mt-1">
+             <p className="text-[11px] text-surface-500">Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika</p>
+             {slugState.message && (
+               <p className={`text-[11px] font-medium ${slugState.status === 'success' ? 'text-emerald-500' : 'text-red-500'}`}>
+                 {slugState.message}
+               </p>
+             )}
+          </div>
         </div>
 
         {/* Color Palette */}
