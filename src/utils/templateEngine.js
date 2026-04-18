@@ -812,8 +812,17 @@ function buildLanguageToggle(cf) {
       return str.replace(regex, function(m) { return map[m]; });
     }
     
-    window._curScript = d.baseAlphabetUz || 'latin';
-    if(d.langUz === false && d.langQq) window._curScript = d.baseAlphabetQq || 'latin';
+    // Determine initial language based on strictly defined order
+    var orderArr = d.langOrder ? d.langOrder.split(',') : ['uz','ru','qq'];
+    var defaultLang = null;
+    for(var i=0; i<orderArr.length; i++) {
+       if (orderArr[i] === 'uz' && hasUz) { defaultLang = 'uz'; break; }
+       if (orderArr[i] === 'qq' && hasQq) { defaultLang = 'qq'; break; }
+       if (orderArr[i] === 'ru' && hasRu) { defaultLang = 'ru'; break; }
+    }
+    if(!defaultLang) defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : 'ru');
+
+    window._curScript = (defaultLang === 'qq') ? (d.baseAlphabetQq || 'latin') : (d.baseAlphabetUz || 'latin');
     
     var _scrLatBtn = document.getElementById('scrLat');
     var _scrCyrBtn = document.getElementById('scrCyr');
@@ -939,15 +948,7 @@ function buildLanguageToggle(cf) {
     }
     window.switchLang = switchLang;
 
-    // Determine initial language based on strictly defined order
-    var orderArr = d.langOrder ? d.langOrder.split(',') : ['uz','ru','qq'];
-    var defaultLang = null;
-    for(var i=0; i<orderArr.length; i++) {
-       if (orderArr[i] === 'uz' && hasUz) { defaultLang = 'uz'; break; }
-       if (orderArr[i] === 'qq' && hasQq) { defaultLang = 'qq'; break; }
-       if (orderArr[i] === 'ru' && hasRu) { defaultLang = 'ru'; break; }
-    }
-    if(!defaultLang) defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : 'ru');
+
 
     // Execute initialization (no caching to respect host priority)
     if (!hasUz && !hasQq && hasRu) { switchLang('ru'); }
