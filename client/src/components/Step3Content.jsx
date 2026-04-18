@@ -118,6 +118,18 @@ function BotTestButton({ bot, apiBase, t }) {
   );
 }
 
+const getMapEmbedUrl = (urlStr, locationName) => {
+  if (!urlStr) return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}`;
+  try {
+    const url = new URL(urlStr);
+    if (url.hostname.includes('yandex')) {
+      url.pathname = url.pathname.replace(/^\/maps/, '/map-widget/v1');
+      return url.toString();
+    }
+  } catch(e) {}
+  return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}`;
+};
+
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [showPreview, setShowPreview] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
   const [uploading, setUploading] = useState(null); // 'photo' | 'music' | null
@@ -596,7 +608,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
           {data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-3 mb-2 bg-surface-900 border border-white/10 rounded-xl overflow-hidden shadow-lg">
-               <iframe src={`https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(data.location || 'Tashkent')}`} width="100%" height="160" frameBorder="0" />
+               <iframe src={getMapEmbedUrl(data.locationUrl, data.location)} width="100%" height="160" frameBorder="0" />
                <div onClick={() => setLocConfirmed(!locConfirmed)} className="p-3 bg-surface-800 flex items-center justify-between cursor-pointer hover:bg-surface-800/80 transition-colors">
                  <p className="text-[11px] sm:text-xs text-white font-medium">Tanlangan joy ushbu xaritaga mosmi?</p>
                  <label className="flex items-center gap-2 pointer-events-none">
