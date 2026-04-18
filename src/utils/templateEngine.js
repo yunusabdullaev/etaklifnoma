@@ -339,12 +339,12 @@ function renderInvitation(invitation, eventType, template) {
     eventTitleDisplay: context['eventTitle'] || context['hostName'] || '',
     locationDisplay: context['location'] || '',
   })};</script>
-  ${buildLanguageToggle(invitation.customFields)}
   ${buildShareButtons(invitation.customFields)}
   ${(invitation.customFields?.showCalendarBtn === true) ? buildCalendarButton() : ''}
   ${(invitation.customFields?.showPrintBtn === true) ? buildPrintButton() : ''}
   ${(invitation.customFields?.envelopeAnim !== false) ? buildEnvelopeAnimation(eventType) : ''}
   ${buildColorPaletteCss(invitation.customFields?.colorPalette || 'gold')}
+  ${buildLanguageToggle(invitation.customFields)}
   ${buildBrandingFooter()}
 </body>
 </html>`;
