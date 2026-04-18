@@ -67,7 +67,35 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
   }, []);
 
   const handleSelect = (eventType) => {
-    onUpdate({ eventType, eventTypeId: eventType.id, templateId: null, template: null });
+    const ev = eventType.name || 'wedding';
+    
+    // Top level defaults
+    const guestName = 'Hurmatli mehmonlar!';
+    const eventTitle = ev==='birthday' ? "Tug'ilgan kun bayrami" : ev==='graduation' ? "Bitiruv kechasi" : ev==='wedding' ? "Nikoh marosimi" : "Yubiley bayramiga taklif";
+    const message = ev==='wedding' ? "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz." : ev==='birthday' ? "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!" : ev==='graduation' ? "Universitetni tamomlash quvonchini biz bilan baham ko'ring!" : "Orzular ushalgan yubiley oqshomimizga lutfan taklif etamiz!";
+
+    // Custom fields defaults
+    const customFields = {
+       ...data.customFields,
+       guestNameRu: 'Уважаемые гости!',
+       eventTitleRu: ev==='birthday' ? "Праздник дня рождения" : ev==='graduation' ? "Выпускной вечер" : ev==='wedding' ? "Свадебное торжество" : "Приглашение на юбилей",
+       messageRu: ev==='wedding' ? "Приглашаем вас разделить радость нашего бракосочетания." : ev==='birthday' ? "Приглашаем вас на наш праздник. Если вы приедете, мы будем счастливы." : ev==='graduation' ? "Разделите с нами радость окончания университета!" : "Пожалуйста, приглашаем вас на наш юбилейный вечер!",
+
+       guestNameQq: 'Húrmetli miymanlar!',
+       eventTitleQq: ev==='birthday' ? 'Tuwılǵan kún bayramı' : ev==='graduation' ? 'Pitiriw keshesi' : ev==='wedding' ? "Nikax márásimi" : 'Yubileyge shaqırıw',
+       messageQq: ev==='wedding' ? "Sizdi perzentlerimizdeń neke toyına shaqırıp qalamız." : ev==='birthday' ? "Sizdi bayramımızǵa shaqıramız. Qosılıp quwanayıq!" : ev==='graduation' ? "Universitetti pitiriw quwanıshın biz benen bólesiń!" : "Ármanlar orınlanǵan yubiley aqshamımızǵa lutfan shaqıramız!"
+    };
+
+    onUpdate({ 
+       eventType, 
+       eventTypeId: eventType.id, 
+       templateId: null, 
+       template: null,
+       guestName,
+       eventTitle,
+       message,
+       customFields
+    });
   };
 
   if (loading) {

@@ -130,37 +130,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
   const DRAFT_KEY = `etaklifnoma_draft_${data.eventTypeId || 'default'}`;
 
-  // Pre-populate default static texts into customFields so they appear in input fields
-  useEffect(() => {
-    const cf = data.customFields || {};
-    const ev = data.eventType?.slug || data.eventTypeId || 'wedding';
-    
-    let updates = {};
-    let needsUpdate = false;
 
-    const setDef = (key, val) => {
-       if (cf[key] === undefined) {
-         updates[key] = val;
-         needsUpdate = true;
-       }
-    };
-
-    setDef('guestName', 'Hurmatli mehmonlar!');
-    setDef('eventTitle', ev==='birthday' ? "Tug'ilgan kun bayrami" : ev==='graduation' ? "Bitiruv kechasi" : "Yubiley bayramiga taklif");
-    setDef('message', ev==='wedding' ? "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz." : ev==='birthday' ? "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!" : ev==='graduation' ? "Universitetni tamomlash quvonchini biz bilan baham ko'ring!" : "Orzular ushalgan yubiley oqshomimizga lutfan taklif etamiz!");
-
-    setDef('guestNameRu', 'Уважаемые гости!');
-    setDef('eventTitleRu', ev==='birthday' ? "Праздник дня рождения" : ev==='graduation' ? "Выпускной вечер" : "Приглашение на юбилей");
-    setDef('messageRu', ev==='wedding' ? "Приглашаем вас разделить радость нашего бракосочетания." : ev==='birthday' ? "Приглашаем вас на наш праздник. Если вы приедете, мы будем счастливы." : ev==='graduation' ? "Разделите с нами радость окончания университета!" : "Пожалуйста, приглашаем вас на наш юбилейный вечер!");
-
-    setDef('guestNameQq', 'Húrmetli miymanlar!');
-    setDef('eventTitleQq', ev==='birthday' ? 'Tuwılǵan kún bayramı' : ev==='graduation' ? 'Pitiriw keshesi' : 'Yubileyge shaqırıw');
-    setDef('messageQq', ev==='wedding' ? "Sizdi perzentlerimizdeń neke toyına shaqırıp qalamız." : ev==='birthday' ? "Sizdi bayramımızǵa shaqıramız. Qosılıp quwanayıq!" : ev==='graduation' ? "Universitetti pitiriw quwanıshın biz benen bólesiń!" : "Ármanlar orınlanǵan yubiley aqshamımızǵa lutfan shaqıramız!");
-
-    if (needsUpdate) {
-       onUpdate({ customFields: { ...cf, ...updates } });
-    }
-  }, [data.eventTypeId, data.eventType]);
 
   // Auto-Save: write to localStorage with 1.5s debounce
   useEffect(() => {
