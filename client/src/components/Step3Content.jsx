@@ -179,30 +179,57 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* Three individual toggles */}
         <div className="space-y-2">
           {[
-            { key: 'langUz', label: "O'zbek tili", code: 'UZ' },
-            { key: 'langQq', label: 'Qaraqalpoq tili', code: 'QQ' },
+            { key: 'langUz', label: "O'zbek tili", code: 'UZ', scriptKey: 'baseAlphabetUz' },
+            { key: 'langQq', label: 'Qaraqalpoq tili', code: 'QQ', scriptKey: 'baseAlphabetQq' },
             { key: 'langRu', label: 'Rus tili', code: 'RU' },
           ].map((opt) => {
             const isOn = data.customFields?.[opt.key] !== false && (opt.key === 'langUz' ? (data.customFields?.[opt.key] ?? true) : !!data.customFields?.[opt.key]);
+            const currentScript = data.customFields?.[opt.scriptKey] || 'latin';
+            
             return (
-              <button
+              <div
                 key={opt.key}
-                type="button"
-                onClick={() => handleCustomFieldChange(opt.key, !isOn)}
-                className={`w-full flex items-center justify-between py-3 px-4 rounded-xl text-sm font-medium border transition-all ${
+                className={`w-full flex items-center justify-between py-2 px-3 rounded-xl text-sm font-medium border transition-all ${
                   isOn
                     ? 'bg-primary-500/20 border-primary-500/50 text-primary-300'
                     : 'bg-white/[0.03] border-white/10 text-surface-500 hover:border-white/20'
                 }`}
               >
-                <span className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 flex-1 cursor-pointer py-1"
+                  onClick={() => handleCustomFieldChange(opt.key, !isOn)}
+                >
                   <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isOn ? 'bg-primary-500/30' : 'bg-white/10'}`}>{opt.code}</span>
                   {opt.label}
-                </span>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${isOn ? 'bg-primary-500/30 text-primary-200' : 'bg-white/5 text-surface-500'}`}>
+                </div>
+
+                {opt.scriptKey && isOn && (
+                  <div className="flex bg-surface-900/40 rounded-lg p-0.5 mr-3 border border-white/5">
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); handleCustomFieldChange(opt.scriptKey, 'latin'); }}
+                      className={`px-3 py-1 text-[10px] uppercase tracking-wide font-bold rounded-md transition-all ${currentScript === 'cyrillic' ? 'text-surface-500 hover:text-white' : 'bg-surface-700 text-white shadow-sm'}`}
+                    >
+                      Lot
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); handleCustomFieldChange(opt.scriptKey, 'cyrillic'); }}
+                      className={`px-3 py-1 text-[10px] uppercase tracking-wide font-bold rounded-md transition-all ${currentScript === 'cyrillic' ? 'bg-surface-700 text-white shadow-sm' : 'text-surface-500 hover:text-white'}`}
+                    >
+                      Кир
+                    </button>
+                  </div>
+                )}
+
+                <button
+                   type="button"
+                   onClick={() => handleCustomFieldChange(opt.key, !isOn)}
+                   className={`text-xs px-2 py-0.5 rounded-full z-10 transition-colors ${isOn ? 'bg-primary-500/30 text-primary-200' : 'bg-white/5 text-surface-500'}`}
+                >
                   {isOn ? 'ON' : 'OFF'}
-                </span>
-              </button>
+                </button>
+              </div>
             );
           })}
         </div>

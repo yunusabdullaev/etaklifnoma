@@ -809,7 +809,9 @@ function buildLanguageToggle(cf) {
       return str.replace(regex, function(m) { return map[m]; });
     }
     
-    window._curScript = d.baseAlphabet || 'latin';
+    window._curScript = d.baseAlphabetUz || 'latin';
+    if(d.langUz === false && d.langQq) window._curScript = d.baseAlphabetQq || 'latin';
+    
     var _scrLatBtn = document.getElementById('scrLat');
     var _scrCyrBtn = document.getElementById('scrCyr');
     if(_scrLatBtn) _scrLatBtn.className = (window._curScript==='latin') ? 'lang-btn active' : 'lang-btn';
