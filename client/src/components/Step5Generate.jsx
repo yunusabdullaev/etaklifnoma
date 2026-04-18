@@ -15,6 +15,12 @@ export default function Step5Generate({ data, onReset, onBack }) {
     setLoading(true);
     setError(null);
     try {
+        let finalUrl = data.locationUrl;
+        if (finalUrl && !finalUrl.startsWith('http')) finalUrl = 'https://' + finalUrl;
+        
+        let finalTime = data.eventTime;
+        if (finalTime && finalTime.length === 4) finalTime = '0' + finalTime;
+
       const payload = {
         eventTypeId: data.eventTypeId,
         templateId: data.templateId,
@@ -22,9 +28,9 @@ export default function Step5Generate({ data, onReset, onBack }) {
         guestName: data.guestName || data.customFields?.guestNameRu || data.customFields?.guestNameQq || undefined,
         eventTitle: data.eventTitle || data.customFields?.eventTitleRu || data.customFields?.eventTitleQq || undefined,
         eventDate: data.eventDate,
-        eventTime: data.eventTime || undefined,
+        eventTime: finalTime || undefined,
         location: data.location,
-        locationUrl: data.locationUrl || undefined,
+        locationUrl: finalUrl || undefined,
         message: data.message || undefined,
         customFields: data.customFields && Object.keys(data.customFields).length > 0
           ? data.customFields : undefined,
@@ -33,7 +39,8 @@ export default function Step5Generate({ data, onReset, onBack }) {
       setResult(res.data);
     } catch (err) {
       const errData = err.response?.data?.error;
-      setError(errData?.message || t('common.error'));
+      const customMsg = errData?.details?.[0]?.message;
+      setError(customMsg || errData?.message || t('common.error'));
     } finally {
       setLoading(false);
     }
