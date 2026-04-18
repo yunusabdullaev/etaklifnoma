@@ -598,6 +598,11 @@ function buildLanguageToggle(cf) {
   (function(){
     var d = window.__INVITE_DATA__ || {};
 
+    var scriptToggle = document.getElementById('scriptToggle');
+    if (scriptToggle && !d.enableAlphabetSwitcher) {
+      scriptToggle.style.display = 'none';
+    }
+
     // New toggle system: langUz, langQq, langRu (boolean flags)
     var hasUz = d.langUz !== false;
     var hasQq = !!d.langQq;
@@ -804,7 +809,11 @@ function buildLanguageToggle(cf) {
       return str.replace(regex, function(m) { return map[m]; });
     }
     
-    window._curScript = 'latin';
+    window._curScript = d.baseAlphabet || 'latin';
+    var _scrLatBtn = document.getElementById('scrLat');
+    var _scrCyrBtn = document.getElementById('scrCyr');
+    if(_scrLatBtn) _scrLatBtn.className = (window._curScript==='latin') ? 'lang-btn active' : 'lang-btn';
+    if(_scrCyrBtn) _scrCyrBtn.className = (window._curScript==='cyrillic') ? 'lang-btn active' : 'lang-btn';
 
     // Data maps for each language
     var langData = {
@@ -840,7 +849,11 @@ function buildLanguageToggle(cf) {
       function ntr(v) { return (lang==='uz'||lang==='qq') ? translit(v, nScr) : v; }
 
       var scriptToggle = document.getElementById('scriptToggle');
-      if(scriptToggle) scriptToggle.style.display = (lang === 'ru') ? 'none' : 'flex';
+      if(scriptToggle && d.enableAlphabetSwitcher) {
+        scriptToggle.style.display = (lang === 'ru') ? 'none' : 'flex';
+      } else if(scriptToggle) {
+        scriptToggle.style.display = 'none';
+      }
 
       var uzBtn = document.getElementById('langUz');
       var qqBtn = document.getElementById('langQq');

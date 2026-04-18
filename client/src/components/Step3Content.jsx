@@ -224,6 +224,40 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           </select>
         </div>
 
+        {/* ALPHABET SWITCHER OPTION */}
+        <div className="pt-3 border-t border-white/5 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="pr-2">
+              <label className="label flex items-center gap-1.5 !mb-0">A/А Lotin/Kiril alifbosiga o'tish tugmasi</label>
+              <p className="text-[11px] text-surface-500 mt-0.5">Taklifnomaning ichida (UZ/QQ tillari uchun) mehmonlarga Lotin va Kiril yozuvini almashtirish imkonini beradi.</p>
+            </div>
+            <button type="button"
+              onClick={() => handleCustomFieldChange('enableAlphabetSwitcher', !data.customFields?.enableAlphabetSwitcher)}
+              className={`w-11 h-6 rounded-full transition-all duration-300 relative flex-shrink-0 ${
+                data.customFields?.enableAlphabetSwitcher ? 'bg-primary-500' : 'bg-surface-700'
+              }`}>
+              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
+                data.customFields?.enableAlphabetSwitcher ? 'left-[22px]' : 'left-0.5'
+              }`} />
+            </button>
+          </div>
+          
+          {data.customFields?.enableAlphabetSwitcher && (
+             <div className="space-y-2 mt-2">
+               <label className="label mb-1 block">Siz quyida matnlarni asosan qaysi alifboda yozib to'ldirmoqdasiz?</label>
+               <select 
+                 value={data.customFields?.baseAlphabet || 'latin'} 
+                 onChange={(e) => handleCustomFieldChange('baseAlphabet', e.target.value)}
+                 className="input-field py-2 text-sm w-full"
+               >
+                 <option value="latin">📝 Lotin alifbosida yozmoqdaman</option>
+                 <option value="cyrillic">📝 Kiril alifbosida yozmoqdaman</option>
+               </select>
+               <p className="text-[11px] text-primary-400/80">Bu mehmonlar tugmani bosganda almashtiruvchi algoritm aniq ishlashi uchun kerak.</p>
+             </div>
+          )}
+        </div>
+
       </div>
 
       {/* TEXT FIELDS COMPONENT */}
