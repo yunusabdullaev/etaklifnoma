@@ -47,6 +47,11 @@ export default function App() {
   }, [step, data, view, user]);
   const [showAuth, setShowAuth] = useState(false); // landing → auth transition
 
+  // Scroll to top on step change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
   // Check saved auth on mount
   useEffect(() => {
     const savedToken = localStorage.getItem('taklifnoma-token');
