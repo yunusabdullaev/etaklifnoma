@@ -473,12 +473,11 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
                     <motion.div 
                       initial={{ opacity: 0, height: 0, marginTop: 0 }}
                       animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-                      className="pt-2 border-t border-white/10 flex justify-between items-center"
+                      className="pt-2 border-t border-white/10"
                     >
-                      <span className="text-primary-400 text-[10px] font-medium">{t('common.selected') || 'Tanlandi'}</span>
-                      <span className="bg-primary-500 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-lg shadow-primary-500/30">
-                        {t('step1.next') || 'Davom etish'} &rarr;
-                      </span>
+                      <div className="bg-primary-500 text-white w-full py-2 rounded-lg flex items-center justify-center gap-1.5 shadow-lg shadow-primary-500/30 text-xs font-semibold tracking-wide">
+                        {t('step1.next').replace('->', '').replace('→', '').trim()} &rarr;
+                      </div>
                     </motion.div>
                   )}
                 </div>
