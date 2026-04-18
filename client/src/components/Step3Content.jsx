@@ -119,7 +119,7 @@ function BotTestButton({ bot, apiBase, t }) {
 }
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview, setShowPreview] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
   const [uploading, setUploading] = useState(null); // 'photo' | 'music' | null
   const [draftSaved, setDraftSaved] = useState(false);
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
@@ -910,7 +910,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </div>
         <button
           onClick={() => setShowPreview(!showPreview)}
-          className="hidden lg:flex items-center gap-2 text-sm text-surface-400 hover:text-white 
+          className="flex items-center gap-2 text-sm text-surface-400 hover:text-white 
             transition-colors bg-white/5 px-3 py-1.5 rounded-lg border border-white/10"
         >
           {showPreview ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -918,15 +918,15 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         </button>
       </div>
 
-      <div className={`flex gap-6 ${showPreview ? 'lg:flex-row' : ''} flex-col`}>
+      <div className={`flex gap-6 ${showPreview ? 'flex-col lg:flex-row' : 'flex-col'}`}>
         {/* Form column */}
-        <div className={`${showPreview ? 'lg:w-1/2' : 'max-w-2xl mx-auto w-full'}`}>
+        <div className={`w-full ${showPreview ? 'hidden lg:block lg:w-1/2' : 'max-w-2xl mx-auto'}`}>
           {formContent}
         </div>
 
         {/* Live preview column */}
         {showPreview && (
-          <div className="hidden lg:block lg:w-1/2">
+          <div className="w-full lg:w-1/2">
             <div className="sticky top-6">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
