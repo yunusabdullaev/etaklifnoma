@@ -319,9 +319,9 @@ export default function Dashboard({ token, onCreateNew, onContinueDraft }) {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-display font-bold text-white flex items-center gap-2">
             <LayoutGrid size={24} className="text-primary-400" />
             {t('dashboard.title')}
           </h2>
@@ -329,13 +329,13 @@ export default function Dashboard({ token, onCreateNew, onContinueDraft }) {
             {invitations.length > 0 ? `${invitations.length} ${t('dashboard.total')}` : t('dashboard.empty')}
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-row gap-2 sm:gap-3 w-full sm:w-auto">
           {hasDraft && (
-            <button onClick={onContinueDraft} className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20 shadow-sm shadow-accent-500/10">
+            <button onClick={onContinueDraft} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 rounded-xl text-sm sm:text-base font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20 shadow-sm shadow-accent-500/10">
               <Pencil size={16} /> Davom etish
             </button>
           )}
-          <button onClick={handleCreateNew} className="btn-primary flex items-center gap-2 px-5 py-2.5">
+          <button onClick={handleCreateNew} className="btn-primary flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 text-sm sm:text-base">
             <Plus size={16} /> {t('dashboard.newBtn')}
           </button>
         </div>
@@ -433,7 +433,7 @@ export default function Dashboard({ token, onCreateNew, onContinueDraft }) {
               {/* ── Share Panel ── */}
               <div className="px-3 pb-1">
                 <p className="text-[9px] font-semibold uppercase tracking-widest text-surface-600 mb-1.5">📤 {t('dashboard.share') || 'Ulashish'}</p>
-                <div className="flex gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
                   {/* WhatsApp */}
                   <button
                     onClick={() => shareViaWhatsApp(inv.slug, inv.eventTitle || inv.hostName)}
@@ -477,12 +477,12 @@ export default function Dashboard({ token, onCreateNew, onContinueDraft }) {
               {/* Actions */}
               <div className="p-3 pt-1 flex gap-2 flex-wrap">
                 <a href={`${APP_URL}/invite/${inv.slug}/view`} target="_blank" rel="noopener"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg
+                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg
                     bg-primary-500/10 text-primary-400 text-xs font-medium hover:bg-primary-500/20 transition-colors">
                   <ExternalLink size={12} /> {t('dashboard.view')}
                 </a>
               </div>
-              <div className="px-3 pb-3 flex gap-1.5">
+              <div className="px-3 pb-3 flex flex-wrap gap-1.5">
                 <button onClick={() => openQr(inv.slug)} title="QR Kod"
                   className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] text-surface-400 bg-white/[0.03] hover:bg-white/[0.08] hover:text-white transition-all">
                   <QrCode size={12} /> QR
