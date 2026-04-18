@@ -140,7 +140,10 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1, duration: 0.4 }}
-              onClick={() => handleSelect(et)}
+              onClick={() => {
+                if (isSelected) onNext();
+                else handleSelect(et);
+              }}
               className={`relative group p-6 rounded-2xl border backdrop-blur-xl text-left
                 transition-all duration-300 cursor-pointer
                 bg-gradient-to-br ${gradientMap[et.name] || 'from-surface-700/50 to-surface-800/50 border-white/10'}
@@ -173,6 +176,19 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
               <p className="text-sm text-surface-400 leading-relaxed">
                 {eventTypeTranslations[lang]?.[et.name]?.description || et.description}
               </p>
+
+              {isSelected && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
+                  className="pt-3 border-t border-white/10 flex justify-between items-center"
+                >
+                  <span className="text-primary-400 text-xs font-medium">{t('common.selected') || 'Tanlandi'}</span>
+                  <span className="bg-primary-500 text-white text-xs uppercase tracking-wider font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-lg shadow-primary-500/30">
+                    {t('step1.next') || 'Davom etish'} &rarr;
+                  </span>
+                </motion.div>
+              )}
             </motion.button>
           );
         })}

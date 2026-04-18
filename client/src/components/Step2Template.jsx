@@ -415,7 +415,10 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.06, duration: 0.4 }}
-                onClick={() => handleSelect(tmpl)}
+                onClick={() => {
+                  if (isSelected) onNext();
+                  else handleSelect(tmpl);
+                }}
                 className={`group relative rounded-2xl border backdrop-blur-xl text-left
                   transition-all duration-300 cursor-pointer overflow-hidden
                   ${isSelected
@@ -465,6 +468,19 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
                      : lang === 'qq' ? (templateNameQq[getTemplateSuffix(tmpl.slug)]?.desc || tmpl.description)
                      : tmpl.description}
                   </p>
+                  
+                  {isSelected && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                      animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                      className="pt-2 border-t border-white/10 flex justify-between items-center"
+                    >
+                      <span className="text-primary-400 text-[10px] font-medium">{t('common.selected') || 'Tanlandi'}</span>
+                      <span className="bg-primary-500 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-lg shadow-primary-500/30">
+                        {t('step1.next') || 'Davom etish'} &rarr;
+                      </span>
+                    </motion.div>
+                  )}
                 </div>
               </motion.button>
             );
