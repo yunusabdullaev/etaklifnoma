@@ -119,15 +119,18 @@ function BotTestButton({ bot, apiBase, t }) {
 }
 
 const getMapEmbedUrl = (urlStr, locationName) => {
-  if (!urlStr) return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}`;
+  if (!urlStr) return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}&z=15`;
   try {
     const url = new URL(urlStr);
     if (url.hostname.includes('yandex')) {
       url.pathname = url.pathname.replace(/^\/maps/, '/map-widget/v1');
+      if (!url.searchParams.has('z')) {
+        url.searchParams.set('z', '15');
+      }
       return url.toString();
     }
   } catch(e) {}
-  return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}`;
+  return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}&z=15`;
 };
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
