@@ -170,11 +170,12 @@ const getMapEmbedUrl = (urlStr, locationName) => {
 };
 
 const PRESET_SONGS = [
-  { id: 'yiruma-river', title: 'River Flows in You', artist: 'Yiruma', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/river_flows.mp3' },
-  { id: 'einaudi-nuvole', title: 'Nuvole Bianche', artist: 'Ludovico Einaudi', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/nuvole_bianche.mp3' },
-  { id: 'pachelbel-canon', title: 'Canon in D', artist: 'Pachelbel', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/canon_in_d.mp3' },
-  { id: 'alcocer-idea10', title: 'Idea 10', artist: 'Gibran Alcocer', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/idea10.mp3' },
-  { id: 'alcocer-idea15', title: 'Idea 15', artist: 'Gibran Alcocer', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/idea15.mp3' },
+  // ESLATMA: Bu yerga o'zingizning haqiqiy .mp3 fayl linklaringizni qo'ying (Cloudinary yoki boshqa xostingdan)
+  { id: 'yiruma-river', title: 'River Flows in You', artist: 'Yiruma', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+  { id: 'einaudi-nuvole', title: 'Nuvole Bianche', artist: 'Ludovico Einaudi', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+  { id: 'pachelbel-canon', title: 'Canon in D', artist: 'Pachelbel', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+  { id: 'alcocer-idea10', title: 'Idea 10', artist: 'Gibran Alcocer', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+  { id: 'alcocer-idea15', title: 'Idea 15', artist: 'Gibran Alcocer', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
 ];
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
