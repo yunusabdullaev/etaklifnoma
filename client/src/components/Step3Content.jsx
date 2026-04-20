@@ -170,10 +170,9 @@ const getMapEmbedUrl = (urlStr, locationName) => {
 };
 
 const PRESET_SONGS = [
-  { id: 'piano-love', title: 'Romantic Piano', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/romantic_piano.mp3' },
-  { id: 'wedding-march', title: 'Wedding March', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/wedding_march.mp3' },
-  { id: 'uzb-instrumental', title: 'O\'zbek Instrumental', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/uzb_classic.mp3' },
-  { id: 'modern-love', title: 'Modern Soft Love', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/modern_love.mp3' },
+  { id: 'yiruma-river', title: 'River Flows in You', artist: 'Yiruma', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/river_flows.mp3' },
+  { id: 'einaudi-nuvole', title: 'Nuvole Bianche', artist: 'Ludovico Einaudi', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/nuvole_bianche.mp3' },
+  { id: 'pachelbel-canon', title: 'Canon in D', artist: 'Pachelbel', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/canon_in_d.mp3' },
 ];
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
@@ -187,6 +186,33 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const { t, lang } = useLang();
   const trLocal = trStep3[lang] || trStep3['uz'];
   const orderArr = (data.customFields?.langOrder || 'uz,ru,qq').split(',');
+
+  const [playingId, setPlayingId] = useState(null);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleTogglePreview = (song) => {
+    if (playingId === song.id) {
+      audioRef.current?.pause();
+      setPlayingId(null);
+    } else {
+      if (audioRef.current) {
+         audioRef.current.pause();
+      }
+      audioRef.current = new Audio(song.url);
+      audioRef.current.play().catch(e => console.error("Playback failed", e));
+      audioRef.current.onended = () => setPlayingId(null);
+      setPlayingId(song.id);
+    }
+  };
 
   const DRAFT_KEY = `etaklifnoma_draft_${data.eventTypeId || 'default'}`;
 
@@ -715,23 +741,54 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                    <div className="w-1.5 h-1.5 rounded-full bg-primary-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
                    {trLocal.musicLibrary}
                 </p>
-                <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+                <div className="flex gap-3 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-hide">
                   {PRESET_SONGS.map(song => (
-                    <button
-                      key={song.id}
-                      type="button"
-                      onClick={() => handleCustomFieldChange('musicUrl', song.url)}
-                      className="flex-shrink-0 w-32 group relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/30 transition-all hover:scale-[1.02] active:scale-95 bg-surface-900"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-end text-left">
-                        <p className="text-[10px] font-bold text-white leading-tight group-hover:text-primary-400 transition-colors uppercase italic">{song.title}</p>
-                        <span className="text-[8px] text-primary-500/80 font-black mt-0.5">{trLocal.musicSelect}</span>
+                    <div key={song.id} className="flex-shrink-0 group">
+                      <div className="relative w-40 aspect-video rounded-2xl overflow-hidden border border-white/10 hover:border-primary-500/30 transition-all bg-surface-900 mb-2">
+                        {/* Artwork Mock / Decor */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent flex items-center justify-center">
+                           <div className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center border border-white/10">
+                              <span className="text-xl">🎵</span>
+                           </div>
+                        </div>
+
+                        {/* Controls Overlay */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                           <button
+                             type="button"
+                             onClick={() => handleTogglePreview(song)}
+                             className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl"
+                           >
+                              {playingId === song.id ? (
+                                <div className="flex gap-0.5 items-center">
+                                   <div className="w-1 h-3 bg-black animate-pulse" />
+                                   <div className="w-1 h-4 bg-black animate-pulse delay-75" />
+                                   <div className="w-1 h-3 bg-black animate-pulse delay-150" />
+                                </div>
+                              ) : (
+                                <div className="translate-x-0.5">▶</div>
+                              )}
+                           </button>
+                        </div>
+                        
+                        {/* Title Bar */}
+                        <div className="absolute bottom-0 inset-x-0 bg-black/60 backdrop-blur-md p-2 text-left">
+                           <p className="text-[10px] font-bold text-white truncate">{song.title}</p>
+                           <p className="text-[8px] text-surface-400 truncate uppercase mt-0.5 tracking-tighter">{song.artist}</p>
+                        </div>
                       </div>
-                      {/* Abstract decor */}
-                      <div className="absolute top-2 right-2 w-4 h-4 rounded-full border border-white/5 flex items-center justify-center">
-                         <div className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-primary-500/40 transition-colors" />
-                      </div>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleCustomFieldChange('musicUrl', song.url);
+                          if (audioRef.current) audioRef.current.pause();
+                          setPlayingId(null);
+                        }}
+                        className="w-full py-1.5 rounded-lg bg-surface-800 hover:bg-primary-500 hover:text-black text-[10px] uppercase font-black tracking-widest transition-all"
+                      >
+                        {trLocal.confirm}
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
