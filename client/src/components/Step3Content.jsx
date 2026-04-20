@@ -24,7 +24,8 @@ const trStep3 = {
     uploadingMusic: "Musiqa yuklanmoqda...", uploadingPhoto: "Rasm yuklanmoqda...",
     customUrl: "🔗 Maxsus URL manzil (ixtiyoriy)", slugHint: "Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika",
     rsvpLang: "🌐 RSVP tili", alphabetSwitcher: "🔤 Alifbo tugmasi", alphabetHint: "Mehmonlarga (Lot / Kir) imkonini berish",
-    connectTgFirst: "Avval Telegram botga ulaning!"
+    connectTgFirst: "Avval Telegram botga ulaning!",
+    musicLibrary: "Musiqa kutubxonasi", musicSelect: "Tanlash"
   },
   ru: {
     qqFields: 'Тексты на каракалпакском', ruFields: 'Тексты на русском', uzFields: 'Тексты на узбекском',
@@ -43,7 +44,8 @@ const trStep3 = {
     uploadingMusic: "Загрузка музыки...", uploadingPhoto: "Загрузка фото...",
     customUrl: "🔗 Пользовательский URL (необязательно)", slugHint: "Только латинские буквы, цифры и дефис (-). Например: jasur-malika",
     rsvpLang: "🌐 Язык RSVP", alphabetSwitcher: "🔤 Кнопка алфавита", alphabetHint: "Разрешить гостям переключать (Лат / Кир)",
-    connectTgFirst: "Сначала подключите Telegram бота!"
+    connectTgFirst: "Сначала подключите Telegram бота!",
+    musicLibrary: "Библиотека музыки", musicSelect: "Выбрать"
   },
   qq: {
     qqFields: 'Qaraqalpaqsha tekstler', ruFields: 'Russha tekstler', uzFields: 'Ózbekshe tekstler',
@@ -62,7 +64,8 @@ const trStep3 = {
     uploadingMusic: "Muzıka júklenbekte...", uploadingPhoto: "Súvret júklenbekte...",
     customUrl: "🔗 Arnawlı URL mánzil (ıqtıyarıy)", slugHint: "Tek latın háripleri, sanlar hám defis (-). Mısalı: jasur-malika",
     rsvpLang: "🌐 RSVP tili", alphabetSwitcher: "🔤 Alfavit túymesi", alphabetHint: "Miymanlarǵa (Lot / Kir) imkanın beriw",
-    connectTgFirst: "Dáslep Telegram botqa jalǵań!"
+    connectTgFirst: "Dáslep Telegram botqa jalǵań!",
+    musicLibrary: "Muzıka kitalapxanasi", musicSelect: "Tan'law"
   },
   en: {
     qqFields: 'Karakalpak Texts', ruFields: 'Russian Texts', uzFields: 'Uzbek Texts',
@@ -81,7 +84,8 @@ const trStep3 = {
     uploadingMusic: "Music uploading...", uploadingPhoto: "Photo uploading...",
     customUrl: "🔗 Custom URL (optional)", slugHint: "Only latin letters, numbers and hyphen (-). Example: jasur-malika",
     rsvpLang: "🌐 RSVP Language", alphabetSwitcher: "🔤 Alphabet Switcher", alphabetHint: "Allow guests to switch (Lat / Cyr)",
-    connectTgFirst: "Please connect Telegram bot first!"
+    connectTgFirst: "Please connect Telegram bot first!",
+    musicLibrary: "Music Library", musicSelect: "Select"
   }
 };
 
@@ -164,6 +168,13 @@ const getMapEmbedUrl = (urlStr, locationName) => {
   } catch(e) {}
   return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}&z=15`;
 };
+
+const PRESET_SONGS = [
+  { id: 'piano-love', title: 'Romantic Piano', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/romantic_piano.mp3' },
+  { id: 'wedding-march', title: 'Wedding March', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/wedding_march.mp3' },
+  { id: 'uzb-instrumental', title: 'O\'zbek Instrumental', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/uzb_classic.mp3' },
+  { id: 'modern-love', title: 'Modern Soft Love', url: 'https://res.cloudinary.com/dm8m6e1to/video/upload/v1713608104/etaklifnoma/presets/modern_love.mp3' },
+];
 
 export default function Step3Content({ data, onUpdate, onNext, onBack }) {
   const [showPreview, setShowPreview] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
@@ -697,7 +708,41 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           )}
 
           {!data.customFields?.musicUrl && (
-            <div className="space-y-2">
+            <div className="space-y-4">
+              {/* Library Selection */}
+              <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4">
+                <p className="text-[10px] text-surface-500 uppercase tracking-widest font-bold mb-3 flex items-center gap-2">
+                   <div className="w-1.5 h-1.5 rounded-full bg-primary-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+                   {trLocal.musicLibrary}
+                </p>
+                <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+                  {PRESET_SONGS.map(song => (
+                    <button
+                      key={song.id}
+                      type="button"
+                      onClick={() => handleCustomFieldChange('musicUrl', song.url)}
+                      className="flex-shrink-0 w-32 group relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/30 transition-all hover:scale-[1.02] active:scale-95 bg-surface-900"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-end text-left">
+                        <p className="text-[10px] font-bold text-white leading-tight group-hover:text-primary-400 transition-colors uppercase italic">{song.title}</p>
+                        <span className="text-[8px] text-primary-500/80 font-black mt-0.5">{trLocal.musicSelect}</span>
+                      </div>
+                      {/* Abstract decor */}
+                      <div className="absolute top-2 right-2 w-4 h-4 rounded-full border border-white/5 flex items-center justify-center">
+                         <div className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-primary-500/40 transition-colors" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* URL or Upload separator */}
+              <div className="flex items-center gap-2 opacity-50">
+                <div className="flex-1 h-px bg-white/10"></div>
+                <span className="text-[10px] text-surface-600 italic">yoki oʻzingiznikini yuklang</span>
+                <div className="flex-1 h-px bg-white/10"></div>
+              </div>
+
               {/* File upload */}
               <label className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
                 uploading === 'music' ? 'border-primary-500/50 bg-primary-500/5' : 'border-white/10 hover:border-primary-500/30 bg-white/[0.02] hover:bg-white/[0.04]'
@@ -730,11 +775,6 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
               </label>
 
               {/* URL option */}
-              <div className="flex items-center gap-2">
-                <div className="flex-1 h-px bg-white/10"></div>
-                <span className="text-[10px] text-surface-600">{t('step3.or')}</span>
-                <div className="flex-1 h-px bg-white/10"></div>
-              </div>
               <input type="url" placeholder="https://example.com/music.mp3"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
