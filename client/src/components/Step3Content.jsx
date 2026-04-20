@@ -16,7 +16,15 @@ const trStep3 = {
     
     age: 'Yoshi', theme: 'Bayram mavzusi', years: 'Yillar (Masalan: 50)', school: "Ta'lim muassasasi", graduationYear: 'Bitiruv yili', brideName: 'Kelinning ismi', groomName: 'Kuyovning ismi',
     palette: '🎨 Rang palitrasi',
-    gold: 'Oltin', silver: 'Kumush', ocean: 'Okean', rose: 'Gul', lavender: 'Lavanda', teal: 'Yashil', amber: 'Sariq', emerald: 'Zumrad'
+    gold: 'Oltin', silver: 'Kumush', ocean: 'Okean', rose: 'Gul', lavender: 'Lavanda', teal: 'Yashil', amber: 'Sariq', emerald: 'Zumrad',
+    yandexSearch: "📍 Yandex Maps'da qidirish", googleSearch: "📍 Google Maps",
+    invalidUrl: "Noto'g'ri URL formati. Iltimos xarita linkini to'g'ri kiriting.",
+    mapConfirm: "Tanlangan joy ushbu xaritaga mosmi?", confirm: "Tasdiqlash", confirmTip: "Lokal xaritani tasdiqlang!",
+    musicUploaded: "Yuklangan musiqa", sizeErr: "Fayl hajmi 10MB dan oshmasligi kerak", uploadErr: "Yuklashda xatolik: ",
+    uploadingMusic: "Musiqa yuklanmoqda...", uploadingPhoto: "Rasm yuklanmoqda...",
+    customUrl: "🔗 Maxsus URL manzil (ixtiyoriy)", slugHint: "Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika",
+    rsvpLang: "🌐 RSVP tili", alphabetSwitcher: "🔤 Alifbo tugmasi", alphabetHint: "Mehmonlarga (Lot / Kir) imkonini berish",
+    connectTgFirst: "Avval Telegram botga ulaning!"
   },
   ru: {
     qqFields: 'Тексты на каракалпакском', ruFields: 'Тексты на русском', uzFields: 'Тексты на узбекском',
@@ -27,7 +35,15 @@ const trStep3 = {
 
     age: 'Возраст', theme: 'Тема праздника', years: 'Лет (Например: 50)', school: "Учебное заведение", graduationYear: 'Год выпуска', brideName: 'Имя невесты', groomName: 'Имя жениха',
     palette: '🎨 Цветовая палитра',
-    gold: 'Золото', silver: 'Серебро', ocean: 'Океан', rose: 'Роза', lavender: 'Лаванда', teal: 'Бирюза', amber: 'Янтарь', emerald: 'Изумруд'
+    gold: 'Золото', silver: 'Серебро', ocean: 'Океан', rose: 'Роза', lavender: 'Лаванда', teal: 'Бирюза', amber: 'Янтарь', emerald: 'Изумруд',
+    yandexSearch: "📍 Искать в Yandex Maps", googleSearch: "📍 Google Maps",
+    invalidUrl: "Неверный формат URL. Пожалуйста, введите правильную ссылку на карту.",
+    mapConfirm: "Соответствует ли выбранное место этой карте?", confirm: "Подтвердить", confirmTip: "Подтвердите локальную карту!",
+    musicUploaded: "Загруженная музыка", sizeErr: "Размер файла не должен превышать 10МБ", uploadErr: "Ошибка загрузки: ",
+    uploadingMusic: "Загрузка музыки...", uploadingPhoto: "Загрузка фото...",
+    customUrl: "🔗 Пользовательский URL (необязательно)", slugHint: "Только латинские буквы, цифры и дефис (-). Например: jasur-malika",
+    rsvpLang: "🌐 Язык RSVP", alphabetSwitcher: "🔤 Кнопка алфавита", alphabetHint: "Разрешить гостям переключать (Лат / Кир)",
+    connectTgFirst: "Сначала подключите Telegram бота!"
   },
   qq: {
     qqFields: 'Qaraqalpaqsha tekstler', ruFields: 'Russha tekstler', uzFields: 'Ózbekshe tekstler',
@@ -38,7 +54,15 @@ const trStep3 = {
 
     age: 'Jası', theme: 'Bayram temasi', years: 'Jıllar (Mısalı: 50)', school: "Oqıw ornı", graduationYear: 'Pitkeriw jılı', brideName: 'Kelinniń atı', groomName: 'Kúyewdiń atı',
     palette: '🎨 Reńler palitrası',
-    gold: 'Altın', silver: 'Gúmis', ocean: 'Okean', rose: 'Gúl', lavender: 'Lavanda', teal: 'Máviy', amber: 'Sarı', emerald: 'Zúmret'
+    gold: 'Altın', silver: 'Gúmis', ocean: 'Okean', rose: 'Gúl', lavender: 'Lavanda', teal: 'Máviy', amber: 'Sarı', emerald: 'Zúmret',
+    yandexSearch: "📍 Yandex Maps'tan izlew", googleSearch: "📍 Google Maps",
+    invalidUrl: "Natuwrı URL formatı. Karta siltemesin tura kiritin'.",
+    mapConfirm: "Suraqlı orın usi kartaǵa sáykes pe?", confirm: "Tastıyqlaw", confirmTip: "Lokal kartani tastıyqlan'!",
+    musicUploaded: "Júklengen muzıka", sizeErr: "Fayl ólshemi 10MB dan aspawı kerek", uploadErr: "Júklewde qátelik: ",
+    uploadingMusic: "Muzıka júklenbekte...", uploadingPhoto: "Súvret júklenbekte...",
+    customUrl: "🔗 Arnawlı URL mánzil (ıqtıyarıy)", slugHint: "Tek latın háripleri, sanlar hám defis (-). Mısalı: jasur-malika",
+    rsvpLang: "🌐 RSVP tili", alphabetSwitcher: "🔤 Alfavit túymesi", alphabetHint: "Miymanlarǵa (Lot / Kir) imkanın beriw",
+    connectTgFirst: "Dáslep Telegram botqa jalǵań!"
   },
   en: {
     qqFields: 'Karakalpak Texts', ruFields: 'Russian Texts', uzFields: 'Uzbek Texts',
@@ -49,7 +73,15 @@ const trStep3 = {
 
     age: 'Age', theme: 'Theme', years: 'Years (e.g. 50)', school: "School", graduationYear: 'Graduation Year', brideName: 'Bride Name', groomName: 'Groom Name',
     palette: '🎨 Color palette',
-    gold: 'Gold', silver: 'Silver', ocean: 'Ocean', rose: 'Rose', lavender: 'Lavender', teal: 'Teal', amber: 'Amber', emerald: 'Emerald'
+    gold: 'Gold', silver: 'Silver', ocean: 'Ocean', rose: 'Rose', lavender: 'Lavender', teal: 'Teal', amber: 'Amber', emerald: 'Emerald',
+    yandexSearch: "📍 Search in Yandex Maps", googleSearch: "📍 Google Maps",
+    invalidUrl: "Invalid URL format. Please enter a correct map link.",
+    mapConfirm: "Does the selected location match this map?", confirm: "Confirm", confirmTip: "Confirm local map!",
+    musicUploaded: "Uploaded music", sizeErr: "File size must not exceed 10MB", uploadErr: "Upload error: ",
+    uploadingMusic: "Music uploading...", uploadingPhoto: "Photo uploading...",
+    customUrl: "🔗 Custom URL (optional)", slugHint: "Only latin letters, numbers and hyphen (-). Example: jasur-malika",
+    rsvpLang: "🌐 RSVP Language", alphabetSwitcher: "🔤 Alphabet Switcher", alphabetHint: "Allow guests to switch (Lat / Cyr)",
+    connectTgFirst: "Please connect Telegram bot first!"
   }
 };
 
@@ -606,17 +638,17 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             }}
             className={`input-field ${data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) ? 'border-red-500/50 focus:border-red-500 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}`} />
           {data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (
-             <p className="text-[10px] text-red-400 mt-1.5 font-medium">Noto'g'ri URL formati. Iltimos xarita linkini to'g'ri kiriting.</p>
+             <p className="text-[10px] text-red-400 mt-1.5 font-medium">{trLocal.invalidUrl}</p>
           )}
 
           {data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-3 mb-2 bg-surface-900 border border-white/10 rounded-xl overflow-hidden shadow-lg">
                <iframe src={getMapEmbedUrl(data.locationUrl, data.location)} width="100%" height="160" frameBorder="0" />
                <div onClick={() => setLocConfirmed(!locConfirmed)} className="p-3 bg-surface-800 flex items-center justify-between cursor-pointer hover:bg-surface-800/80 transition-colors">
-                 <p className="text-[11px] sm:text-xs text-white font-medium">Tanlangan joy ushbu xaritaga mosmi?</p>
+                 <p className="text-[11px] sm:text-xs text-white font-medium">{trLocal.mapConfirm}</p>
                  <label className="flex items-center gap-2 pointer-events-none">
                    <input type="checkbox" checked={locConfirmed} readOnly className="w-4 h-4 rounded bg-surface-900 border-white/20" />
-                   <span className={`text-[10px] sm:text-[11px] uppercase tracking-wider font-bold transition-colors ${locConfirmed ? 'text-primary-400' : 'text-surface-500'}`}>Tasdiqlash</span>
+                   <span className={`text-[10px] sm:text-[11px] uppercase tracking-wider font-bold transition-colors ${locConfirmed ? 'text-primary-400' : 'text-surface-500'}`}>{trLocal.confirm}</span>
                  </label>
                </div>
             </motion.div>
@@ -630,7 +662,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
                 bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all"
             >
-              📍 Yandex Maps'da qidirish
+              {trLocal.yandexSearch}
             </a>
             <a
               href={`https://www.google.com/maps/search/${encodeURIComponent(data.location || '')}`}
@@ -639,7 +671,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium
                 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-all"
             >
-              📍 Google Maps
+              {trLocal.googleSearch}
             </a>
           </div>
         </div>
@@ -657,7 +689,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           {data.customFields?.musicUrl && (
             <div className="flex items-center gap-2 mb-2 p-2 rounded-lg bg-primary-500/10 border border-primary-500/20">
               <span className="text-xs text-primary-300 truncate flex-1">
-                🎶 {data.customFields.musicUrl.startsWith('data:') ? 'Yuklangan musiqa' : data.customFields.musicUrl}
+                🎶 {data.customFields.musicUrl.startsWith('data:') ? trLocal.musicUploaded : data.customFields.musicUrl}
               </span>
               <button type="button" onClick={() => handleCustomFieldChange('musicUrl', '')}
                 className="text-rose-400 text-xs hover:text-rose-300">✕</button>
@@ -676,7 +708,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                     if (!file) return;
                     
                     if (file.size > 10 * 1024 * 1024) {
-                      alert('Fayl hajmi 10MB dan oshmasligi kerak');
+                      alert(trLocal.sizeErr);
                       return;
                     }
                     
@@ -685,13 +717,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                       const url = await uploadAudio(file);
                       handleCustomFieldChange('musicUrl', url);
                     } catch (err) {
-                      alert('Musiqa yuklashda xatolik: ' + err.message);
+                      alert(trLocal.uploadErr + err.message);
                     }
                     setUploading(null);
                     e.target.value = '';
                   }} />
                 {uploading === 'music' ? (
-                  <><Loader2 size={18} className="animate-spin text-primary-400" /><span className="text-sm text-primary-400">Yuklanmoqda...</span></>
+                  <><Loader2 size={18} className="animate-spin text-primary-400" /><span className="text-sm text-primary-400">{trLocal.uploadingMusic}</span></>
                 ) : (
                   <><span className="text-xl">📁</span><span className="text-sm text-surface-400">{t('step3.musicUpload')}</span></>
                 )}
@@ -755,13 +787,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
                     const urls = await Promise.all(toProcess.map(f => uploadImage(f)));
                     handleCustomFieldChange('photos', [...existing, ...urls]);
                   } catch (err) {
-                    alert('Rasm yuklashda xatolik: ' + err.message);
+                    alert(trLocal.uploadErr + err.message);
                   }
                   setUploading(null);
                   e.target.value = '';
                 }} />
               {uploading === 'photo' ? (
-                <><Loader2 size={20} className="animate-spin text-primary-400" /><span className="text-sm text-primary-400">Yuklanmoqda...</span></>
+                <><Loader2 size={20} className="animate-spin text-primary-400" /><span className="text-sm text-primary-400">{trLocal.uploadingPhoto}</span></>
               ) : (
                 <><span className="text-2xl">📷</span><span className="text-sm text-surface-400">{t('step3.photoUpload')}</span></>
               )}
@@ -771,7 +803,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
         {/* Custom Slug */}
         <div>
-          <label className="label flex items-center gap-1.5">🔗 Maxsus URL manzil (ixtiyoriy)</label>
+          <label className="label flex items-center gap-1.5">{trLocal.customUrl}</label>
           <div className="flex items-center gap-2">
             <span className="text-xs text-surface-500 shrink-0">etaklifnoma.uz/invite/</span>
             <input
@@ -790,7 +822,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             {slugState.status === 'error' && <XCircle className="w-5 h-5 text-red-500" />}
           </div>
           <div className="flex items-start justify-between mt-1">
-             <p className="text-[11px] text-surface-500">Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika</p>
+             <p className="text-[11px] text-surface-500">{trLocal.slugHint}</p>
              {slugState.message && (
                <p className={`text-[11px] font-medium ${slugState.status === 'success' ? 'text-emerald-500' : 'text-red-500'}`}>
                  {slugState.message}
@@ -865,7 +897,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
         {/* RSVP language selector */}
         {data.customFields?.enableRsvp && (
           <div className="p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
-            <label className="label flex items-center gap-1.5 !mb-2">🌐 RSVP tili</label>
+            <label className="label flex items-center gap-1.5 !mb-2">{trLocal.rsvpLang}</label>
             <div className="flex gap-2">
               {[
                 { code: 'uz', label: "O'zbekcha" },
@@ -924,7 +956,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             { key: 'showShareTg',   label: `✈️ ${t('step3.showShareTg')}`, hint: t('step3.showShareTgHint'), defaultOn: false },
             { key: 'showCalendarBtn', label: `📅 ${t('step3.showCalendar')}`,        hint: t('step3.showCalendarHint'), defaultOn: false },
             { key: 'showPrintBtn',  label: `🖨️ ${t('step3.showPrint')}`,       hint: t('step3.showPrintHint'), defaultOn: false },
-            { key: 'enableAlphabetSwitcher', label: `🔤 Alifbo tugmasi`, hint: `Mehmonlarga (Lot / Kir) imkonini berish`, defaultOn: false },
+            { key: 'enableAlphabetSwitcher', label: trLocal.alphabetSwitcher, hint: trLocal.alphabetHint, defaultOn: false },
           ].map(({ key, label, hint, defaultOn }) => {
             const isOn = data.customFields?.[key] === undefined ? defaultOn : !!data.customFields[key];
             return (
@@ -1013,7 +1045,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
             </button>
             {(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) && (
               <span className="absolute -top-10 right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 bg-black/80 backdrop-blur-md text-white text-[10px] whitespace-nowrap px-3 py-1.5 rounded-lg opacity-0 transition-opacity drop-shadow-xl pointer-events-none w-auto delay-200">
-                Lokal xaritani tasdiqlang!
+                {trLocal.confirmTip}
               </span>
             )}
           </div>
