@@ -28,7 +28,7 @@ const weddingSharedHtml = `
       </h1>
       <div class="hero-date-badge">
         <div class="date-line"></div>
-        <span class="hero-date">{{eventDateFormatted}}</span>
+        <span class="hero-date"><span data-tp="date">{{eventDateFormatted}}</span></span>
         <div class="date-line"></div>
       </div>
       <div class="ornament-bot">
@@ -77,7 +77,7 @@ const weddingSharedHtml = `
         <div class="info-card">
           <div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
           <div class="ic-title" data-i18n="dateLabel">Sana</div>
-          <div class="ic-value">{{eventDateFormatted}}</div>
+          <div class="ic-value"><span data-tp="date">{{eventDateFormatted}}</span></div>
         </div>
         <div class="info-card">
           <div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -154,7 +154,7 @@ const weddingSharedHtml = `
         <span class="fa">&</span>
         <span class="fn">{{groomName|Kuyov}}</span>
       </div>
-      <div class="footer-date">{{eventDateFormatted}}</div>
+      <div class="footer-date"><span data-tp="date">{{eventDateFormatted}}</span></div>
       <p class="footer-msg" data-i18n="waitingMsg">Sizni kutib qolamiz!</p>
       <div class="footer-hearts">♥ ♥ ♥</div>
     </div>
@@ -770,7 +770,7 @@ exports.birthdayPremiumHtml = `
       {{/if}}
       <div class="hero-date-badge">
         <div class="date-line"></div>
-        <span class="hero-date">{{eventDateFormatted}}</span>
+        <span class="hero-date"><span data-tp="date">{{eventDateFormatted}}</span></span>
         <div class="date-line"></div>
       </div>
     </div>
@@ -804,7 +804,7 @@ exports.birthdayPremiumHtml = `
     <div class="container">
       <h2 class="section-heading cream-heading" data-i18n="detailsTitle">Tafsilotlar</h2>
       <div class="cards-row">
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value"><span data-tp="date">{{eventDateFormatted}}</span></div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title" data-i18n="venueLabel">Manzil</div><div class="ic-value">{{location}}</div></div>
       </div>
@@ -856,7 +856,7 @@ exports.birthdayPremiumHtml = `
   <footer class="footer">
     <div class="container">
       <div class="footer-names"><span class="fn bd-fn"><span data-tp="hostName">{{hostName}}</span></div>
-      <div class="footer-date">{{eventDateFormatted}}</div>
+      <div class="footer-date"><span data-tp="date">{{eventDateFormatted}}</span></div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎈</p>
       <div class="footer-hearts">🎈 🎉 🎈</div>
     </div>
@@ -934,7 +934,7 @@ exports.graduationPremiumHtml = `
       {{/if}}
       <div class="hero-date-badge">
         <div class="date-line"></div>
-        <span class="hero-date">{{eventDateFormatted}}</span>
+        <span class="hero-date"><span data-tp="date">{{eventDateFormatted}}</span></span>
         <div class="date-line"></div>
       </div>
     </div>
@@ -969,7 +969,7 @@ exports.graduationPremiumHtml = `
     <div class="container">
       <h2 class="section-heading cream-heading" data-i18n="detailsTitle">Tafsilotlar</h2>
       <div class="cards-row">
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value"><span data-tp="date">{{eventDateFormatted}}</span></div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title" data-i18n="venueLabel">Manzil</div><div class="ic-value">{{location}}</div></div>
       </div>
@@ -1015,7 +1015,7 @@ exports.graduationPremiumHtml = `
   <footer class="footer">
     <div class="container">
       <div class="footer-names"><span class="fn grad-fn"><span data-tp="hostName">{{hostName}}</span></div>
-      <div class="footer-date">{{eventDateFormatted}}</div>
+      <div class="footer-date"><span data-tp="date">{{eventDateFormatted}}</span></div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎓</p>
       <div class="footer-hearts">🎓 ✨ 🎓</div>
     </div>
@@ -1058,7 +1058,7 @@ exports.jubileePremiumHtml = `
       {{/if}}
       <div class="hero-date-badge">
         <div class="date-line"></div>
-        <span class="hero-date">{{eventDateFormatted}}</span>
+        <span class="hero-date"><span data-tp="date">{{eventDateFormatted}}</span></span>
         <div class="date-line"></div>
       </div>
     </div>
@@ -1093,7 +1093,7 @@ exports.jubileePremiumHtml = `
     <div class="container">
       <h2 class="section-heading cream-heading" data-i18n="detailsTitle">Tafsilotlar</h2>
       <div class="cards-row">
-        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
+        <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value"><span data-tp="date">{{eventDateFormatted}}</span></div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ic-title" data-i18n="venueLabel">Manzil</div><div class="ic-value">{{location}}</div></div>
       </div>
@@ -1139,7 +1139,7 @@ exports.jubileePremiumHtml = `
   <footer class="footer">
     <div class="container">
       <div class="footer-names"><span class="fn jub-fn"><span data-tp="hostName">{{hostName}}</span></div>
-      <div class="footer-date">{{eventDateFormatted}}</div>
+      <div class="footer-date"><span data-tp="date">{{eventDateFormatted}}</span></div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎉</p>
       <div class="footer-hearts">🎉 ✨ 🎉</div>
     </div>

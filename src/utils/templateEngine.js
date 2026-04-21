@@ -979,11 +979,12 @@ function buildLanguageToggle(cf) {
         if (val !== undefined) el.textContent = ntr(val);
       });
 
-      if(prevData.date && newData.date && prevData.date !== newData.date) {
-        swapTextInPage(prevData.date, newData.date);
+      if(prevData.date && newData.date) {
+        swapTextInPage(ptr(prevData.date), ntr(newData.date));
       }
 
       if(prevData.message && newData.message) swapTextInPage(ptr(prevData.message), ntr(newData.message));
+
       if(prevData.hostName && newData.hostName) swapTextInPage(ptr(prevData.hostName), ntr(newData.hostName));
       if(prevData.guestName && newData.guestName) swapTextInPage(ptr(prevData.guestName), ntr(newData.guestName));
       if(prevData.eventTitle && newData.eventTitle) swapTextInPage(ptr(prevData.eventTitle), ntr(newData.eventTitle));
