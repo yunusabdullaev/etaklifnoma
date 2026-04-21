@@ -128,12 +128,16 @@ function buildContext(invitation, eventType, template) {
   const customFields = invitation.customFields || {};
   for (const [key, value] of Object.entries(customFields)) {
     // If it's an empty array string "[]" or "[\n]", treat it as empty
-    if (typeof value === 'string' && value.replace(/\s/g, '') === '[]') {
+    if (typeof value === 'string' && (value.replace(/\s/g, '') === '[]' || value.replace(/\s/g, '') === '')) {
       ctx[key] = '';
     } else {
       ctx[key] = value;
     }
   }
+
+  // Unified "hasProgram" flag to handle multi-language timeline detection
+  ctx['hasProgram'] = !!(ctx['program'] || ctx['programRu'] || ctx['programQq']);
+  ctx['has_program'] = ctx['hasProgram'];
 
   return ctx;
 }
@@ -816,11 +820,12 @@ function buildLanguageToggle(cf) {
     var orderArr = d.langOrder ? d.langOrder.split(',') : ['uz','ru','qq'];
     var defaultLang = null;
     for(var i=0; i<orderArr.length; i++) {
-       if (orderArr[i] === 'uz' && hasUz) { defaultLang = 'uz'; break; }
-       if (orderArr[i] === 'qq' && hasQq) { defaultLang = 'qq'; break; }
-       if (orderArr[i] === 'ru' && hasRu) { defaultLang = 'ru'; break; }
+       var code = orderArr[i].trim();
+       if (code === 'uz' && hasUz) { defaultLang = 'uz'; break; }
+       if (code === 'qq' && hasQq) { defaultLang = 'qq'; break; }
+       if (code === 'ru' && hasRu) { defaultLang = 'ru'; break; }
     }
-    if(!defaultLang) defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : 'ru');
+    if(!defaultLang) defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : (hasRu ? 'ru' : 'uz'));
 
     window._curScript = (defaultLang === 'qq') ? (d.baseAlphabetQq || 'latin') : (d.baseAlphabetUz || 'latin');
     

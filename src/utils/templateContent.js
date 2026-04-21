@@ -114,7 +114,7 @@ const weddingSharedHtml = `
   {{/if}}
 
   <!-- ====== PROGRAM / TIMELINE ====== -->
-  {{#if program}}
+  {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</h2>
@@ -124,7 +124,7 @@ const weddingSharedHtml = `
   </section>
   {{/if}}
 
-  {{#unless program}}
+  {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</h2>
@@ -829,7 +829,7 @@ exports.birthdayPremiumHtml = `
   </section>
   {{/if}}
 
-  {{#if program}}
+  {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light">Bayram dasturi</h2>
@@ -839,7 +839,7 @@ exports.birthdayPremiumHtml = `
   </section>
   {{/if}}
 
-  {{#unless program}}
+  {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light">Bayram dasturi</h2>
@@ -988,7 +988,7 @@ exports.graduationPremiumHtml = `
   </section>
   {{/if}}
 
-  {{#if program}}
+  {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light">Kecha dasturi</h2>
@@ -998,7 +998,7 @@ exports.graduationPremiumHtml = `
   </section>
   {{/if}}
 
-  {{#unless program}}
+  {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light">Kecha dasturi</h2>
@@ -1112,7 +1112,7 @@ exports.jubileePremiumHtml = `
   </section>
   {{/if}}
 
-  {{#if program}}
+  {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light">Tantana dasturi</h2>
@@ -1122,7 +1122,7 @@ exports.jubileePremiumHtml = `
   </section>
   {{/if}}
 
-  {{#unless program}}
+  {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
       <h2 class="section-heading light">Tantana dasturi</h2>
