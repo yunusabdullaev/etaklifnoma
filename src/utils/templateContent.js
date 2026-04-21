@@ -832,7 +832,7 @@ exports.birthdayPremiumHtml = `
   {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Bayram dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Bayram dasturi}}</h2>
       <div class="timeline" id="program-data" data-program="{{program}}">
       </div>
     </div>
@@ -842,7 +842,7 @@ exports.birthdayPremiumHtml = `
   {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Bayram dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Bayram dasturi}}</h2>
       <div class="timeline">
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4>Mehmonlarni kutib olish</h4></div></div>
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4>Tort marosimi 🎂</h4></div></div>
@@ -991,7 +991,7 @@ exports.graduationPremiumHtml = `
   {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Kecha dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</h2>
       <div class="timeline" id="program-data" data-program="{{program}}">
       </div>
     </div>
@@ -1001,7 +1001,7 @@ exports.graduationPremiumHtml = `
   {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Kecha dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</h2>
       <div class="timeline">
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4>Ro'yxatdan o'tish</h4></div></div>
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4>Rasmiy tantana 🎓</h4></div></div>
@@ -1115,7 +1115,7 @@ exports.jubileePremiumHtml = `
   {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Tantana dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Tantana dasturi}}</h2>
       <div class="timeline" id="program-data" data-program="{{program}}">
       </div>
     </div>
@@ -1125,7 +1125,7 @@ exports.jubileePremiumHtml = `
   {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light">Tantana dasturi</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Tantana dasturi}}</h2>
       <div class="timeline">
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4>Mehmonlarni kutib olish</h4></div></div>
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4>Tantanali tabriklar 🎉</h4></div></div>
