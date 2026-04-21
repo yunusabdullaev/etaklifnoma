@@ -86,29 +86,48 @@ function formatTime(timeStr) {
 function buildContext(invitation, eventType, template) {
   const ctx = {};
 
-  // Core invitation fields
-  ctx['hostName'] = invitation.hostName || '';
-  ctx['host_name'] = invitation.hostName || '';
-  ctx['guestName'] = invitation.guestName || '';
-  ctx['guest_name'] = invitation.guestName || '';
-  ctx['eventTitle'] = invitation.eventTitle || '';
-  ctx['event_title'] = invitation.eventTitle || '';
+  // Detect active languages
+  const hasUz = invitation.customFields?.langUz !== false;
+  const hasRu = !!invitation.customFields?.langRu;
+  const hasQq = !!invitation.customFields?.langQq;
+
+  // If only ONE language is active and it's NOT Uzbek, we should prioritize its fields
+  // for the initial server-side render to avoid "Uzbek defaults" showing in preview.
+  const onlyRu = hasRu && !hasUz && !hasQq;
+  const onlyQq = hasQq && !hasUz && !hasRu;
+
+  // Core invitation fields with smart fallback
+  ctx['hostName'] = invitation.hostName || (onlyRu ? invitation.customFields?.hostNameRu : (onlyQq ? invitation.customFields?.hostNameQq : '')) || '';
+  ctx['host_name'] = ctx['hostName'];
+  ctx['guestName'] = invitation.guestName || (onlyRu ? invitation.customFields?.guestNameRu : (onlyQq ? invitation.customFields?.guestNameQq : '')) || '';
+  ctx['guest_name'] = ctx['guestName'];
+  ctx['eventTitle'] = invitation.eventTitle || (onlyRu ? invitation.customFields?.eventTitleRu : (onlyQq ? invitation.customFields?.eventTitleQq : '')) || '';
+  ctx['event_title'] = ctx['eventTitle'];
+  ctx['message'] = invitation.message || (onlyRu ? invitation.customFields?.messageRu : (onlyQq ? invitation.customFields?.messageQq : '')) || '';
+
   ctx['eventDate'] = invitation.eventDate || '';
-  ctx['event_date'] = invitation.eventDate || '';
-  ctx['eventDateFormatted'] = formatDateUz(invitation.eventDate);
-  ctx['event_date_formatted'] = formatDateUz(invitation.eventDate);
-  ctx['date'] = formatDateUz(invitation.eventDate);
+  ctx['event_date'] = ctx['eventDate'];
+  ctx['eventDateFormatted'] = (onlyRu ? formatDateRu(invitation.eventDate) : formatDateUz(invitation.eventDate));
+  ctx['event_date_formatted'] = ctx['eventDateFormatted'];
+  ctx['date'] = ctx['eventDateFormatted'];
   ctx['dateRu'] = formatDateRu(invitation.eventDate);
-  ctx['date_ru'] = formatDateRu(invitation.eventDate);
+  ctx['date_ru'] = ctx['dateRu'];
+  
   ctx['eventTime'] = formatTime(invitation.eventTime);
-  ctx['event_time'] = formatTime(invitation.eventTime);
-  ctx['time'] = formatTime(invitation.eventTime);
+  ctx['event_time'] = ctx['eventTime'];
+  ctx['time'] = ctx['eventTime'];
+  
   ctx['location'] = invitation.location || '';
   ctx['locationUrl'] = invitation.locationUrl || '';
-  ctx['location_url'] = invitation.locationUrl || '';
-  ctx['message'] = invitation.message || '';
-  ctx['name'] = invitation.hostName || '';
+  ctx['location_url'] = ctx['locationUrl'];
   ctx['slug'] = invitation.slug || '';
+  ctx['name'] = ctx['hostName'];
+
+  // Program / Timeline fallback
+  ctx['program'] = (invitation.customFields?.program) || (onlyRu ? invitation.customFields?.programRu : (onlyQq ? invitation.customFields?.programQq : '')) || '';
+  ctx['programCustomTitle'] = (invitation.customFields?.programCustomTitle) || (onlyRu ? invitation.customFields?.programCustomTitleRu : (onlyQq ? invitation.customFields?.programCustomTitleQq : '')) || '';
+
+
 
   // Event type info
   if (eventType) {
