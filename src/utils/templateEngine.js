@@ -1115,12 +1115,13 @@ function buildLanguageToggle(cf) {
       }
 
 
-      var prevLang = window.currentLang || 'uz';
+      var prevLang = window.currentLang || d.primaryLang || 'uz';
       var prevData = langData[prevLang] || langData.uz;
       var newData = langData[lang] || langData.uz;
 
+
       
-      var pScr = isScriptChange ? (window._curScript === 'cyrillic' ? 'latin' : 'cyrillic') : window._curScript;
+      var pScr = isScriptChange ? (window._curScript === 'cyrillic' ? 'latin' : 'cyrillic') : (window.currentLang ? window._curScript : 'latin');
       var nScr = window._curScript;
       
       function ptr(v) { return (prevLang==='uz'||prevLang==='qq') ? translit(v, pScr) : v; }
