@@ -20,7 +20,7 @@ const weddingSharedHtml = `
       <div class="ornament-top">
         <svg viewBox="0 0 120 20"><path d="M0,10 C20,0 40,20 60,10 C80,0 100,20 120,10" stroke="url(#gg)" fill="none" stroke-width="0.8"/><defs><linearGradient id="gg"><stop offset="0%" stop-color="transparent"/><stop offset="30%" stop-color="var(--accent)"/><stop offset="70%" stop-color="var(--accent)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs></svg>
       </div>
-      <p class="hero-label" data-i18n="eventLabel">{{eventTypeLabel|Nikoh taklifi}}</p>
+      <p class="hero-label" data-i18n="eventLabel">{{eventTypeLabel|Nikoh taklifi}}</span></p>
       <h1 class="hero-names">
         <span class="hero-name">{{brideName|Kelin}}</span>
         <span class="hero-amp">&</span>
@@ -42,9 +42,9 @@ const weddingSharedHtml = `
   <section class="section greeting-section">
     <div class="container">
       <div class="gold-ornament">✦ ✦ ✦</div>
-      <h2 class="section-heading cream-heading">{{guestName|Hurmatli mehmonlar!}}</h2>
-      <p class="greeting-text">{{message|Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz.}}</p>
-      <p class="greeting-family">{{hostName}}</p>
+      <h2 class="section-heading cream-heading"><span data-tp="guestName">{{guestName|Hurmatli mehmonlar!}}</span></h2>
+      <p class="greeting-text"><span data-tp="message">{{message|Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz.}}</span></p>
+      <p class="greeting-family"><span data-tp="hostName">{{hostName}}</span></p>
       <div class="greeting-hearts">
         <span class="g-heart">♥</span>
         <span class="g-heart g-heart-big">♥</span>
@@ -103,7 +103,7 @@ const weddingSharedHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        <p class="map-venue-addr">{{location}}</p>
+        <p class="map-venue-addr">{{location}}</span></p>
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
           <span data-i18n="viewMap">Xaritada ko'rish</span>
@@ -117,7 +117,7 @@ const weddingSharedHtml = `
   {{#if hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</span></h2>
       <div class="timeline" id="program-data" data-program="{{program}}">
       </div>
     </div>
@@ -127,7 +127,7 @@ const weddingSharedHtml = `
   {{#unless hasProgram}}
   <section class="section program-section">
     <div class="container">
-      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</h2>
+      <h2 class="section-heading light" data-i18n="programTitle">{{programCustomTitle|Kechaning dasturi}}</span></h2>
       <div class="timeline">
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">{{eventTime|18:00}}</div><h4 data-i18n="prog1">Mehmonlarni kutib olish</h4></div></div>
         <div class="tl-item"><div class="tl-marker"><div class="tl-dot"></div><div class="tl-connector"></div></div><div class="tl-card"><div class="tl-time">18:30</div><h4 data-i18n="prog2">Rasmiy nikoh marosimi</h4></div></div>
@@ -760,8 +760,8 @@ exports.birthdayPremiumHtml = `
     </div>
     <div class="hero-inner">
       <div class="bd-emoji">🎂</div>
-      <p class="hero-label" data-i18n="bdEventLabel">{{eventTypeLabel|Tug'ilgan kun}}</p>
-      <h1 class="bd-title">{{eventTitle|Tug'ilgan kun bayrami}}</h1>
+      <p class="hero-label" data-i18n="bdEventLabel">{{eventTypeLabel|Tug'ilgan kun}}</span></p>
+      <h1 class="bd-title"><span data-tp="eventTitle">{{eventTitle|Tug'ilgan kun bayrami}}</span></h1>
       {{#if age}}
       <div class="bd-age-badge">
         <span class="bd-age-num">{{age}}</span>
@@ -779,9 +779,9 @@ exports.birthdayPremiumHtml = `
   <section class="section greeting-section">
     <div class="container">
       <div class="gold-ornament">✦ ✦ ✦</div>
-      <h2 class="section-heading cream-heading">{{guestName|Hurmatli mehmonlar!}}</h2>
-      <p class="greeting-text">{{message|Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!}}</p>
-      <p class="greeting-family">{{hostName}}</p>
+      <h2 class="section-heading cream-heading"><span data-tp="guestName">{{guestName|Hurmatli mehmonlar!}}</span></h2>
+      <p class="greeting-text"><span data-tp="message">{{message|Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!}}</span></p>
+      <p class="greeting-family"><span data-tp="hostName">{{hostName}}</span></p>
     </div>
   </section>
 
@@ -855,7 +855,7 @@ exports.birthdayPremiumHtml = `
 
   <footer class="footer">
     <div class="container">
-      <div class="footer-names"><span class="fn bd-fn">{{hostName}}</span></div>
+      <div class="footer-names"><span class="fn bd-fn"><span data-tp="hostName">{{hostName}}</span></div>
       <div class="footer-date">{{eventDateFormatted}}</div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎈</p>
       <div class="footer-hearts">🎈 🎉 🎈</div>
@@ -924,8 +924,8 @@ exports.graduationPremiumHtml = `
     </div>
     <div class="hero-inner">
       <div class="grad-emoji">🎓</div>
-      <p class="hero-label" data-i18n="gradEventLabel">{{eventTypeLabel|Bitiruv kechasi}}</p>
-      <h1 class="grad-title">{{eventTitle|Bitiruv kechasi}}</h1>
+      <p class="hero-label" data-i18n="gradEventLabel">{{eventTypeLabel|Bitiruv kechasi}}</span></p>
+      <h1 class="grad-title"><span data-tp="eventTitle">{{eventTitle|Bitiruv kechasi}}</span></h1>
       {{#if graduationYear}}
       <div class="grad-year-badge">
         <span class="grad-year-num">{{graduationYear}}</span>
@@ -944,9 +944,9 @@ exports.graduationPremiumHtml = `
   <section class="section greeting-section">
     <div class="container">
       <div class="gold-ornament">✦ ✦ ✦</div>
-      <h2 class="section-heading cream-heading">{{guestName|Hurmatli mehmonlar!}}</h2>
-      <p class="greeting-text">{{message|Bizning bitiruv kechamizga marhamat qiling!}}</p>
-      <p class="greeting-family">{{hostName}}</p>
+      <h2 class="section-heading cream-heading"><span data-tp="guestName">{{guestName|Hurmatli mehmonlar!}}</span></h2>
+      <p class="greeting-text"><span data-tp="message">{{message|Bizning bitiruv kechamizga marhamat qiling!}}</span></p>
+      <p class="greeting-family"><span data-tp="hostName">{{hostName}}</span></p>
     </div>
   </section>
 
@@ -1014,7 +1014,7 @@ exports.graduationPremiumHtml = `
 
   <footer class="footer">
     <div class="container">
-      <div class="footer-names"><span class="fn grad-fn">{{hostName}}</span></div>
+      <div class="footer-names"><span class="fn grad-fn"><span data-tp="hostName">{{hostName}}</span></div>
       <div class="footer-date">{{eventDateFormatted}}</div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎓</p>
       <div class="footer-hearts">🎓 ✨ 🎓</div>
@@ -1048,8 +1048,8 @@ exports.jubileePremiumHtml = `
     </div>
     <div class="hero-inner">
       <div class="jub-emoji">🎉</div>
-      <p class="hero-label" data-i18n="jubEventLabel">{{eventTypeLabel|Yubiley}}</p>
-      <h1 class="jub-title">{{eventTitle|Yubiley bayramiga taklif}}</h1>
+      <p class="hero-label" data-i18n="jubEventLabel">{{eventTypeLabel|Yubiley}}</span></p>
+      <h1 class="jub-title"><span data-tp="eventTitle">{{eventTitle|Yubiley bayramiga taklif}}</span></h1>
       {{#if years}}
       <div class="jub-years-badge">
         <span class="jub-years-num">{{years}}</span>
@@ -1068,9 +1068,9 @@ exports.jubileePremiumHtml = `
   <section class="section greeting-section">
     <div class="container">
       <div class="gold-ornament">✦ ✦ ✦</div>
-      <h2 class="section-heading cream-heading">{{guestName|Hurmatli mehmonlar!}}</h2>
-      <p class="greeting-text">{{message|Yubiley bayramimizga marhamat qiling!}}</p>
-      <p class="greeting-family">{{hostName}}</p>
+      <h2 class="section-heading cream-heading"><span data-tp="guestName">{{guestName|Hurmatli mehmonlar!}}</span></h2>
+      <p class="greeting-text"><span data-tp="message">{{message|Yubiley bayramimizga marhamat qiling!}}</span></p>
+      <p class="greeting-family"><span data-tp="hostName">{{hostName}}</span></p>
     </div>
   </section>
 
@@ -1138,7 +1138,7 @@ exports.jubileePremiumHtml = `
 
   <footer class="footer">
     <div class="container">
-      <div class="footer-names"><span class="fn jub-fn">{{hostName}}</span></div>
+      <div class="footer-names"><span class="fn jub-fn"><span data-tp="hostName">{{hostName}}</span></div>
       <div class="footer-date">{{eventDateFormatted}}</div>
       <p class="footer-msg">Sizni kutib qolamiz! 🎉</p>
       <div class="footer-hearts">🎉 ✨ 🎉</div>

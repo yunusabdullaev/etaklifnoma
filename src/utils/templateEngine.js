@@ -28,6 +28,18 @@ const RU_DAYS = [
   'Четверг', 'Пятница', 'Суббота',
 ];
 
+// ── Karakalpak month/day names ────────────────────────────────
+const QQ_MONTHS = [
+  'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
+  'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr',
+];
+
+const QQ_DAYS = [
+  'Ekshenbi', 'Dúyshenbi', 'Seyshenbi', 'Sárshenbi',
+  'Piyshenbi', 'Juma', 'Shambe',
+];
+
+
 /**
  * Escapes HTML special characters to prevent XSS.
  */
@@ -72,6 +84,22 @@ function formatDateRu(dateStr) {
 }
 
 /**
+ * Formats a date string (YYYY-MM-DD) into Karakalpak human-readable format.
+ */
+function formatDateQq(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
+    const dayName = QQ_DAYS[d.getDay()];
+    return `${day}-${QQ_MONTHS[month - 1]} ${year}-jıl, ${dayName}`;
+  } catch {
+    return dateStr;
+  }
+}
+
+
+/**
  * Formats time string (HH:MM:SS or HH:MM) into short format.
  */
 function formatTime(timeStr) {
@@ -107,9 +135,9 @@ function buildContext(invitation, eventType, template) {
 
   ctx['eventDate'] = invitation.eventDate || '';
   ctx['event_date'] = ctx['eventDate'];
-  ctx['eventDateFormatted'] = (onlyRu ? formatDateRu(invitation.eventDate) : formatDateUz(invitation.eventDate));
+  ctx['eventDateFormatted'] = (onlyRu ? formatDateRu(invitation.eventDate) : (onlyQq ? formatDateQq(invitation.eventDate) : formatDateUz(invitation.eventDate)));
   ctx['event_date_formatted'] = ctx['eventDateFormatted'];
-  ctx['date'] = ctx['eventDateFormatted'];
+  ctx['date'] = formatDateUz(invitation.eventDate);
   ctx['dateRu'] = formatDateRu(invitation.eventDate);
   ctx['date_ru'] = ctx['dateRu'];
   
@@ -327,11 +355,13 @@ function renderInvitation(invitation, eventType, template) {
   })()}
   ${musicPlayer}
   <script>window.__INVITE_DATA__=${JSON.stringify({
-    dateUz: context['date'] || '',
-    dateRu: context['dateRu'] || '',
-    message: context['message'] || (eventType==='wedding' ? "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz." : eventType==='birthday' ? "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!" : eventType==='graduation' ? "Universitetni tamomlash quvonchini biz bilan baham ko'ring!" : "Orzular ushalgan yubiley oqshomimizga lutfan taklif etamiz!"),
+    dateUz: formatDateUz(invitation.eventDate),
+    dateRu: formatDateRu(invitation.eventDate),
+    dateQq: formatDateQq(invitation.eventDate),
+
+    message: context['message'] || (eventType==='wedding' ? "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz." : eventType==='birthday' ? "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!" : eventType==='graduation' ? "Bizning bitiruv kechamizga marhamat qiling!" : "Yubiley bayramimizga marhamat qiling!"),
     messageRu: context['messageRu'] || (eventType==='wedding' ? "Приглашаем вас разделить радость нашего бракосочетания." : eventType==='birthday' ? "Приглашаем вас на наш праздник. Если вы приедете, мы будем счастливы." : eventType==='graduation' ? "Разделите с нами радость окончания университета!" : "Пожалуйста, приглашаем вас на наш юбилейный вечер!"),
-    messageQq: context['messageQq'] || (eventType==='wedding' ? "Sizdi perzentlerimizdeń neke toyına shaqırıp qalamız." : eventType==='birthday' ? "Sizdi bayramımızǵa shaqıramız. Qosılıp quwanayıq!" : eventType==='graduation' ? "Universitetti pitiriw quwanıshın biz benen bólesiń!" : "Ármanlar orınlanǵan yubiley aqshamımızǵa lutfan shaqıramız!"),
+    messageQq: context['messageQq'] || (eventType==='wedding' ? "Sizdi perzentlerimizdeń neke toyına shaqırıp qalamız." : eventType==='birthday' ? "Sizdi bayramımızǵa shaqıramız. Qosılıp quwanayıq!" : eventType==='graduation' ? "Bizdiń pitiriw keshemizge marhamat etiń!" : "Yubiley bayramımızǵa marhamat etiń!"),
     location: context['location'] || '',
     hostName: context['hostName'] || '',
     hostNameRu: context['hostNameRu'] || '',
@@ -858,9 +888,10 @@ function buildLanguageToggle(cf) {
     // Data maps for each language
     var langData = {
       uz: { host: d.hostName, guest: d.guestName, title: d.eventTitle, message: d.message, program: d.program, date: d.dateUz, programTitle: d.programCustomTitle },
-      qq: { host: d.hostNameQq || d.hostName, guest: d.guestNameQq || d.guestName, title: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateUz, programTitle: d.programCustomTitleQq || d.programCustomTitle },
+      qq: { host: d.hostNameQq || d.hostName, guest: d.guestNameQq || d.guestName, title: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateQq || d.dateUz, programTitle: d.programCustomTitleQq || d.programCustomTitle },
       ru: { host: d.hostNameRu || d.hostName, guest: d.guestNameRu || d.guestName, title: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz, programTitle: d.programCustomTitleRu || d.programCustomTitle },
     };
+
 
     
     window.switchScript = function(script) {
@@ -925,6 +956,13 @@ function buildLanguageToggle(cf) {
       if(wishesTitle) wishesTitle.textContent = t.wishesTitle ? ntr(t.wishesTitle) : '';
       if(wishesSub) wishesSub.textContent = t.wishesSubtitle ? ntr(t.wishesSubtitle) : '';
 
+      // Direct content injection for core fields (replaces unreliable find/replace)
+      document.querySelectorAll('[data-tp]').forEach(function(el){
+        var key = el.getAttribute('data-tp');
+        var val = newData[key];
+        if (val !== undefined) el.textContent = ntr(val);
+      });
+
       if(prevData.date && newData.date && prevData.date !== newData.date) {
         swapTextInPage(prevData.date, newData.date);
       }
@@ -933,6 +971,7 @@ function buildLanguageToggle(cf) {
       if(prevData.host && newData.host) swapTextInPage(ptr(prevData.host), ntr(newData.host));
       if(prevData.guest && newData.guest) swapTextInPage(ptr(prevData.guest), ntr(newData.guest));
       if(prevData.title && newData.title) swapTextInPage(ptr(prevData.title), ntr(newData.title));
+
 
       var progEl = document.getElementById('program-data');
       if(progEl && newData.program) {
