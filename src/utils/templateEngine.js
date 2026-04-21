@@ -892,9 +892,10 @@ function buildLanguageToggle(cf) {
     // Data maps for each language
     var langData = {
       uz: { hostName: d.hostName, guestName: d.guestName, eventTitle: d.eventTitle, message: d.message, program: d.program, date: d.dateUz, programTitle: d.programCustomTitle },
-      qq: { hostName: d.hostNameQq || d.hostName, guestName: d.guestNameQq || d.guestName, eventTitle: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateQq || d.dateUz, programTitle: d.programCustomTitleQq || d.programCustomTitle },
-      ru: { hostName: d.hostNameRu || d.hostName, guestName: d.guestNameRu || d.guestName, eventTitle: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz, programTitle: d.programCustomTitleRu || d.programCustomTitle },
+      qq: { hostName: d.hostNameQq || d.hostName, guestName: d.guestNameQq || d.guestName, eventTitle: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateQq || d.dateUz, programTitle: d.programCustomTitleQq },
+      ru: { hostName: d.hostNameRu || d.hostName, guestName: d.guestNameRu || d.guestName, eventTitle: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz, programTitle: d.programCustomTitleRu },
     };
+
 
 
     
