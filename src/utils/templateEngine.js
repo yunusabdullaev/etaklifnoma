@@ -1089,7 +1089,8 @@ function buildLanguageToggle(cf) {
       if(!isScriptChange && window.currentLang === lang && !window._forceSwap) return;
       var t = Object.assign({}, translations[lang] || translations.uz);
       
-      var ev = (d.eventType || '').toLowerCase();
+      var evObj = d.eventType || {};
+      var ev = (typeof evObj === 'string' ? evObj : (evObj.name || '')).toLowerCase();
       if (ev === 'birthday') {
         t.countdownTitle = t.bdCountdownTitle || t.countdownTitle;
         t.detailsTitle = t.bdDetailsTitle || t.detailsTitle;
