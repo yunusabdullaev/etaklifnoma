@@ -814,24 +814,26 @@ function buildLanguageToggle(cf) {
 
     function translit(str, script) {
       if (!str) return str;
-      var ltCy = { 'Ya':'Я','ya':'я','Ye':'Е','ye':'е','Yo':'Ё','yo':'ё','Yu':'Ю','yu':'ю','Ch':'Ч','ch':'ч',
-        'Sh':'Ш','sh':'ш', "O'":"Ў", "o'":"ў", "O‘":"Ў", "o‘":"ў", "Oʻ":"Ў", "oʻ":"ў", "G'":"Ғ", "g'":"ғ", "G‘":"Ғ", "g‘":"ғ", "Gʻ":"Ғ", "gʻ":"ғ",
+      var ltCy = { 
+        'Ya':'Я','ya':'я','Ye':'Е','ye':'е','Yo':'Ё','yo':'ё','Yu':'Ю','yu':'ю','Ch':'Ч','ch':'ч','Sh':'Ш','sh':'ш', 
+        "O'":"Ў", "o'":"ў", "O‘":"Ў", "o‘":"ў", "Oʻ":"Ў", "oʻ":"ў", "G'":"Ғ", "g'":"ғ", "G‘":"Ғ", "g‘":"ғ", "Gʻ":"Ғ", "gʻ":"ғ",
+        'Á':'Ә', 'á':'ә', 'Ǵ':'Ғ', 'ǵ':'ғ', 'Ń':'Ң', 'ń':'ң', 'Ó':'Ө', 'ó':'ө', 'Ú':'Ү', 'ú':'ү', 'Í':'Ы', 'í':'ы',
         'A':'А','a':'а','B':'Б','b':'б','D':'Д','d':'д','E':'Э','e':'э','F':'Ф','f':'ф','G':'Г','g':'г','H':'Ҳ','h':'ҳ','I':'И','i':'и','J':'Ж','j':'ж','K':'К','k':'к','L':'Л','l':'л',
         'M':'М','m':'м','N':'Н','n':'н','O':'О','o':'о','P':'П','p':'п','Q':'Қ','q':'қ','R':'Р','r':'р','S':'С','s':'с','T':'Т','t':'т','U':'У','u':'у','V':'В','v':'в',
-        'X':'Х','x':'х','Y':'Й','y':'й','Z':'З','z':'з',"'":"Ъ",'’':'Ъ','‘':'Ъ'};
+        'X':'Х','x':'х','Y':'Й','y':'й','Z':'З','z':'з','W':'ў','w':'ў',"'":"Ъ",'’':'Ъ','‘':'Ъ'
+      };
       var cyLt = {};
       for (var k in ltCy) { cyLt[ltCy[k]] = k; }
+      // Overrides for specific cases
       cyLt['Е'] = 'Ye'; cyLt['е'] = 'ye'; cyLt['Э'] = 'E'; cyLt['э'] = 'e'; cyLt['Ц'] = 'Ts'; cyLt['ц'] = 'ts';
-      var map, regex;
-      if (script === 'cyrillic') {
-        map = ltCy;
-        var keys = Object.keys(map).sort(function(a,b){return b.length - a.length;});
-        regex = new RegExp(keys.join('|'), 'g');
-      } else {
-        map = cyLt;
-        var keys = Object.keys(map).sort(function(a,b){return b.length - a.length;});
-        regex = new RegExp(keys.join('|'), 'g');
+      // Karakalpak specific priorities
+      if (window.currentLang === 'qq') {
+        cyLt['Ғ'] = 'Ǵ'; cyLt['ғ'] = 'ǵ'; cyLt['Ў'] = 'w'; cyLt['ў'] = 'w';
+        cyLt['Ы'] = 'Í'; cyLt['ы'] = 'í';
       }
+      var map = (script === 'cyrillic') ? ltCy : cyLt;
+      var keys = Object.keys(map).sort(function(a,b){return b.length - a.length;});
+      var regex = new RegExp(keys.join('|'), 'g');
       return str.replace(regex, function(m) { return map[m]; });
     }
     
