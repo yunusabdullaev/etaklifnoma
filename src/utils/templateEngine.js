@@ -785,9 +785,10 @@ function buildLanguageToggle(cf) {
         jubYears: "jıllıq",
 
         gradEventLabel: 'Pitkeriwshiler keshesi',
-        gradCountdownTitle: 'Ilájegeche qalǵan waqıt',
-        gradDetailsTitle: 'Ilaje tafsilatları',
-        gradProgramTitle: 'Keshe baǵdarlanması',
+        gradCountdownTitle: 'Ushırasıw keshesine qalǵan waqıt:',
+        gradDetailsTitle: 'Ushırasıw tafsilatları',
+        gradProgramTitle: 'Ushırasıw baǵdarlanması',
+
 
         jubEventLabel: 'Yubilej shaqırıwı',
         jubCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
