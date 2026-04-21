@@ -789,20 +789,20 @@ exports.birthdayPremiumHtml = `
     <div class="container">
       <h2 class="section-heading light">Bayramgacha qolgan vaqt</h2>
       <div class="countdown" id="countdown-timer" data-date="{{eventDate}}" data-time="{{eventTime|18:00}}">
-        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Kun</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label" data-i18n="days">Kun</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Soat</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label" data-i18n="hours">Soat</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label">Minut</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label" data-i18n="minutes">Minut</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label">Sekund</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label" data-i18n="seconds">Sekund</div></div>
       </div>
     </div>
   </section>
 
   <section class="section details-section">
     <div class="container">
-      <h2 class="section-heading cream-heading">Tafsilotlar</h2>
+      <h2 class="section-heading cream-heading" data-i18n="detailsTitle">Tafsilotlar</h2>
       <div class="cards-row">
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
@@ -952,22 +952,22 @@ exports.graduationPremiumHtml = `
 
   <section class="section countdown-section">
     <div class="container">
-      <h2 class="section-heading light">Kechagacha qolgan vaqt</h2>
+      <h2 class="section-heading light" data-i18n="gradCountdownTitle">Kechagacha qolgan vaqt</h2>
       <div class="countdown" id="countdown-timer" data-date="{{eventDate}}" data-time="{{eventTime|18:00}}">
-        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Kun</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label" data-i18n="days">Kun</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Soat</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label" data-i18n="hours">Soat</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label">Minut</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label" data-i18n="minutes">Minut</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label">Sekund</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label" data-i18n="seconds">Sekund</div></div>
       </div>
     </div>
   </section>
 
   <section class="section details-section">
     <div class="container">
-      <h2 class="section-heading cream-heading">Tafsilotlar</h2>
+      <h2 class="section-heading cream-heading" data-i18n="detailsTitle">Tafsilotlar</h2>
       <div class="cards-row">
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
@@ -1078,20 +1078,20 @@ exports.jubileePremiumHtml = `
     <div class="container">
       <h2 class="section-heading light">Bayramgacha qolgan vaqt</h2>
       <div class="countdown" id="countdown-timer" data-date="{{eventDate}}" data-time="{{eventTime|18:00}}">
-        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Kun</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-days">00</div><div class="cd-label" data-i18n="days">Kun</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Soat</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-hours">00</div><div class="cd-label" data-i18n="hours">Soat</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label">Minut</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-min">00</div><div class="cd-label" data-i18n="minutes">Minut</div></div>
         <div class="cd-sep">:</div>
-        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label">Sekund</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-sec">00</div><div class="cd-label" data-i18n="seconds">Sekund</div></div>
       </div>
     </div>
   </section>
 
   <section class="section details-section">
     <div class="container">
-      <h2 class="section-heading cream-heading">Tafsilotlar</h2>
+      <h2 class="section-heading cream-heading" data-i18n="detailsTitle">Tafsilotlar</h2>
       <div class="cards-row">
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="ic-title" data-i18n="dateLabel">Sana</div><div class="ic-value">{{eventDateFormatted}}</div></div>
         <div class="info-card"><div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ic-title" data-i18n="timeLabel">Vaqt</div><div class="ic-value">{{eventTime|18:00}}</div></div>
