@@ -381,7 +381,9 @@ function renderInvitation(invitation, eventType, template) {
     baseAlphabetUz: context['baseAlphabetUz'] || 'latin',
     baseAlphabetQq: context['baseAlphabetQq'] || 'latin',
     langOrder: context['langOrder'] || 'uz,ru,qq',
+    eventType: eventType,
     program: context['program'] || '',
+
     programRu: context['programRu'] || '',
     programQq: context['programQq'] || '',
     programCustomTitle: context['programCustomTitle'] || '',
@@ -753,11 +755,11 @@ function buildLanguageToggle(cf) {
         countdownTitle: 'Toyǵa shekem qalǵan waqıt',
         days: 'Kún', hours: 'Saǵat', minutes: 'Minut', seconds: 'Sekund',
         detailsTitle: 'Toy tafsilatları',
-        dateLabel: 'Sána', timeLabel: 'Waqıt', venueLabel: 'Mánzil',
+        dateLabel: 'Sáne', timeLabel: 'Waqıt', venueLabel: 'Mánzil',
         guestWelcome: 'Mexmanlar kútip alıw',
         locationTitle: 'Lokatsiya',
         viewMap: 'Kartada kóriw',
-        programTitle: 'Kesheniń baǵdarlanması',
+        programTitle: 'Kesheniń baǵdarlaması',
         dressCode: 'Dress kod',
         waitingMsg: 'Sizdi kútip qalamız!',
         galleryTitle: 'Foto kórgezbe',
@@ -779,7 +781,7 @@ function buildLanguageToggle(cf) {
         bdCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
         bdDetailsTitle: 'Bayram tafsilatları',
         bdWaitingMsg: 'Sizdi kútip qalamız! 🎉',
-        bdProgramTitle: 'Bayram baǵdarlanması',
+        bdProgramTitle: 'Bayram baǵdarlaması',
         bdAge: "jas",
         gradYear: "pitiriwshiler",
         jubYears: "jıllıq",
@@ -787,7 +789,8 @@ function buildLanguageToggle(cf) {
         gradEventLabel: 'Pitkeriwshiler keshesi',
         gradCountdownTitle: 'Ushırasıw keshesine qalǵan waqıt:',
         gradDetailsTitle: 'Ushırasıw tafsilatları',
-        gradProgramTitle: 'Ushırasıw baǵdarlanması',
+        gradProgramTitle: 'Keshe programması',
+
 
 
         jubEventLabel: 'Yubilej shaqırıwı',
@@ -848,7 +851,7 @@ function buildLanguageToggle(cf) {
       var ltCy = { 
         'Ya':'Я','ya':'я','Ye':'Е','ye':'е','Yo':'Ё','yo':'ё','Yu':'Ю','yu':'ю','Ch':'Ч','ch':'ч','Sh':'Ш','sh':'ш', 
         "O'":"Ў", "o'":"ў", "O‘":"Ў", "o‘":"ў", "Oʻ":"Ў", "oʻ":"ў", "G'":"Ғ", "g'":"ғ", "G‘":"Ғ", "g‘":"ғ", "Gʻ":"Ғ", "gʻ":"ғ",
-        'Á':'Ә', 'á':'ә', 'Ǵ':'Ғ', 'ǵ':'ғ', 'Ń':'Ң', 'ń':'ң', 'Ó':'Ө', 'ó':'ө', 'Ú':'Ү', 'ú':'ү', 'Í':'Ы', 'í':'ы',
+        'Á':'Ә', 'á':'ә', 'Ǵ':'Ғ', 'ǵ':'ғ', 'Ń':'Ң', 'ń':'ң', 'Ó':'Ө', 'ó':'ө', 'Ú':'Ү', 'ú':'ү', 'Í':'Ы', 'í':'ы', 'ı':'ы',
         'A':'А','a':'а','B':'Б','b':'б','D':'Д','d':'д','E':'Э','e':'э','F':'Ф','f':'ф','G':'Г','g':'г','H':'Ҳ','h':'ҳ','I':'И','i':'и','J':'Ж','j':'ж','K':'К','k':'к','L':'Л','l':'л',
         'M':'М','m':'м','N':'Н','n':'н','O':'О','o':'о','P':'П','p':'п','Q':'Қ','q':'қ','R':'Р','r':'р','S':'С','s':'с','T':'Т','t':'т','U':'У','u':'у','V':'В','v':'в',
         'X':'Х','x':'х','Y':'Й','y':'й','Z':'З','z':'з','W':'ў','w':'ў',"'":"Ъ",'’':'Ъ','‘':'Ъ'
