@@ -197,17 +197,7 @@ function transliterateProgram(programValue, script, lang) {
     return transliterateText(programValue, script, lang);
   }
 }
-
 function pickLanguageValue(invitation, customFields, baseKey, lang) {
-  const fallbacks = {
-    hostName: [invitation.hostName, customFields.hostNameQq, customFields.hostNameRu],
-    guestName: [invitation.guestName, customFields.guestNameQq, customFields.guestNameRu],
-    eventTitle: [invitation.eventTitle, customFields.eventTitleQq, customFields.eventTitleRu],
-    message: [invitation.message, customFields.messageQq, customFields.messageRu],
-    program: [customFields.program, customFields.programQq, customFields.programRu],
-    programCustomTitle: [customFields.programCustomTitle, customFields.programCustomTitleQq, customFields.programCustomTitleRu],
-  };
-
   const perLangValue = {
     uz: {
       hostName: invitation.hostName,
@@ -235,7 +225,7 @@ function pickLanguageValue(invitation, customFields, baseKey, lang) {
     },
   };
 
-  return perLangValue[lang]?.[baseKey] || fallbacks[baseKey]?.find((value) => value) || '';
+  return perLangValue[lang]?.[baseKey] || '';
 }
 
 /**
