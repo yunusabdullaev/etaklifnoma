@@ -107,35 +107,171 @@ function formatTime(timeStr) {
   return timeStr.slice(0, 5);
 }
 
+function readFlag(value, defaultValue = false) {
+  if (value === undefined || value === null) return defaultValue;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+    if (['false', '0', 'no', 'off', ''].includes(normalized)) return false;
+  }
+  return Boolean(value);
+}
+
+function normalizeLangOrder(langOrder) {
+  const allowed = new Set(['uz', 'qq', 'ru']);
+  const order = (typeof langOrder === 'string' ? langOrder : 'uz,ru,qq')
+    .split(',')
+    .map((code) => code.trim().toLowerCase())
+    .filter((code) => allowed.has(code));
+
+  return order.length ? order : ['uz', 'ru', 'qq'];
+}
+
+function resolveLanguageState(customFields = {}) {
+  const hasUz = readFlag(customFields.langUz, true);
+  const hasQq = readFlag(customFields.langQq, false);
+  const hasRu = readFlag(customFields.langRu, false);
+  const langOrder = normalizeLangOrder(customFields.langOrder);
+
+  let primaryLang = langOrder.find((code) => (
+    (code === 'uz' && hasUz) ||
+    (code === 'qq' && hasQq) ||
+    (code === 'ru' && hasRu)
+  ));
+
+  if (!primaryLang) {
+    primaryLang = hasUz ? 'uz' : (hasQq ? 'qq' : (hasRu ? 'ru' : 'uz'));
+  }
+
+  return { hasUz, hasQq, hasRu, langOrder, primaryLang };
+}
+
+function getPreferredScript(customFields = {}, lang) {
+  if (lang === 'qq') {
+    return customFields.baseAlphabetQq === 'cyrillic' ? 'cyrillic' : 'latin';
+  }
+  if (lang === 'uz') {
+    return customFields.baseAlphabetUz === 'cyrillic' ? 'cyrillic' : 'latin';
+  }
+  return 'cyrillic';
+}
+
+function transliterateText(str, script, lang = 'uz') {
+  if (!str || script !== 'cyrillic') return str;
+
+  const ltCy = {
+    Ya: 'Я', ya: 'я', Ye: 'Е', ye: 'е', Yo: 'Ё', yo: 'ё', Yu: 'Ю', yu: 'ю', Ch: 'Ч', ch: 'ч', Sh: 'Ш', sh: 'ш',
+    "O'": 'Ў', "o'": 'ў', 'O‘': 'Ў', 'o‘': 'ў', 'Oʻ': 'Ў', 'oʻ': 'ў', "G'": 'Ғ', "g'": 'ғ', 'G‘': 'Ғ', 'g‘': 'ғ', 'Gʻ': 'Ғ', 'gʻ': 'ғ',
+    Á: 'Ә', á: 'ә', Ǵ: 'Ғ', ǵ: 'ғ', Ń: 'Ң', ń: 'ң', Ó: 'Ө', ó: 'ө', Ú: 'Ү', ú: 'ү', Í: 'Ы', í: 'ы', ı: 'ы',
+    A: 'А', a: 'а', B: 'Б', b: 'б', D: 'Д', d: 'д', E: 'Э', e: 'э', F: 'Ф', f: 'ф', G: 'Г', g: 'г', H: 'Ҳ', h: 'ҳ', I: 'И', i: 'и',
+    J: 'Ж', j: 'ж', K: 'К', k: 'к', L: 'Л', l: 'л', M: 'М', m: 'м', N: 'Н', n: 'н', O: 'О', o: 'о', P: 'П', p: 'п', Q: 'Қ', q: 'қ',
+    R: 'Р', r: 'р', S: 'С', s: 'с', T: 'Т', t: 'т', U: 'У', u: 'у', V: 'В', v: 'в', X: 'Х', x: 'х', Y: 'Й', y: 'й', Z: 'З', z: 'з',
+    W: 'ў', w: 'ў', "'": 'Ъ', '’': 'Ъ', '‘': 'Ъ',
+  };
+
+  if (lang === 'uz') {
+    ltCy.Q = 'Қ';
+    ltCy.q = 'қ';
+  }
+
+  const keys = Object.keys(ltCy).sort((a, b) => b.length - a.length);
+  const regex = new RegExp(keys.join('|'), 'g');
+  return str.replace(regex, (match) => ltCy[match] || match);
+}
+
+function transliterateProgram(programValue, script, lang) {
+  if (!programValue || script !== 'cyrillic' || (lang !== 'uz' && lang !== 'qq')) {
+    return programValue || '';
+  }
+
+  try {
+    const parsed = JSON.parse(programValue);
+    if (!Array.isArray(parsed)) return transliterateText(programValue, script, lang);
+
+    return JSON.stringify(parsed.map((item) => ({
+      ...item,
+      text: transliterateText(item?.text || '', script, lang),
+    })));
+  } catch {
+    return transliterateText(programValue, script, lang);
+  }
+}
+
+function pickLanguageValue(invitation, customFields, baseKey, lang) {
+  const fallbacks = {
+    hostName: [invitation.hostName, customFields.hostNameQq, customFields.hostNameRu],
+    guestName: [invitation.guestName, customFields.guestNameQq, customFields.guestNameRu],
+    eventTitle: [invitation.eventTitle, customFields.eventTitleQq, customFields.eventTitleRu],
+    message: [invitation.message, customFields.messageQq, customFields.messageRu],
+    program: [customFields.program, customFields.programQq, customFields.programRu],
+    programCustomTitle: [customFields.programCustomTitle, customFields.programCustomTitleQq, customFields.programCustomTitleRu],
+  };
+
+  const perLangValue = {
+    uz: {
+      hostName: invitation.hostName,
+      guestName: invitation.guestName,
+      eventTitle: invitation.eventTitle,
+      message: invitation.message,
+      program: customFields.program,
+      programCustomTitle: customFields.programCustomTitle,
+    },
+    qq: {
+      hostName: customFields.hostNameQq,
+      guestName: customFields.guestNameQq,
+      eventTitle: customFields.eventTitleQq,
+      message: customFields.messageQq,
+      program: customFields.programQq,
+      programCustomTitle: customFields.programCustomTitleQq,
+    },
+    ru: {
+      hostName: customFields.hostNameRu,
+      guestName: customFields.guestNameRu,
+      eventTitle: customFields.eventTitleRu,
+      message: customFields.messageRu,
+      program: customFields.programRu,
+      programCustomTitle: customFields.programCustomTitleRu,
+    },
+  };
+
+  return perLangValue[lang]?.[baseKey] || fallbacks[baseKey]?.find((value) => value) || '';
+}
+
 /**
  * Builds a flat context map from invitation + event data.
  * All keys are lowercased for case-insensitive matching.
  */
 function buildContext(invitation, eventType, template) {
   const ctx = {};
+  const customFields = invitation.customFields || {};
+  const { primaryLang, langOrder, hasUz, hasQq, hasRu } = resolveLanguageState(customFields);
+  const initialScript = getPreferredScript(customFields, primaryLang);
+  const initialDateFormatted = primaryLang === 'ru'
+    ? formatDateRu(invitation.eventDate)
+    : (primaryLang === 'qq' ? formatDateQq(invitation.eventDate) : formatDateUz(invitation.eventDate));
 
-  // Detect active languages
-  const hasUz = invitation.customFields?.langUz !== false;
-  const hasRu = !!invitation.customFields?.langRu;
-  const hasQq = !!invitation.customFields?.langQq;
+  // Merge custom fields (flattened) before core values so language-aware defaults win.
+  for (const [key, value] of Object.entries(customFields)) {
+    if (typeof value === 'string' && (value.replace(/\s/g, '') === '[]' || value.replace(/\s/g, '') === '')) {
+      ctx[key] = '';
+    } else {
+      ctx[key] = value;
+    }
+  }
 
-  // If only ONE language is active and it's NOT Uzbek, we should prioritize its fields
-  // for the initial server-side render to avoid "Uzbek defaults" showing in preview.
-  const onlyRu = hasRu && !hasUz && !hasQq;
-  const onlyQq = hasQq && !hasUz && !hasRu;
-
-  // Core invitation fields with smart fallback
-  ctx['hostName'] = invitation.hostName || (onlyRu ? invitation.customFields?.hostNameRu : (onlyQq ? invitation.customFields?.hostNameQq : '')) || '';
+  // Core invitation fields should follow the currently primary language.
+  ctx['hostName'] = pickLanguageValue(invitation, customFields, 'hostName', primaryLang) || '';
   ctx['host_name'] = ctx['hostName'];
-  ctx['guestName'] = invitation.guestName || (onlyRu ? invitation.customFields?.guestNameRu : (onlyQq ? invitation.customFields?.guestNameQq : '')) || '';
+  ctx['guestName'] = pickLanguageValue(invitation, customFields, 'guestName', primaryLang) || '';
   ctx['guest_name'] = ctx['guestName'];
-  ctx['eventTitle'] = invitation.eventTitle || (onlyRu ? invitation.customFields?.eventTitleRu : (onlyQq ? invitation.customFields?.eventTitleQq : '')) || '';
+  ctx['eventTitle'] = pickLanguageValue(invitation, customFields, 'eventTitle', primaryLang) || '';
   ctx['event_title'] = ctx['eventTitle'];
-  ctx['message'] = invitation.message || (onlyRu ? invitation.customFields?.messageRu : (onlyQq ? invitation.customFields?.messageQq : '')) || '';
+  ctx['message'] = pickLanguageValue(invitation, customFields, 'message', primaryLang) || '';
 
   ctx['eventDate'] = invitation.eventDate || '';
   ctx['event_date'] = ctx['eventDate'];
-  ctx['eventDateFormatted'] = (onlyRu ? formatDateRu(invitation.eventDate) : (onlyQq ? formatDateQq(invitation.eventDate) : formatDateUz(invitation.eventDate)));
+  ctx['eventDateFormatted'] = initialDateFormatted;
   ctx['event_date_formatted'] = ctx['eventDateFormatted'];
   ctx['date'] = formatDateUz(invitation.eventDate);
   ctx['dateRu'] = formatDateRu(invitation.eventDate);
@@ -152,10 +288,29 @@ function buildContext(invitation, eventType, template) {
   ctx['name'] = ctx['hostName'];
 
   // Program / Timeline fallback
-  ctx['program'] = (invitation.customFields?.program) || (onlyRu ? invitation.customFields?.programRu : (onlyQq ? invitation.customFields?.programQq : '')) || '';
-  ctx['programCustomTitle'] = (invitation.customFields?.programCustomTitle) || (onlyRu ? invitation.customFields?.programCustomTitleRu : (onlyQq ? invitation.customFields?.programCustomTitleQq : '')) || '';
+  ctx['program'] = pickLanguageValue(invitation, customFields, 'program', primaryLang) || '';
+  ctx['programCustomTitle'] = pickLanguageValue(invitation, customFields, 'programCustomTitle', primaryLang) || '';
 
+  if ((primaryLang === 'uz' || primaryLang === 'qq') && initialScript === 'cyrillic') {
+    ctx['hostName'] = transliterateText(ctx['hostName'], initialScript, primaryLang);
+    ctx['host_name'] = ctx['hostName'];
+    ctx['guestName'] = transliterateText(ctx['guestName'], initialScript, primaryLang);
+    ctx['guest_name'] = ctx['guestName'];
+    ctx['eventTitle'] = transliterateText(ctx['eventTitle'], initialScript, primaryLang);
+    ctx['event_title'] = ctx['eventTitle'];
+    ctx['message'] = transliterateText(ctx['message'], initialScript, primaryLang);
+    ctx['eventDateFormatted'] = transliterateText(ctx['eventDateFormatted'], initialScript, primaryLang);
+    ctx['event_date_formatted'] = ctx['eventDateFormatted'];
+    ctx['programCustomTitle'] = transliterateText(ctx['programCustomTitle'], initialScript, primaryLang);
+    ctx['program'] = transliterateProgram(ctx['program'], initialScript, primaryLang);
+  }
 
+  ctx['primaryLang'] = primaryLang;
+  ctx['initialScript'] = initialScript;
+  ctx['langOrder'] = langOrder.join(',');
+  ctx['langUz'] = hasUz;
+  ctx['langQq'] = hasQq;
+  ctx['langRu'] = hasRu;
 
   // Event type info
   if (eventType) {
@@ -169,17 +324,6 @@ function buildContext(invitation, eventType, template) {
   // Template info
   if (template) {
     ctx['templateName'] = template.name || '';
-  }
-
-  // Merge custom fields (flattened)
-  const customFields = invitation.customFields || {};
-  for (const [key, value] of Object.entries(customFields)) {
-    // If it's an empty array string "[]" or "[\n]", treat it as empty
-    if (typeof value === 'string' && (value.replace(/\s/g, '') === '[]' || value.replace(/\s/g, '') === '')) {
-      ctx[key] = '';
-    } else {
-      ctx[key] = value;
-    }
   }
 
   // Unified "hasProgram" flag to handle multi-language timeline detection
@@ -241,6 +385,35 @@ function renderString(template, context, shouldEscape = true) {
  */
 function renderInvitation(invitation, eventType, template) {
   const context = buildContext(invitation, eventType, template);
+  const docLang = context['primaryLang'] === 'qq' ? 'kaa' : (context['primaryLang'] || 'uz');
+  const customFields = invitation.customFields || {};
+  const eventTypeName = typeof eventType === 'string' ? eventType : (eventType?.name || '');
+  const langPayload = {
+    uz: {
+      hostName: pickLanguageValue(invitation, customFields, 'hostName', 'uz') || '',
+      guestName: pickLanguageValue(invitation, customFields, 'guestName', 'uz') || 'Hurmatli mehmonlar!',
+      eventTitle: pickLanguageValue(invitation, customFields, 'eventTitle', 'uz') || '',
+      message: pickLanguageValue(invitation, customFields, 'message', 'uz') || '',
+      program: pickLanguageValue(invitation, customFields, 'program', 'uz') || '',
+      programCustomTitle: pickLanguageValue(invitation, customFields, 'programCustomTitle', 'uz') || '',
+    },
+    qq: {
+      hostName: pickLanguageValue(invitation, customFields, 'hostName', 'qq') || '',
+      guestName: pickLanguageValue(invitation, customFields, 'guestName', 'qq') || 'Húrmetli miymanlar!',
+      eventTitle: pickLanguageValue(invitation, customFields, 'eventTitle', 'qq') || '',
+      message: pickLanguageValue(invitation, customFields, 'message', 'qq') || '',
+      program: pickLanguageValue(invitation, customFields, 'program', 'qq') || '',
+      programCustomTitle: pickLanguageValue(invitation, customFields, 'programCustomTitle', 'qq') || '',
+    },
+    ru: {
+      hostName: pickLanguageValue(invitation, customFields, 'hostName', 'ru') || '',
+      guestName: pickLanguageValue(invitation, customFields, 'guestName', 'ru') || 'Уважаемые гости!',
+      eventTitle: pickLanguageValue(invitation, customFields, 'eventTitle', 'ru') || '',
+      message: pickLanguageValue(invitation, customFields, 'message', 'ru') || '',
+      program: pickLanguageValue(invitation, customFields, 'program', 'ru') || '',
+      programCustomTitle: pickLanguageValue(invitation, customFields, 'programCustomTitle', 'ru') || '',
+    },
+  };
 
   // Render template HTML and CSS
   let renderedBody = renderString(template?.htmlContent || '', context);
@@ -262,8 +435,8 @@ function renderInvitation(invitation, eventType, template) {
   }
 
   // OG metadata
-  const ogTitle = escapeHtml(invitation.eventTitle || eventType?.label || 'Taklifnoma');
-  const ogDesc = escapeHtml(`${invitation.hostName || ''} — ${formatDateUz(invitation.eventDate)}`);
+  const ogTitle = escapeHtml(context['eventTitle'] || eventType?.label || 'Taklifnoma');
+  const ogDesc = escapeHtml(`${context['hostName'] || ''} — ${context['eventDateFormatted'] || formatDateUz(invitation.eventDate)}`);
   const appUrl = process.env.APP_URL || 'http://localhost:3000';
   const ogUrl = `${appUrl}/invite/${invitation.slug}/view`;
 
@@ -294,7 +467,7 @@ function renderInvitation(invitation, eventType, template) {
 
   // Build full page
   return `<!DOCTYPE html>
-<html lang="uz">
+<html lang="${docLang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -359,19 +532,19 @@ function renderInvitation(invitation, eventType, template) {
     dateRu: formatDateRu(invitation.eventDate),
     dateQq: formatDateQq(invitation.eventDate),
 
-    message: context['message'] || (eventType==='wedding' ? "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz." : eventType==='birthday' ? "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!" : eventType==='graduation' ? "Bizning bitiruv kechamizga marhamat qiling!" : "Yubiley bayramimizga marhamat qiling!"),
-    messageRu: context['messageRu'] || (eventType==='wedding' ? "Приглашаем вас разделить радость нашего бракосочетания." : eventType==='birthday' ? "Приглашаем вас на наш праздник. Если вы приедете, мы будем счастливы." : eventType==='graduation' ? "Разделите с нами радость окончания университета!" : "Пожалуйста, приглашаем вас на наш юбилейный вечер!"),
-    messageQq: context['messageQq'] || (eventType==='wedding' ? "Sizdi perzentlerimizdeń neke toyına shaqırıp qalamız." : eventType==='birthday' ? "Sizdi bayramımızǵa shaqıramız. Qosılıp quwanayıq!" : eventType==='graduation' ? "Bizdiń pitiriw keshemizge marhamat etiń!" : "Yubiley bayramımızǵa marhamat etiń!"),
+    message: langPayload.uz.message || (eventTypeName==='wedding' ? "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz." : eventTypeName==='birthday' ? "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!" : eventTypeName==='graduation' ? "Bizning bitiruv kechamizga marhamat qiling!" : "Yubiley bayramimizga marhamat qiling!"),
+    messageRu: langPayload.ru.message || (eventTypeName==='wedding' ? "Приглашаем вас разделить радость нашего бракосочетания." : eventTypeName==='birthday' ? "Приглашаем вас на наш праздник. Если вы приедете, мы будем счастливы." : eventTypeName==='graduation' ? "Разделите с нами радость окончания университета!" : "Пожалуйста, приглашаем вас на наш юбилейный вечер!"),
+    messageQq: langPayload.qq.message || (eventTypeName==='wedding' ? "Sizdi perzentlerimizdeń neke toyına shaqırıp qalamız." : eventTypeName==='birthday' ? "Sizdi bayramımızǵa shaqıramız. Qosılıp quwanayıq!" : eventTypeName==='graduation' ? "Bizdiń pitiriw keshemizge marhamat etiń!" : "Yubiley bayramımızǵa marhamat etiń!"),
     location: context['location'] || '',
-    hostName: context['hostName'] || '',
-    hostNameRu: context['hostNameRu'] || '',
-    hostNameQq: context['hostNameQq'] || '',
-    guestName: context['guestName'] || 'Hurmatli mehmonlar!',
-    guestNameRu: context['guestNameRu'] || 'Уважаемые гости!',
-    guestNameQq: context['guestNameQq'] || 'Húrmetli miymanlar!',
-    eventTitle: context['eventTitle'] || (eventType==='birthday' ? "Tug'ilgan kun bayrami" : eventType==='graduation' ? "Bitiruv kechasi" : "Yubiley bayramiga taklif"),
-    eventTitleRu: context['eventTitleRu'] || (eventType==='birthday' ? "Праздник дня рождения" : eventType==='graduation' ? "Выпускной вечер" : "Приглашение на юбилей"),
-    eventTitleQq: context['eventTitleQq'] || (eventType==='birthday' ? 'Tuwılǵan kún bayramı' : eventType==='graduation' ? 'Pitiriw keshesi' : 'Yubileyge shaqırıw'),
+    hostName: langPayload.uz.hostName || '',
+    hostNameRu: langPayload.ru.hostName || '',
+    hostNameQq: langPayload.qq.hostName || '',
+    guestName: langPayload.uz.guestName || 'Hurmatli mehmonlar!',
+    guestNameRu: langPayload.ru.guestName || 'Уважаемые гости!',
+    guestNameQq: langPayload.qq.guestName || 'Húrmetli miymanlar!',
+    eventTitle: langPayload.uz.eventTitle || (eventTypeName==='birthday' ? "Tug'ilgan kun bayrami" : eventTypeName==='graduation' ? "Bitiruv kechasi" : "Yubiley bayramiga taklif"),
+    eventTitleRu: langPayload.ru.eventTitle || (eventTypeName==='birthday' ? "Праздник дня рождения" : eventTypeName==='graduation' ? "Выпускной вечер" : "Приглашение на юбилей"),
+    eventTitleQq: langPayload.qq.eventTitle || (eventTypeName==='birthday' ? 'Tuwılǵan kún bayramı' : eventTypeName==='graduation' ? 'Pitiriw keshesi' : 'Yubileyge shaqırıw'),
     eventTime: context['time'] || '',
     langMode: context['langMode'] || '',
     langUz: context['langUz'] !== false && context['langUz'] !== 'false',
@@ -381,14 +554,15 @@ function renderInvitation(invitation, eventType, template) {
     baseAlphabetUz: context['baseAlphabetUz'] || 'latin',
     baseAlphabetQq: context['baseAlphabetQq'] || 'latin',
     langOrder: context['langOrder'] || 'uz,ru,qq',
+    primaryLang: context['primaryLang'] || 'uz',
+    initialScript: context['initialScript'] || 'latin',
     eventType: eventType,
-    program: context['program'] || '',
-
-    programRu: context['programRu'] || '',
-    programQq: context['programQq'] || '',
-    programCustomTitle: context['programCustomTitle'] || '',
-    programCustomTitleRu: context['programCustomTitleRu'] || '',
-    programCustomTitleQq: context['programCustomTitleQq'] || '',
+    program: langPayload.uz.program || '',
+    programRu: langPayload.ru.program || '',
+    programQq: langPayload.qq.program || '',
+    programCustomTitle: langPayload.uz.programCustomTitle || '',
+    programCustomTitleRu: langPayload.ru.programCustomTitle || '',
+    programCustomTitleQq: langPayload.qq.programCustomTitle || '',
     eventDateRaw: invitation.eventDate || '',
     eventTimeRaw: invitation.eventTime ? invitation.eventTime.substring(0, 5) : '',
     eventTitleDisplay: context['eventTitle'] || context['hostName'] || '',
@@ -655,6 +829,16 @@ function buildLanguageToggle(cf) {
   <script>
   (function(){
     var d = window.__INVITE_DATA__ || {};
+    function readFlag(value, defaultValue) {
+      if (value === undefined || value === null) return defaultValue;
+      if (typeof value === 'boolean') return value;
+      if (typeof value === 'string') {
+        var normalized = value.trim().toLowerCase();
+        if (['true', '1', 'yes', 'on'].indexOf(normalized) !== -1) return true;
+        if (['false', '0', 'no', 'off', ''].indexOf(normalized) !== -1) return false;
+      }
+      return !!value;
+    }
 
     var scriptToggle = document.getElementById('scriptToggle');
     if (scriptToggle && !d.enableAlphabetSwitcher) {
@@ -662,9 +846,9 @@ function buildLanguageToggle(cf) {
     }
 
     // New toggle system: langUz, langQq, langRu (boolean flags)
-    var hasUz = d.langUz !== false;
-    var hasQq = !!d.langQq;
-    var hasRu = !!d.langRu;
+    var hasUz = readFlag(d.langUz, true);
+    var hasQq = readFlag(d.langQq, false);
+    var hasRu = readFlag(d.langRu, false);
 
     // Backward compat: old langMode → new flags
     if(d.langMode) {
@@ -701,7 +885,7 @@ function buildLanguageToggle(cf) {
       if(langs[0] === 'ru' && toggle) toggle.style.display = 'none';
     }
 
-    var currentLang = 'uz';
+    var currentLang = d.primaryLang || 'uz';
 
     var translations = {
       uz: {
@@ -875,8 +1059,8 @@ function buildLanguageToggle(cf) {
     
     // Determine initial language based on strictly defined order
     var orderArr = d.langOrder ? d.langOrder.split(',') : ['uz','ru','qq'];
-    var defaultLang = null;
-    for(var i=0; i<orderArr.length; i++) {
+    var defaultLang = d.primaryLang || null;
+    for(var i=0; !defaultLang && i<orderArr.length; i++) {
        var code = orderArr[i].trim();
        if (code === 'uz' && hasUz) { defaultLang = 'uz'; break; }
        if (code === 'qq' && hasQq) { defaultLang = 'qq'; break; }
@@ -884,7 +1068,7 @@ function buildLanguageToggle(cf) {
     }
     if(!defaultLang) defaultLang = hasUz ? 'uz' : (hasQq ? 'qq' : (hasRu ? 'ru' : 'uz'));
 
-    window._curScript = (defaultLang === 'qq') ? (d.baseAlphabetQq || 'latin') : (d.baseAlphabetUz || 'latin');
+    window._curScript = d.initialScript || ((defaultLang === 'qq') ? (d.baseAlphabetQq || 'latin') : (d.baseAlphabetUz || 'latin'));
     
     var _scrLatBtn = document.getElementById('scrLat');
     var _scrCyrBtn = document.getElementById('scrCyr');

@@ -4,6 +4,40 @@ import { Loader2, Copy, Check, ExternalLink, PartyPopper, RotateCcw } from 'luci
 import { createInvitation } from '../api';
 import { useLang } from '../i18n';
 
+function readFlag(value, defaultValue = false) {
+  if (value === undefined || value === null) return defaultValue;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+    if (['false', '0', 'no', 'off', ''].includes(normalized)) return false;
+  }
+  return Boolean(value);
+}
+
+function getPrimaryLang(customFields = {}) {
+  const hasUz = readFlag(customFields.langUz, true);
+  const hasQq = readFlag(customFields.langQq, false);
+  const hasRu = readFlag(customFields.langRu, false);
+  const order = (typeof customFields.langOrder === 'string' ? customFields.langOrder : 'uz,ru,qq')
+    .split(',')
+    .map((code) => code.trim().toLowerCase());
+
+  const firstActive = order.find((code) => (
+    (code === 'uz' && hasUz) ||
+    (code === 'qq' && hasQq) ||
+    (code === 'ru' && hasRu)
+  ));
+
+  return firstActive || (hasUz ? 'uz' : (hasQq ? 'qq' : (hasRu ? 'ru' : 'uz')));
+}
+
+function pickPrimaryText(baseValue, qqValue, ruValue, primaryLang) {
+  if (primaryLang === 'qq') return qqValue || baseValue || ruValue || '';
+  if (primaryLang === 'ru') return ruValue || baseValue || qqValue || '';
+  return baseValue || qqValue || ruValue || '';
+}
+
 export default function Step5Generate({ data, onReset, onBack }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -20,18 +54,19 @@ export default function Step5Generate({ data, onReset, onBack }) {
         
         let finalTime = data.eventTime;
         if (finalTime && finalTime.length === 4) finalTime = '0' + finalTime;
+        const primaryLang = getPrimaryLang(data.customFields || {});
 
       const payload = {
         eventTypeId: data.eventTypeId,
         templateId: data.templateId,
-        hostName: data.hostName || data.customFields?.hostNameRu || data.customFields?.hostNameQq || 'Mezbon',
-        guestName: data.guestName || data.customFields?.guestNameRu || data.customFields?.guestNameQq || undefined,
-        eventTitle: data.eventTitle || data.customFields?.eventTitleRu || data.customFields?.eventTitleQq || undefined,
+        hostName: pickPrimaryText(data.hostName, data.customFields?.hostNameQq, data.customFields?.hostNameRu, primaryLang) || 'Mezbon',
+        guestName: pickPrimaryText(data.guestName, data.customFields?.guestNameQq, data.customFields?.guestNameRu, primaryLang) || undefined,
+        eventTitle: pickPrimaryText(data.eventTitle, data.customFields?.eventTitleQq, data.customFields?.eventTitleRu, primaryLang) || undefined,
         eventDate: data.eventDate,
         eventTime: finalTime || undefined,
         location: data.location,
         locationUrl: finalUrl || undefined,
-        message: data.message || undefined,
+        message: pickPrimaryText(data.message, data.customFields?.messageQq, data.customFields?.messageRu, primaryLang) || undefined,
         customFields: data.customFields && Object.keys(data.customFields).length > 0
           ? data.customFields : undefined,
       };
