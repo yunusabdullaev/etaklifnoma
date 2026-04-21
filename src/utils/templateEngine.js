@@ -759,7 +759,7 @@ function buildLanguageToggle(cf) {
         guestWelcome: 'Mexmanlar kútip alıw',
         locationTitle: 'Lokatsiya',
         viewMap: 'Kartada kóriw',
-        programTitle: 'Kesheniń baǵdarlaması',
+        programTitle: 'Keshe programması',
         dressCode: 'Dress kod',
         waitingMsg: 'Sizdi kútip qalamız!',
         galleryTitle: 'Foto kórgezbe',
@@ -790,6 +790,7 @@ function buildLanguageToggle(cf) {
         gradCountdownTitle: 'Ushırasıw keshesine qalǵan waqıt:',
         gradDetailsTitle: 'Ushırasıw tafsilatları',
         gradProgramTitle: 'Keshe programması',
+
 
 
 
