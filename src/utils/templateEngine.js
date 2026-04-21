@@ -887,9 +887,9 @@ function buildLanguageToggle(cf) {
 
     // Data maps for each language
     var langData = {
-      uz: { host: d.hostName, guest: d.guestName, title: d.eventTitle, message: d.message, program: d.program, date: d.dateUz, programTitle: d.programCustomTitle },
-      qq: { host: d.hostNameQq || d.hostName, guest: d.guestNameQq || d.guestName, title: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateQq || d.dateUz, programTitle: d.programCustomTitleQq || d.programCustomTitle },
-      ru: { host: d.hostNameRu || d.hostName, guest: d.guestNameRu || d.guestName, title: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz, programTitle: d.programCustomTitleRu || d.programCustomTitle },
+      uz: { hostName: d.hostName, guestName: d.guestName, eventTitle: d.eventTitle, message: d.message, program: d.program, date: d.dateUz, programTitle: d.programCustomTitle },
+      qq: { hostName: d.hostNameQq || d.hostName, guestName: d.guestNameQq || d.guestName, eventTitle: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateQq || d.dateUz, programTitle: d.programCustomTitleQq || d.programCustomTitle },
+      ru: { hostName: d.hostNameRu || d.hostName, guestName: d.guestNameRu || d.guestName, eventTitle: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz, programTitle: d.programCustomTitleRu || d.programCustomTitle },
     };
 
 
@@ -968,9 +968,10 @@ function buildLanguageToggle(cf) {
       }
 
       if(prevData.message && newData.message) swapTextInPage(ptr(prevData.message), ntr(newData.message));
-      if(prevData.host && newData.host) swapTextInPage(ptr(prevData.host), ntr(newData.host));
-      if(prevData.guest && newData.guest) swapTextInPage(ptr(prevData.guest), ntr(newData.guest));
-      if(prevData.title && newData.title) swapTextInPage(ptr(prevData.title), ntr(newData.title));
+      if(prevData.hostName && newData.hostName) swapTextInPage(ptr(prevData.hostName), ntr(newData.hostName));
+      if(prevData.guestName && newData.guestName) swapTextInPage(ptr(prevData.guestName), ntr(newData.guestName));
+      if(prevData.eventTitle && newData.eventTitle) swapTextInPage(ptr(prevData.eventTitle), ntr(newData.eventTitle));
+
 
 
       var progEl = document.getElementById('program-data');
