@@ -755,7 +755,8 @@ function buildLanguageToggle(cf) {
         countdownTitle: 'Toyǵa shekem qalǵan waqıt',
         days: 'Kún', hours: 'Saǵat', minutes: 'Minut', seconds: 'Sekund',
         detailsTitle: 'Toy tafsilatları',
-        dateLabel: 'Sáne', timeLabel: 'Waqıt', venueLabel: 'Mánzil',
+        dateLabel: 'Sánesi', timeLabel: 'Waqıt', venueLabel: 'Mánzil',
+
         guestWelcome: 'Mexmanlar kútip alıw',
         locationTitle: 'Lokatsiya',
         viewMap: 'Kartada kóriw',
@@ -914,7 +915,7 @@ function buildLanguageToggle(cf) {
       if(!isScriptChange && window.currentLang === lang && !window._forceSwap) return;
       var t = Object.assign({}, translations[lang] || translations.uz);
       
-      var ev = d.eventType;
+      var ev = (d.eventType || '').toLowerCase();
       if (ev === 'birthday') {
         t.countdownTitle = t.bdCountdownTitle || t.countdownTitle;
         t.detailsTitle = t.bdDetailsTitle || t.detailsTitle;
@@ -928,6 +929,7 @@ function buildLanguageToggle(cf) {
         t.detailsTitle = t.jubDetailsTitle || t.detailsTitle;
         t.programTitle = t.jubProgramTitle || t.programTitle;
       }
+
 
       var prevLang = window.currentLang || 'uz';
       var prevData = langData[prevLang] || langData.uz;
