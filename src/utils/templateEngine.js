@@ -907,12 +907,27 @@ function buildLanguageToggle(cf) {
 
     function switchLang(lang, isScriptChange) {
       if(!isScriptChange && window.currentLang === lang && !window._forceSwap) return;
-      var t = translations[lang];
-      if(!t) return;
+      var t = Object.assign({}, translations[lang] || translations.uz);
+      
+      var ev = d.eventType;
+      if (ev === 'birthday') {
+        t.countdownTitle = t.bdCountdownTitle || t.countdownTitle;
+        t.detailsTitle = t.bdDetailsTitle || t.detailsTitle;
+        t.programTitle = t.bdProgramTitle || t.programTitle;
+      } else if (ev === 'graduation') {
+        t.countdownTitle = t.gradCountdownTitle || t.countdownTitle;
+        t.detailsTitle = t.gradDetailsTitle || t.detailsTitle;
+        t.programTitle = t.gradProgramTitle || t.programTitle;
+      } else if (ev === 'jubilee') {
+        t.countdownTitle = t.jubCountdownTitle || t.countdownTitle;
+        t.detailsTitle = t.jubDetailsTitle || t.detailsTitle;
+        t.programTitle = t.jubProgramTitle || t.programTitle;
+      }
 
       var prevLang = window.currentLang || 'uz';
       var prevData = langData[prevLang] || langData.uz;
       var newData = langData[lang] || langData.uz;
+
       
       var pScr = isScriptChange ? (window._curScript === 'cyrillic' ? 'latin' : 'cyrillic') : window._curScript;
       var nScr = window._curScript;
