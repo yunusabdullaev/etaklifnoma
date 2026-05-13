@@ -3,13 +3,12 @@ const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
 
 const appConfig = require('./config/app');
+const { connectDB } = require('./config/database');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const AppError = require('./utils/AppError');
-const { sequelize } = require('./models');
 
 // ── Express app ──────────────────────────────────────────
 const app = express();
@@ -25,10 +24,6 @@ app.use(morgan(appConfig.nodeEnv === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
-// Rate limiting disabled — Render provides DDoS protection at infrastructure level
-// Uncomment below to re-enable if needed:
-// app.use(rateLimit({ windowMs: 15*60*1000, max: 1000 }));
-
 // ── Routes ───────────────────────────────────────────────
 app.use(routes);
 
@@ -40,14 +35,13 @@ app.use(express.static(clientDist));
 
 // SPA fallback — serve index.html for all non-API, non-invite routes
 app.get('*', (req, res, next) => {
-  // Don't intercept API or invite routes (handled by Express routes above)
   if (req.path.startsWith('/api/') || req.path.startsWith('/invite/') || req.path === '/health') {
     return next();
   }
   res.sendFile(path.join(clientDist, 'index.html'));
 });
 
-// ── 404 handler (only for API/invite routes not found) ───
+// ── 404 handler ──────────────────────────────────────────
 app.use((_req, _res, next) => {
   next(AppError.notFound('Route not found'));
 });
@@ -58,18 +52,15 @@ app.use(errorHandler);
 // ── Start server ─────────────────────────────────────────
 const start = async () => {
   try {
-    // Test DB connection
-    await sequelize.authenticate();
-    console.log('✅ Database connection established');
+    // Connect to MongoDB
+    await connectDB();
 
-    // Sync models (create tables if not exist)
-    await sequelize.sync();
-    console.log('✅ Models synchronized');
+    // Load models (needed before seeding)
+    const db = require('./models');
 
     // Auto-seed event types and templates if empty
     try {
-      const { EventType } = require('./models');
-      const count = await EventType.count();
+      const count = await db.EventType.countDocuments();
       if (count === 0) {
         console.log('📦 Seeding event types and templates...');
         const seedFn = require('./database/update-templates');
@@ -81,15 +72,11 @@ const start = async () => {
 
     // Fix orphaned invitations (userId = null) — assign to first user
     try {
-      const { Invitation, User } = require('./models');
-      const orphanCount = await Invitation.count({ where: { userId: null } });
+      const orphanCount = await db.Invitation.countDocuments({ userId: null });
       if (orphanCount > 0) {
-        const firstUser = await User.findOne({ order: [['created_at', 'ASC']] });
+        const firstUser = await db.User.findOne().sort({ createdAt: 1 });
         if (firstUser) {
-          await Invitation.update(
-            { userId: firstUser.id },
-            { where: { userId: null } },
-          );
+          await db.Invitation.updateMany({ userId: null }, { userId: firstUser._id });
           console.log(`🔧 Fixed ${orphanCount} orphaned invitations → assigned to ${firstUser.name}`);
         }
       }
@@ -104,15 +91,15 @@ const start = async () => {
       console.log(`   URL         : ${appConfig.appUrl}`);
       console.log(`   Health      : ${appConfig.appUrl}/health\n`);
 
-      // Start cleanup scheduler — deletes invitations 4h after event
+      // Start cleanup scheduler
       const { startCleanupScheduler } = require('./jobs/cleanupExpired');
       startCleanupScheduler();
 
-      // Start Telegram admin bot (background polling)
+      // Start Telegram admin bot
       const { pollUpdates } = require('./bot/adminBot');
       pollUpdates();
 
-      // Start Telegram support bot (background polling)
+      // Start Telegram support bot
       const { pollUpdates: pollSupport } = require('./bot/supportBot');
       pollSupport();
 
@@ -122,7 +109,7 @@ const start = async () => {
 
       // Keep-alive ping — prevent Render free tier from sleeping
       if (appConfig.nodeEnv === 'production') {
-        const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
+        const PING_INTERVAL = 14 * 60 * 1000;
         setInterval(() => {
           fetch(`${appConfig.appUrl}/health`)
             .then(() => console.log('🏓 Keep-alive ping sent'))

@@ -46,12 +46,13 @@ async function poll(token) {
             if (rawToken) {
               const chatId = String(msg.chat.id);
               const { BotConnection } = require('../models');
-              const [updatedCount] = await BotConnection.update(
+              const result = await BotConnection.findOneAndUpdate(
+                { token: rawToken, chatId: null },
                 { chatId },
-                { where: { token: rawToken, chatId: null } }
+                { new: true }
               );
 
-              if (updatedCount > 0) {
+              if (result) {
                 const botNameRes = await fetchWithTimeout(`https://api.telegram.org/bot${token}/getMe`);
                 const botData = await botNameRes.json();
                 const botName = botData.ok ? (botData.result.first_name || 'Bot') : 'Bot';

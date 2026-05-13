@@ -6,47 +6,38 @@ const { renderInvitation, renderPreviewFragment } = require('../utils/templateEn
 
 /**
  * GET /api/invitations/:id/render
- * Renders a saved invitation as full HTML page.
  */
 exports.renderById = catchAsync(async (req, res) => {
-  const invitation = await Invitation.findByPk(req.params.id, {
-    include: [
-      { association: 'eventType' },
-      { association: 'template' },
-    ],
-  });
+  const invitation = await Invitation.findById(req.params.id)
+    .populate('eventTypeId')
+    .populate('templateId');
   if (!invitation) throw AppError.notFound('Invitation not found');
 
-  const html = renderInvitation(invitation, invitation.eventType, invitation.template);
+  const inv = invitation.toObject();
+  const html = renderInvitation(inv, inv.eventTypeId, inv.templateId);
   res.set('Content-Type', 'text/html');
   res.send(html);
 });
 
 /**
  * GET /invite/:slug/view
- * Public endpoint — renders invitation as a beautiful HTML page.
  */
 exports.renderBySlug = catchAsync(async (req, res) => {
-  const invitation = await Invitation.findOne({
-    where: { slug: req.params.slug, isPublished: true },
-    include: [
-      { association: 'eventType' },
-      { association: 'template' },
-    ],
-  });
+  const invitation = await Invitation.findOne({ slug: req.params.slug, isPublished: true })
+    .populate('eventTypeId')
+    .populate('templateId');
 
   if (!invitation) throw AppError.notFound('Invitation not found');
 
-  // Check expiration
   if (invitation.expiresAt && new Date(invitation.expiresAt) < new Date()) {
     throw AppError.notFound('This invitation has expired');
   }
 
   // Increment view count
-  invitation.increment('viewCount');
+  await Invitation.findByIdAndUpdate(invitation._id, { $inc: { viewCount: 1 } });
 
-  const html = renderInvitation(invitation, invitation.eventType, invitation.template);
-  // Invitation pages use inline scripts/styles — disable restrictive CSP
+  const inv = invitation.toObject();
+  const html = renderInvitation(inv, inv.eventTypeId, inv.templateId);
   res.removeHeader('Content-Security-Policy');
   res.set('Content-Type', 'text/html');
   res.send(html);
@@ -54,9 +45,6 @@ exports.renderBySlug = catchAsync(async (req, res) => {
 
 /**
  * POST /api/preview
- * Real-time preview — renders template with provided data WITHOUT saving.
- * Body: { templateId, hostName, guestName, eventTitle, eventDate, eventTime,
- *          location, locationUrl, message, customFields }
  */
 exports.preview = catchAsync(async (req, res) => {
   const { templateId } = req.body;
@@ -65,15 +53,12 @@ exports.preview = catchAsync(async (req, res) => {
   let eventType = null;
 
   if (templateId) {
-    template = await Template.findByPk(templateId, {
-      include: [{ association: 'eventType' }],
-    });
-    if (template) eventType = template.eventType;
+    template = await Template.findById(templateId).populate('eventTypeId');
+    if (template) eventType = template.eventTypeId;
   }
 
-  // If no template, use eventTypeId to get event type info
   if (!eventType && req.body.eventTypeId) {
-    eventType = await EventType.findByPk(req.body.eventTypeId);
+    eventType = await EventType.findById(req.body.eventTypeId);
   }
 
   const { html, css } = renderPreviewFragment(req.body, eventType, template);
@@ -82,8 +67,6 @@ exports.preview = catchAsync(async (req, res) => {
 
 /**
  * POST /api/preview/full
- * Full page preview — renders COMPLETE HTML page (like /invite/slug/view)
- * Returns rendered HTML as text/html for direct iframe use.
  */
 exports.fullPreview = catchAsync(async (req, res) => {
   const { templateId } = req.body;
@@ -92,17 +75,14 @@ exports.fullPreview = catchAsync(async (req, res) => {
   let eventType = null;
 
   if (templateId) {
-    template = await Template.findByPk(templateId, {
-      include: [{ association: 'eventType' }],
-    });
-    if (template) eventType = template.eventType;
+    template = await Template.findById(templateId).populate('eventTypeId');
+    if (template) eventType = template.eventTypeId;
   }
 
   if (!eventType && req.body.eventTypeId) {
-    eventType = await EventType.findByPk(req.body.eventTypeId);
+    eventType = await EventType.findById(req.body.eventTypeId);
   }
 
-  // Build a fake invitation object for renderInvitation
   const fakeInvitation = {
     slug: 'preview',
     eventTitle: req.body.eventTitle || '',
@@ -119,7 +99,6 @@ exports.fullPreview = catchAsync(async (req, res) => {
   };
 
   const html = renderInvitation(fakeInvitation, eventType, template);
-  // Remove restrictive CSP for preview — invitation templates need inline scripts/styles
   res.removeHeader('Content-Security-Policy');
   res.set('Content-Type', 'text/html');
   res.send(html);

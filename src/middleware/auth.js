@@ -24,7 +24,7 @@ const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
 
     // Find user
-    const user = await User.findByPk(decoded.id);
+    const user = await User.findById(decoded.id);
     if (!user || !user.isActive) {
       throw AppError.unauthorized('Foydalanuvchi topilmadi');
     }
@@ -51,7 +51,7 @@ const optionalAuth = async (req, res, next) => {
 
     if (token) {
       const decoded = jwt.verify(token, JWT_SECRET);
-      const user = await User.findByPk(decoded.id);
+      const user = await User.findById(decoded.id);
       if (user && user.isActive) {
         req.user = user;
       }

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, Crown, Sparkles, Check, Eye, X } from 'lucide-react';
-import { getTemplates } from '../api';
+import { getTemplateById, getTemplates } from '../api';
 import { useLang } from '../i18n';
 
 // Russian translations for template names/descriptions (keyed by slug suffix)
@@ -276,11 +276,12 @@ function renderTemplatePreview(template, eventTypeName = '', lang = 'uz') {
  * Mini iframe preview — renders scaled-down template HTML/CSS inside an iframe
  * Shows the hero (first visible section) of the invitation.
  */
-function TemplateThumbnail({ template, lang }) {
+function TemplateThumbnail({ template, lang, ensureTemplateContent }) {
   const iframeRef = useRef(null);
   const containerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [scale, setScale] = useState(0.4);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
   // Calculate scale based on actual container width
   useEffect(() => {
@@ -295,6 +296,33 @@ function TemplateThumbnail({ template, lang }) {
     window.addEventListener('resize', updateScale);
     return () => window.removeEventListener('resize', updateScale);
   }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || template.htmlContent) {
+      setShouldLoad(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px' },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [template.id, template.htmlContent]);
+
+  useEffect(() => {
+    if (!shouldLoad || template.htmlContent || template.cssContent) return undefined;
+    ensureTemplateContent(template).catch(() => {});
+    return undefined;
+  }, [shouldLoad, template, ensureTemplateContent]);
 
   const writePreview = useCallback(() => {
     const iframe = iframeRef.current;
@@ -325,17 +353,20 @@ function TemplateThumbnail({ template, lang }) {
 </html>`);
     doc.close();
     setLoaded(true);
-  }, [template.htmlContent, template.cssContent]);
+  }, [lang, template.cssContent, template.htmlContent, template.id]);
 
   useEffect(() => {
+    setLoaded(false);
     // Small delay to let iframe mount
     const timer = setTimeout(writePreview, 100);
     return () => clearTimeout(timer);
-  }, [writePreview]);
+  }, [writePreview, lang, template.id]);
+
+  const hasContent = !!template.htmlContent && !!template.cssContent;
 
   return (
     <div ref={containerRef} className="w-full aspect-[3/4] rounded-xl overflow-hidden relative bg-[#0a0a12]">
-      {!loaded && (
+      {(!loaded || !hasContent) && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <Loader2 className="w-5 h-5 text-surface-500 animate-spin" />
         </div>
@@ -362,18 +393,68 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
   const [loading, setLoading] = useState(true);
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const { t, lang } = useLang();
+  const pendingTemplateFetchesRef = useRef(new Map());
+  const templateCacheRef = useRef({});
+
+  const updateTemplateCache = useCallback((template) => {
+    if (!template?.id) return template;
+    templateCacheRef.current[template.id] = template;
+    setTemplates((prev) => prev.map((item) => (item.id === template.id ? { ...item, ...template } : item)));
+    return template;
+  }, []);
+
+  const ensureTemplateContent = useCallback(async (template) => {
+    if (!template?.id) return template;
+    if (template.htmlContent && template.cssContent) return template;
+
+    const cached = templateCacheRef.current[template.id];
+    if (cached?.htmlContent && cached?.cssContent) {
+      return cached;
+    }
+
+    if (pendingTemplateFetchesRef.current.has(template.id)) {
+      return pendingTemplateFetchesRef.current.get(template.id);
+    }
+
+    const request = getTemplateById(template.id)
+      .then((res) => updateTemplateCache(res.data))
+      .finally(() => {
+        pendingTemplateFetchesRef.current.delete(template.id);
+      });
+
+    pendingTemplateFetchesRef.current.set(template.id, request);
+    return request;
+  }, [updateTemplateCache]);
 
   useEffect(() => {
     if (!data.eventTypeId) return;
     setLoading(true);
+    templateCacheRef.current = {};
+    pendingTemplateFetchesRef.current.clear();
     getTemplates({ eventTypeId: data.eventTypeId })
-      .then((res) => { setTemplates(res.data); setLoading(false); })
+      .then((res) => {
+        setTemplates(res.data);
+        setPreviewTemplate(null);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [data.eventTypeId]);
 
-  const handleSelect = (template) => {
-    onUpdate({ template, templateId: template.id });
-  };
+  useEffect(() => {
+    if (!previewTemplate?.id) return;
+    const latestTemplate = templateCacheRef.current[previewTemplate.id]
+      || templates.find((item) => item.id === previewTemplate.id);
+
+    if (!latestTemplate) return;
+    if (latestTemplate.htmlContent !== previewTemplate.htmlContent || latestTemplate.cssContent !== previewTemplate.cssContent) {
+      setPreviewTemplate(latestTemplate);
+    }
+  }, [previewTemplate, templates]);
+
+  const handleSelect = useCallback(async (template) => {
+    const fullTemplate = await ensureTemplateContent(template);
+    onUpdate({ template: fullTemplate || template, templateId: template.id });
+  }, [ensureTemplateContent, onUpdate]);
 
   if (loading) {
     return (
@@ -408,16 +489,17 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 max-w-6xl mx-auto">
           {templates.map((tmpl, i) => {
-            const isSelected = data.templateId === tmpl.id;
+            const resolvedTemplate = templateCacheRef.current[tmpl.id] || tmpl;
+            const isSelected = data.templateId === resolvedTemplate.id;
             return (
               <motion.button
-                key={tmpl.id}
+                key={resolvedTemplate.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.06, duration: 0.4 }}
                 onClick={() => {
                   if (isSelected) onNext();
-                  else handleSelect(tmpl);
+                  else handleSelect(resolvedTemplate);
                 }}
                 className={`group relative rounded-2xl border backdrop-blur-xl text-left
                   transition-all duration-300 cursor-pointer overflow-hidden
@@ -444,7 +526,11 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
 
                 {/* Preview eye button */}
                 <button
-                  onClick={(e) => { e.stopPropagation(); setPreviewTemplate(tmpl); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreviewTemplate(resolvedTemplate);
+                    ensureTemplateContent(resolvedTemplate).catch(() => {});
+                  }}
                   className="absolute top-2 right-2 z-20 w-7 h-7 rounded-full flex items-center justify-center
                     bg-black/50 backdrop-blur-md border border-white/20 text-white/70
                     hover:bg-black/70 hover:text-white transition-all opacity-0 group-hover:opacity-100"
@@ -454,19 +540,23 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
                 </button>
 
                 {/* Live template preview thumbnail */}
-                <TemplateThumbnail template={tmpl} lang={lang} />
+                <TemplateThumbnail
+                  template={resolvedTemplate}
+                  lang={lang}
+                  ensureTemplateContent={ensureTemplateContent}
+                />
 
                 {/* Template name & description */}
                 <div className="p-3 pt-2">
                   <h3 className="text-sm font-semibold text-white mb-0.5 truncate">
-                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.name || tmpl.name)
-                     : lang === 'qq' ? (templateNameQq[getTemplateSuffix(tmpl.slug)]?.name || tmpl.name)
-                     : tmpl.name}
+                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(resolvedTemplate.slug)]?.name || resolvedTemplate.name)
+                     : lang === 'qq' ? (templateNameQq[getTemplateSuffix(resolvedTemplate.slug)]?.name || resolvedTemplate.name)
+                     : resolvedTemplate.name}
                   </h3>
                   <p className="text-[11px] text-surface-400 line-clamp-1">
-                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(tmpl.slug)]?.desc || tmpl.description)
-                     : lang === 'qq' ? (templateNameQq[getTemplateSuffix(tmpl.slug)]?.desc || tmpl.description)
-                     : tmpl.description}
+                    {lang === 'ru' ? (templateNameRu[getTemplateSuffix(resolvedTemplate.slug)]?.desc || resolvedTemplate.description)
+                     : lang === 'qq' ? (templateNameQq[getTemplateSuffix(resolvedTemplate.slug)]?.desc || resolvedTemplate.description)
+                     : resolvedTemplate.description}
                   </p>
                   
                   {isSelected && (
@@ -537,7 +627,11 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
         }}>
           <span style={{ color: '#fff', fontSize: 14, fontWeight: 600 }}>{previewTemplate.name}</span>
           <button
-            onClick={(e) => { e.stopPropagation(); handleSelect(previewTemplate); setPreviewTemplate(null); }}
+            onClick={async (e) => {
+              e.stopPropagation();
+              await handleSelect(previewTemplate);
+              setPreviewTemplate(null);
+            }}
             style={{
               padding: '6px 16px', borderRadius: 20,
               background: 'linear-gradient(135deg, #5c7cfa, #4263eb)',
@@ -560,7 +654,11 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          <FullPreview template={previewTemplate} lang={lang} />
+          <FullPreview
+            template={previewTemplate}
+            lang={lang}
+            ensureTemplateContent={ensureTemplateContent}
+          />
         </div>
       </div>
     )}
@@ -571,10 +669,15 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
 /**
  * Full-height scrollable preview inside modal
  */
-function FullPreview({ template, lang }) {
+function FullPreview({ template, lang, ensureTemplateContent }) {
   const iframeRef = useRef(null);
 
   useEffect(() => {
+    if (!template?.htmlContent || !template?.cssContent) {
+      ensureTemplateContent(template).catch(() => {});
+      return undefined;
+    }
+
     const iframe = iframeRef.current;
     if (!iframe || !template.htmlContent || !template.cssContent) return;
 
@@ -602,14 +705,20 @@ function FullPreview({ template, lang }) {
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [template]);
+  }, [template, lang, ensureTemplateContent]);
 
   return (
-    <iframe
-      ref={iframeRef}
-      title={`Preview: ${template.name}`}
-      style={{ width: '100%', height: '100%', border: 'none' }}
-      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
-    />
+    template?.htmlContent && template?.cssContent ? (
+      <iframe
+        ref={iframeRef}
+        title={`Preview: ${template.name}`}
+        style={{ width: '100%', height: '100%', border: 'none' }}
+        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+      />
+    ) : (
+      <div className="w-full h-full flex items-center justify-center bg-[#0a0a12]">
+        <Loader2 className="w-6 h-6 text-surface-500 animate-spin" />
+      </div>
+    )
   );
 }

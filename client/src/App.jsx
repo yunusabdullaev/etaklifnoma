@@ -1,18 +1,19 @@
-import { useState, useCallback, useEffect } from 'react';
+import { Suspense, lazy, useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import StepIndicator from './components/StepIndicator';
-import Step1EventType from './components/Step1EventType';
-import Step2Template from './components/Step2Template';
-import Step3Content from './components/Step3Content';
-import Step4Preview from './components/Step4Preview';
-import Step5Generate from './components/Step5Generate';
-import AuthPage from './components/AuthPage';
-import LandingPage from './components/LandingPage';
-import Dashboard from './components/Dashboard';
-import SupportPage from './components/SupportPage';
 import SettingsDropdown from './components/SettingsDropdown';
 import { useLang } from './i18n';
 import { Sparkles, LogOut, User, LayoutGrid, PlusCircle, MessageCircle } from 'lucide-react';
+
+const Step1EventType = lazy(() => import('./components/Step1EventType'));
+const Step2Template = lazy(() => import('./components/Step2Template'));
+const Step3Content = lazy(() => import('./components/Step3Content'));
+const Step4Preview = lazy(() => import('./components/Step4Preview'));
+const Step5Generate = lazy(() => import('./components/Step5Generate'));
+const AuthPage = lazy(() => import('./components/AuthPage'));
+const LandingPage = lazy(() => import('./components/LandingPage'));
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const SupportPage = lazy(() => import('./components/SupportPage'));
 
 const INITIAL_DATA = {
   eventType: null,
@@ -29,6 +30,14 @@ const INITIAL_DATA = {
   message: '',
   customFields: {},
 };
+
+function ScreenLoader() {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <div className="w-8 h-8 rounded-full border-2 border-primary-500/30 border-t-primary-400 animate-spin" />
+    </div>
+  );
+}
 
 export default function App() {
   const [step, setStep] = useState(1);
@@ -148,9 +157,17 @@ export default function App() {
   // Show landing or auth page if not logged in
   if (!user) {
     if (!showAuth) {
-      return <LandingPage onEnter={() => setShowAuth(true)} />;
+      return (
+        <Suspense fallback={<ScreenLoader />}>
+          <LandingPage onEnter={() => setShowAuth(true)} />
+        </Suspense>
+      );
     }
-    return <AuthPage onLogin={handleLogin} onBack={() => setShowAuth(false)} />;
+    return (
+      <Suspense fallback={<ScreenLoader />}>
+        <AuthPage onLogin={handleLogin} onBack={() => setShowAuth(false)} />
+      </Suspense>
+    );
   }
 
   const showDashboard = view === 'dashboard';
@@ -269,7 +286,9 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <Dashboard token={token} onCreateNew={startWizard} onContinueDraft={continueWizard} />
+              <Suspense fallback={<ScreenLoader />}>
+                <Dashboard token={token} onCreateNew={startWizard} onContinueDraft={continueWizard} />
+              </Suspense>
             </motion.div>
           ) : showSupport ? (
             <motion.div
@@ -279,7 +298,9 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <SupportPage token={token} onBack={() => setView('dashboard')} />
+              <Suspense fallback={<ScreenLoader />}>
+                <SupportPage token={token} onBack={() => setView('dashboard')} />
+              </Suspense>
             </motion.div>
           ) : (
             <motion.div
@@ -289,7 +310,9 @@ export default function App() {
               exit={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.3 }}
             >
-              {renderStep()}
+              <Suspense fallback={<ScreenLoader />}>
+                {renderStep()}
+              </Suspense>
             </motion.div>
           )}
         </AnimatePresence>

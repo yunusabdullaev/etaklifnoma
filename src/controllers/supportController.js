@@ -5,20 +5,13 @@ const AppError = require('../utils/AppError');
 const SUPPORT_BOT_TOKEN = process.env.SUPPORT_BOT_TOKEN || '';
 const SUPPORT_CHAT_ID = process.env.SUPPORT_CHAT_ID || '';
 
-/**
- * Send message to Telegram support chat
- */
 async function sendToTelegram(text) {
   if (!SUPPORT_BOT_TOKEN || !SUPPORT_CHAT_ID) return null;
   try {
     const res = await fetch(`https://api.telegram.org/bot${SUPPORT_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: SUPPORT_CHAT_ID,
-        text,
-        parse_mode: 'HTML',
-      }),
+      body: JSON.stringify({ chat_id: SUPPORT_CHAT_ID, text, parse_mode: 'HTML' }),
     });
     const data = await res.json();
     return data.ok ? String(data.result.message_id) : null;
@@ -29,115 +22,90 @@ async function sendToTelegram(text) {
 }
 
 /**
- * POST /api/support — create a new ticket (first message)
+ * POST /api/support
  */
 exports.createTicket = catchAsync(async (req, res) => {
   const { subject, message } = req.body;
   const { SupportTicket, SupportMessage } = require('../models');
 
-  if (!subject || !message) {
-    throw AppError.badRequest('Mavzu va xabar kiritilishi shart');
-  }
+  if (!subject || !message) throw AppError.badRequest('Mavzu va xabar kiritilishi shart');
 
   const ticket = await SupportTicket.create({
-    userId: req.user.id,
+    userId: req.user._id,
     subject: subject.trim(),
     message: message.trim(),
   });
 
-  // Create first message
   await SupportMessage.create({
-    ticketId: ticket.id,
+    ticketId: ticket._id,
     sender: 'user',
     text: message.trim(),
   });
 
-  // Send to Telegram
-  const tgMsg = `🆘 <b>Yangi murojaat #${ticket.id.slice(0, 8)}</b>\n\n` +
+  const shortId = String(ticket._id).slice(-8);
+  const tgMsg = `🆘 <b>Yangi murojaat #${shortId}</b>\n\n` +
     `👤 <b>${req.user.name}</b> (${req.user.phone})\n` +
     `📋 <b>${ticket.subject}</b>\n` +
     `💬 ${ticket.message}\n\n` +
-    `📝 Javob: <code>/reply ${ticket.id.slice(0, 8)} Javobingiz...</code>`;
+    `📝 Javob: <code>/reply ${shortId} Javobingiz...</code>`;
 
   const tgMsgId = await sendToTelegram(tgMsg);
   if (tgMsgId) {
-    await ticket.update({ telegramMessageId: tgMsgId });
+    ticket.telegramMessageId = tgMsgId;
+    await ticket.save();
   }
 
   ApiResponse.success(res, { ticket }, 'Murojaat yuborildi', 201);
 });
 
 /**
- * POST /api/support/:id/messages — add a new message to ticket (chat)
+ * POST /api/support/:id/messages
  */
 exports.addMessage = catchAsync(async (req, res) => {
   const { text } = req.body;
   const { SupportTicket, SupportMessage } = require('../models');
 
-  if (!text || !text.trim()) {
-    throw AppError.badRequest('Xabar kiritilishi shart');
-  }
+  if (!text?.trim()) throw AppError.badRequest('Xabar kiritilishi shart');
 
-  const ticket = await SupportTicket.findOne({
-    where: { id: req.params.id, userId: req.user.id },
-    include: [{ association: 'user', attributes: ['name', 'phone'] }],
-  });
-
+  const ticket = await SupportTicket.findOne({ _id: req.params.id, userId: req.user._id });
   if (!ticket) throw AppError.notFound('Murojaat topilmadi');
 
   const msg = await SupportMessage.create({
-    ticketId: ticket.id,
+    ticketId: ticket._id,
     sender: 'user',
     text: text.trim(),
   });
 
-  // Update ticket status
-  await ticket.update({ status: 'open' });
+  ticket.status = 'open';
+  await ticket.save();
 
-  // Notify Telegram
-  const tgMsg = `💬 <b>#${ticket.id.slice(0, 8)}</b> — yangi xabar\n\n` +
-    `👤 ${ticket.user?.name || req.user.name}\n` +
+  const shortId = String(ticket._id).slice(-8);
+  const tgMsg = `💬 <b>#${shortId}</b> — yangi xabar\n\n` +
+    `👤 ${req.user.name}\n` +
     `💬 ${text.trim()}\n\n` +
-    `📝 <code>/reply ${ticket.id.slice(0, 8)} Javob...</code>`;
+    `📝 <code>/reply ${shortId} Javob...</code>`;
   await sendToTelegram(tgMsg);
 
   ApiResponse.success(res, msg);
 });
 
 /**
- * GET /api/support — get current user's tickets
+ * GET /api/support
  */
 exports.getMyTickets = catchAsync(async (req, res) => {
-  const { SupportTicket, SupportMessage } = require('../models');
-
-  const tickets = await SupportTicket.findAll({
-    where: { userId: req.user.id },
-    order: [['updated_at', 'DESC']],
-    include: [{
-      association: 'messages',
-      order: [['created_at', 'DESC']],
-      limit: 1,
-    }],
-  });
-
+  const { SupportTicket } = require('../models');
+  const tickets = await SupportTicket.find({ userId: req.user._id }).sort({ updatedAt: -1 });
   ApiResponse.success(res, tickets);
 });
 
 /**
- * GET /api/support/:id — get ticket with all messages
+ * GET /api/support/:id
  */
 exports.getTicket = catchAsync(async (req, res) => {
-  const { SupportTicket } = require('../models');
-
-  const ticket = await SupportTicket.findOne({
-    where: { id: req.params.id, userId: req.user.id },
-    include: [{
-      association: 'messages',
-      order: [['created_at', 'ASC']],
-    }],
-  });
-
+  const { SupportTicket, SupportMessage } = require('../models');
+  const ticket = await SupportTicket.findOne({ _id: req.params.id, userId: req.user._id });
   if (!ticket) throw AppError.notFound('Murojaat topilmadi');
 
-  ApiResponse.success(res, ticket);
+  const messages = await SupportMessage.find({ ticketId: ticket._id }).sort({ createdAt: 1 });
+  ApiResponse.success(res, { ...ticket.toObject(), messages });
 });

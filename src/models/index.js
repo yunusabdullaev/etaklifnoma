@@ -1,42 +1,30 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const dbConfig = require('../config/database');
+const mongoose = require('mongoose');
 
-const env = process.env.NODE_ENV || 'development';
-const config = dbConfig[env];
-const db = {};
+const UserSchema = require('./User');
+const EventTypeSchema = require('./EventType');
+const TemplateSchema = require('./Template');
+const InvitationSchema = require('./Invitation');
+const RsvpSchema = require('./Rsvp');
+const WishSchema = require('./Wish');
+const SupportTicketSchema = require('./SupportTicket');
+const SupportMessageSchema = require('./SupportMessage');
+const BotConnectionSchema = require('./BotConnection');
+const FileSchema = require('./File');
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config,
-  );
-}
-
-// Auto-load every model file in this directory
-fs.readdirSync(__dirname)
-  .filter((file) => file !== 'index.js' && file.endsWith('.js'))
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
-
-// Run associations after all models are loaded
-Object.values(db).forEach((model) => {
-  if (typeof model.associate === 'function') {
-    model.associate(db);
-  }
-});
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+const db = {
+  mongoose,
+  User: mongoose.model('User', UserSchema),
+  EventType: mongoose.model('EventType', EventTypeSchema),
+  Template: mongoose.model('Template', TemplateSchema),
+  Invitation: mongoose.model('Invitation', InvitationSchema),
+  Rsvp: mongoose.model('Rsvp', RsvpSchema),
+  Wish: mongoose.model('Wish', WishSchema),
+  SupportTicket: mongoose.model('SupportTicket', SupportTicketSchema),
+  SupportMessage: mongoose.model('SupportMessage', SupportMessageSchema),
+  BotConnection: mongoose.model('BotConnection', BotConnectionSchema),
+  File: mongoose.model('File', FileSchema),
+};
 
 module.exports = db;

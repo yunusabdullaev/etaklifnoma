@@ -918,11 +918,13 @@ function buildLanguageToggle(cf) {
         gradCountdownTitle: 'Tadbirgacha qolgan vaqt',
         gradDetailsTitle: 'Tadbir tafsilotlari',
         gradProgramTitle: 'Kecha dasturi',
+        gradWaitingMsg: 'Sizni kutib qolamiz! 🎓',
 
         jubEventLabel: 'Yubiley taklifi',
         jubCountdownTitle: 'Bayramgacha qolgan vaqt',
         jubDetailsTitle: 'Tafsilotlar',
-        jubProgramTitle: 'Tantana dasturi'
+        jubProgramTitle: 'Tantana dasturi',
+        jubWaitingMsg: 'Sizni kutib qolamiz! 🎉'
       },
       qq: {
         eventLabel: 'Nikax shaqırıwı',
@@ -965,14 +967,13 @@ function buildLanguageToggle(cf) {
         gradCountdownTitle: 'Ushırasıw keshesine qalǵan waqıt:',
         gradDetailsTitle: 'Ushırasıw tafsilatları',
         gradProgramTitle: 'Keshe programması',
-
-
-
+        gradWaitingMsg: 'Sizdi kútip qalamız! 🎓',
 
         jubEventLabel: 'Yubilej shaqırıwı',
         jubCountdownTitle: 'Bayramǵa shekem qalǵan waqıt',
         jubDetailsTitle: 'Tafsilatlar',
-        jubProgramTitle: 'Tantana baǵdarlanması'
+        jubProgramTitle: 'Tantana baǵdarlanması',
+        jubWaitingMsg: 'Sizdi kútip qalamız! 🎉'
       },
       ru: {
         eventLabel: 'Свадебное приглашение',
@@ -1014,11 +1015,13 @@ function buildLanguageToggle(cf) {
         gradCountdownTitle: 'До мероприятия осталось',
         gradDetailsTitle: 'Детали мероприятия',
         gradProgramTitle: 'Программа вечера',
+        gradWaitingMsg: 'Ждём вас! 🎓',
 
         jubEventLabel: 'Приглашение на юбилей',
         jubCountdownTitle: 'До юбилея осталось',
         jubDetailsTitle: 'Подробности',
-        jubProgramTitle: 'Программа торжества'
+        jubProgramTitle: 'Программа торжества',
+        jubWaitingMsg: 'Ждём вас! 🎉'
       }
     };
 
@@ -1099,10 +1102,12 @@ function buildLanguageToggle(cf) {
         t.countdownTitle = t.gradCountdownTitle || t.countdownTitle;
         t.detailsTitle = t.gradDetailsTitle || t.detailsTitle;
         t.programTitle = t.gradProgramTitle || t.programTitle;
+        t.bdWaitingMsg = t.gradWaitingMsg || t.bdWaitingMsg;
       } else if (ev === 'jubilee') {
         t.countdownTitle = t.jubCountdownTitle || t.countdownTitle;
         t.detailsTitle = t.jubDetailsTitle || t.detailsTitle;
         t.programTitle = t.jubProgramTitle || t.programTitle;
+        t.bdWaitingMsg = t.jubWaitingMsg || t.bdWaitingMsg;
       }
 
 
@@ -1154,6 +1159,12 @@ function buildLanguageToggle(cf) {
       if(wishesBtn) wishesBtn.textContent = t.wishesSend ? ntr(t.wishesSend) : '';
       if(wishesTitle) wishesTitle.textContent = t.wishesTitle ? ntr(t.wishesTitle) : '';
       if(wishesSub) wishesSub.textContent = t.wishesSubtitle ? ntr(t.wishesSubtitle) : '';
+
+      var footerMsg = document.querySelector('.footer-msg');
+      if(footerMsg && !footerMsg.hasAttribute('data-i18n')) {
+         var fmsg = (ev === 'graduation' || ev === 'birthday' || ev === 'jubilee') ? (t.bdWaitingMsg || t.waitingMsg) : t.waitingMsg;
+         if (fmsg) footerMsg.textContent = ntr(fmsg);
+      }
 
       // Direct content injection for core fields (replaces unreliable find/replace)
       document.querySelectorAll('[data-tp]').forEach(function(el){

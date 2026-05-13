@@ -1,34 +1,26 @@
-const { DataTypes } = require('sequelize');
+const mongoose = require('mongoose');
 
-module.exports = (sequelize) => {
-  const File = sequelize.define('File', {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    filename: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    mimetype: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    data: {
-      type: DataTypes.BLOB('long'),
-      allowNull: false,
-    },
-    size: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-  }, {
-    tableName: 'files',
-    underscored: true,
-    timestamps: true,
-    updatedAt: false,
-  });
+const FileSchema = new mongoose.Schema({
+  filename: {
+    type: String,
+    required: true,
+    maxlength: 255,
+  },
+  mimetype: {
+    type: String,
+    required: true,
+    maxlength: 100,
+  },
+  data: {
+    type: Buffer,
+    required: true,
+  },
+  size: {
+    type: Number,
+    required: true,
+  },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
+});
 
-  return File;
-};
+module.exports = FileSchema;

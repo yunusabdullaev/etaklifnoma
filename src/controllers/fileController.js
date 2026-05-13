@@ -79,12 +79,11 @@ exports.upload = catchAsync(async (req, res) => {
   });
 
   // Pre-cache
-  cacheSet(file.id, { data: buffer, mimetype, filename: req.file.originalname, size: buffer.length });
+  cacheSet(String(file._id), { data: buffer, mimetype, filename: req.file.originalname, size: buffer.length });
 
-  // Use relative URL to avoid http/https mixed content issues
-  const url = `/api/files/${file.id}`;
+  const url = `/api/files/${file._id}`;
 
-  ApiResponse.success(res, { url, id: file.id }, 'Fayl yuklandi');
+  ApiResponse.success(res, { url, id: file._id }, 'Fayl yuklandi');
 });
 
 /**
@@ -98,11 +97,8 @@ exports.serve = catchAsync(async (req, res) => {
   let file = cacheGet(id);
 
   if (!file) {
-    // Load from DB
     const { File } = require('../models');
-    const dbFile = await File.findByPk(id, {
-      attributes: ['data', 'mimetype', 'filename', 'size'],
-    });
+    const dbFile = await File.findById(id).select('data mimetype filename size');
 
     if (!dbFile) {
       return res.status(404).send('File not found');

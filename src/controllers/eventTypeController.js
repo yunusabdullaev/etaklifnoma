@@ -1,4 +1,4 @@
-const { EventType } = require('../models');
+const { EventType, Template } = require('../models');
 const catchAsync = require('../utils/catchAsync');
 const ApiResponse = require('../utils/ApiResponse');
 const AppError = require('../utils/AppError');
@@ -7,9 +7,7 @@ const AppError = require('../utils/AppError');
  * GET /api/event-types
  */
 exports.getAll = catchAsync(async (_req, res) => {
-  const eventTypes = await EventType.findAll({
-    order: [['name', 'ASC']],
-  });
+  const eventTypes = await EventType.find().sort({ name: 1 });
   ApiResponse.success(res, eventTypes);
 });
 
@@ -17,11 +15,11 @@ exports.getAll = catchAsync(async (_req, res) => {
  * GET /api/event-types/:id
  */
 exports.getById = catchAsync(async (req, res) => {
-  const eventType = await EventType.findByPk(req.params.id, {
-    include: [{ association: 'templates', where: { isActive: true }, required: false }],
-  });
+  const eventType = await EventType.findById(req.params.id);
   if (!eventType) throw AppError.notFound('Event type not found');
-  ApiResponse.success(res, eventType);
+
+  const templates = await Template.find({ eventTypeId: eventType._id, isActive: true });
+  ApiResponse.success(res, { ...eventType.toObject(), templates });
 });
 
 /**
@@ -29,7 +27,7 @@ exports.getById = catchAsync(async (req, res) => {
  */
 exports.create = catchAsync(async (req, res) => {
   const { name, label, description, icon } = req.body;
-  const existing = await EventType.findOne({ where: { name } });
+  const existing = await EventType.findOne({ name });
   if (existing) throw AppError.conflict(`Event type "${name}" already exists`);
 
   const eventType = await EventType.create({ name, label, description, icon });
@@ -40,11 +38,12 @@ exports.create = catchAsync(async (req, res) => {
  * PUT /api/event-types/:id
  */
 exports.update = catchAsync(async (req, res) => {
-  const eventType = await EventType.findByPk(req.params.id);
+  const eventType = await EventType.findById(req.params.id);
   if (!eventType) throw AppError.notFound('Event type not found');
 
   const { label, description, icon, isActive } = req.body;
-  await eventType.update({ label, description, icon, isActive });
+  Object.assign(eventType, { label, description, icon, isActive });
+  await eventType.save();
   ApiResponse.success(res, eventType);
 });
 
@@ -52,9 +51,8 @@ exports.update = catchAsync(async (req, res) => {
  * DELETE /api/event-types/:id
  */
 exports.remove = catchAsync(async (req, res) => {
-  const eventType = await EventType.findByPk(req.params.id);
+  const eventType = await EventType.findById(req.params.id);
   if (!eventType) throw AppError.notFound('Event type not found');
-
-  await eventType.destroy();
+  await eventType.deleteOne();
   ApiResponse.noContent(res);
 });

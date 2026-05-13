@@ -4,10 +4,10 @@
  */
 require('dotenv').config();
 
-const { sequelize, Template, EventType } = require('../models');
+const { connectDB } = require('../config/database');
+const { Template, EventType } = require('../models');
 const tc = require('../utils/templateContent');
 
-// Field structures per event type
 const structures = {
   wedding: {
     fields: [
@@ -36,31 +36,13 @@ const structures = {
   },
 };
 
-// Map event type name → { html, themes[], structure }
 const eventTypeConfig = {
-  wedding: {
-    html: tc.weddingPremiumHtml,
-    themes: tc.weddingThemes,
-    structure: structures.wedding,
-  },
-  birthday: {
-    html: tc.birthdayPremiumHtml,
-    themes: tc.birthdayThemes,
-    structure: structures.birthday,
-  },
-  graduation: {
-    html: tc.graduationPremiumHtml,
-    themes: tc.graduationThemes,
-    structure: structures.graduation,
-  },
-  jubilee: {
-    html: tc.jubileePremiumHtml,
-    themes: tc.jubileeThemes,
-    structure: structures.jubilee,
-  },
+  wedding:    { html: tc.weddingPremiumHtml,    themes: tc.weddingThemes,    structure: structures.wedding },
+  birthday:   { html: tc.birthdayPremiumHtml,   themes: tc.birthdayThemes,   structure: structures.birthday },
+  graduation: { html: tc.graduationPremiumHtml, themes: tc.graduationThemes, structure: structures.graduation },
+  jubilee:    { html: tc.jubileePremiumHtml,     themes: tc.jubileeThemes,    structure: structures.jubilee },
 };
 
-// Old slugs to deactivate
 const oldSlugs = [
   'klassik-oq-toy', 'zamonaviy-nikoh',
   'quvnoq-tugilgan-kun', 'oltin-yubiley', 'bitiruv-akademik',
@@ -71,25 +53,24 @@ const oldSlugs = [
 
 async function run() {
   try {
-    await sequelize.authenticate();
-    console.log('✅ Connected to database');
+    await connectDB();
+    console.log('✅ Connected to MongoDB');
 
-    // Event type labels and descriptions
     const eventTypeMeta = {
-      wedding: { label: "To'y taklifi", description: 'Nikoh va to\'y marosimi uchun premium taklifnomalar', icon: '💍' },
-      birthday: { label: "Tug'ilgan kun", description: "Tug'ilgan kun bayramlari uchun quvnoq taklifnomalar", icon: '🎂' },
-      graduation: { label: 'Bitiruvchilar', description: "Bitiruvchilar kechasi va tantanalar uchun", icon: '🎓' },
-      jubilee: { label: 'Yubiley', description: 'Yubiley va bayramlar uchun taklifnomalar', icon: '🎉' },
+      wedding:    { label: "To'y taklifi",   description: "Nikoh va to'y marosimi uchun premium taklifnomalar", icon: '💍' },
+      birthday:   { label: "Tug'ilgan kun",  description: "Tug'ilgan kun bayramlari uchun quvnoq taklifnomalar", icon: '🎂' },
+      graduation: { label: 'Bitiruvchilar',  description: 'Bitiruvchilar kechasi va tantanalar uchun', icon: '🎓' },
+      jubilee:    { label: 'Yubiley',        description: 'Yubiley va bayramlar uchun taklifnomalar', icon: '🎉' },
     };
 
-    // Ensure event types exist (findOrCreate)
+    // Ensure event types exist
     const etMap = {};
     for (const [name, meta] of Object.entries(eventTypeMeta)) {
-      const [et] = await EventType.findOrCreate({
-        where: { name },
-        defaults: { label: meta.label, description: meta.description, icon: meta.icon, isActive: true },
-      });
-      etMap[name] = et.id;
+      let et = await EventType.findOne({ name });
+      if (!et) {
+        et = await EventType.create({ name, label: meta.label, description: meta.description, icon: meta.icon, isActive: true });
+      }
+      etMap[name] = et._id;
     }
     console.log('📋 Event types:', Object.keys(etMap).join(', '));
 
@@ -97,18 +78,13 @@ async function run() {
 
     for (const [etName, config] of Object.entries(eventTypeConfig)) {
       const etId = etMap[etName];
-      if (!etId) {
-        console.log(`⚠️  Event type "${etName}" not found, skipping`);
-        continue;
-      }
-
       console.log(`\n── ${etName.toUpperCase()} (${config.themes.length} themes) ──`);
 
       for (const theme of config.themes) {
-        const existing = await Template.findOne({ where: { slug: theme.slug } });
+        const existing = await Template.findOne({ slug: theme.slug });
 
         if (existing) {
-          await existing.update({
+          await Template.findByIdAndUpdate(existing._id, {
             name: theme.name,
             description: theme.description,
             htmlContent: config.html,
@@ -140,20 +116,19 @@ async function run() {
     }
 
     // Deactivate old slugs
-    const newSlugs = Object.values(eventTypeConfig)
-      .flatMap(c => c.themes.map(t => t.slug));
-
+    const newSlugs = Object.values(eventTypeConfig).flatMap(c => c.themes.map(t => t.slug));
     for (const slug of oldSlugs) {
       if (!newSlugs.includes(slug)) {
-        const old = await Template.findOne({ where: { slug } });
+        const old = await Template.findOne({ slug });
         if (old) {
-          await old.update({ isActive: false });
+          old.isActive = false;
+          await old.save();
           console.log(`\n🗑️  Deactivated old: ${slug}`);
         }
       }
     }
 
-    // ── New unique designs (4 designs × 4 event types) ──
+    // New unique designs
     const { newDesigns } = require('../utils/templateDesigns');
     const prefixMap = { wedding: 'toy', birthday: 'tgk', graduation: 'grad', jubilee: 'jub' };
 
@@ -165,10 +140,10 @@ async function run() {
       for (const design of newDesigns) {
         const slug = `${prefix}-${design.slug}`;
         const htmlContent = typeof design.html === 'string' ? design.html : (design.html[etName] || design.html.wedding);
-        const existing = await Template.findOne({ where: { slug } });
+        const existing = await Template.findOne({ slug });
 
         if (existing) {
-          await existing.update({
+          await Template.findByIdAndUpdate(existing._id, {
             name: design.name,
             description: design.desc,
             htmlContent,
@@ -199,7 +174,7 @@ async function run() {
       }
     }
 
-    console.log(`\n🎉 Done! Created: ${created}, Updated: ${updated}, Total active: ${created + updated}`);
+    console.log(`\n🎉 Done! Created: ${created}, Updated: ${updated}`);
   } catch (error) {
     console.error('❌ Error:', error.message);
     console.error(error.stack);
@@ -207,7 +182,6 @@ async function run() {
   }
 }
 
-// If run directly: node src/database/update-templates.js
 if (require.main === module) {
   run().then(() => process.exit(0)).catch(() => process.exit(1));
 }

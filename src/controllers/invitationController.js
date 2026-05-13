@@ -10,49 +10,42 @@ const appConfig = require('../config/app');
 exports.getAll = catchAsync(async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 20;
-  const offset = (page - 1) * limit;
+  const skip = (page - 1) * limit;
 
-  const where = {};
-  if (req.query.eventTypeId) where.eventTypeId = req.query.eventTypeId;
-  if (req.query.isPublished !== undefined) where.isPublished = req.query.isPublished === 'true';
+  const filter = {};
+  if (req.query.eventTypeId) filter.eventTypeId = req.query.eventTypeId;
+  if (req.query.isPublished !== undefined) filter.isPublished = req.query.isPublished === 'true';
 
-  const { rows, count } = await Invitation.findAndCountAll({
-    where,
-    include: [
-      { association: 'eventType', attributes: ['id', 'name', 'label', 'icon'] },
-      { association: 'template', attributes: ['id', 'name', 'slug'] },
-    ],
-    order: [['created_at', 'DESC']],
-    limit,
-    offset,
-  });
+  const [rows, count] = await Promise.all([
+    Invitation.find(filter)
+      .populate('eventTypeId', 'id name label icon')
+      .populate('templateId', 'id name slug')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    Invitation.countDocuments(filter),
+  ]);
 
   ApiResponse.paginated(res, { rows, count, page, limit });
 });
 
 /**
  * GET /api/invitations/my
- * Returns invitations belonging to the logged-in user
  */
 exports.getMyInvitations = catchAsync(async (req, res) => {
   if (!req.user) throw AppError.unauthorized('Tizimga kiring');
 
-  const invitations = await Invitation.findAll({
-    where: { userId: req.user.id },
-    include: [
-      { association: 'eventType', attributes: ['id', 'name', 'label', 'icon'] },
-      { association: 'template', attributes: ['id', 'name', 'slug'] },
-    ],
-    order: [['created_at', 'DESC']],
-  });
+  const invitations = await Invitation.find({ userId: req.user._id })
+    .populate('eventTypeId', 'id name label icon')
+    .populate('templateId', 'id name slug')
+    .sort({ createdAt: -1 });
 
-  // Attach public URLs and strip large data from customFields
   const data = invitations.map(inv => {
-    const json = inv.toJSON();
+    const json = inv.toObject({ virtuals: true });
+    json.id = json._id;
     json.publicUrl = `${appConfig.appUrl}/invite/${json.slug}`;
     json.viewUrl = `${appConfig.appUrl}/invite/${json.slug}/view`;
 
-    // Strip large binary data — keep only meta flags for dashboard
     if (json.customFields) {
       const { photos, musicUrl, ...lightFields } = json.customFields;
       json.customFields = {
@@ -72,12 +65,9 @@ exports.getMyInvitations = catchAsync(async (req, res) => {
  * GET /api/invitations/:id
  */
 exports.getById = catchAsync(async (req, res) => {
-  const invitation = await Invitation.findByPk(req.params.id, {
-    include: [
-      { association: 'eventType' },
-      { association: 'template' },
-    ],
-  });
+  const invitation = await Invitation.findById(req.params.id)
+    .populate('eventTypeId')
+    .populate('templateId');
   if (!invitation) throw AppError.notFound('Invitation not found');
   ApiResponse.success(res, invitation);
 });
@@ -88,19 +78,17 @@ exports.getById = catchAsync(async (req, res) => {
 exports.create = catchAsync(async (req, res) => {
   const { eventTypeId, templateId } = req.body;
 
-  // Verify event type
-  const eventType = await EventType.findByPk(eventTypeId);
+  const eventType = await EventType.findById(eventTypeId);
   if (!eventType) throw AppError.badRequest('Invalid event type ID');
 
-  // Verify template if provided
   if (templateId) {
-    const template = await Template.findByPk(templateId);
+    const template = await Template.findById(templateId);
     if (!template) throw AppError.badRequest('Invalid template ID');
-    if (template.eventTypeId !== eventTypeId) {
+    if (String(template.eventTypeId) !== String(eventTypeId)) {
       throw AppError.badRequest('Template does not belong to the selected event type');
     }
   }
-  // Validate event date — must be today or future, max 89 days
+
   if (req.body.eventDate) {
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const eventDate = new Date(req.body.eventDate);
@@ -109,18 +97,15 @@ exports.create = catchAsync(async (req, res) => {
     if (eventDate > maxDate) throw AppError.badRequest('Maximum 89 kundan keyin bo\'lishi mumkin');
   }
 
-  // Clean empty strings to null and strip invalid fields
   const cleanData = { ...req.body };
-  if (req.user) cleanData.userId = req.user.id;
+  if (req.user) cleanData.userId = req.user._id;
 
-  // Remove empty strings → null (prevents validation errors)
   ['guestName', 'eventTitle', 'eventTime', 'locationUrl', 'message'].forEach(key => {
     if (cleanData[key] === '' || cleanData[key] === undefined) {
       cleanData[key] = null;
     }
   });
 
-  // Clean customFields — remove empty values
   if (cleanData.customFields && typeof cleanData.customFields === 'object') {
     Object.keys(cleanData.customFields).forEach(key => {
       if (cleanData.customFields[key] === '' || cleanData.customFields[key] === undefined) {
@@ -132,20 +117,17 @@ exports.create = catchAsync(async (req, res) => {
     }
   }
 
-  // Handle custom slug from customFields
+  // Handle custom slug
   if (cleanData.customFields?.customSlug) {
     const rawSlug = cleanData.customFields.customSlug.trim().toLowerCase();
     if (!/^[a-z0-9-]{3,30}$/.test(rawSlug)) {
       throw AppError.badRequest('Maxsus manzil faqat lotin harflari, raqamlar va defisdan iborat bo\'lishi kerak (3-30 belgi)');
     }
-    // Check uniqueness
-    const { Op } = require('sequelize');
-    const existing = await Invitation.findOne({ where: { slug: rawSlug } });
+    const existing = await Invitation.findOne({ slug: rawSlug });
     if (existing) {
       throw AppError.badRequest(`"${rawSlug}" manzili allaqachon band. Boshqa nom tanlang.`);
     }
     cleanData.slug = rawSlug;
-    // Remove from customFields so it's not double-stored
     delete cleanData.customFields.customSlug;
   }
 
@@ -153,24 +135,19 @@ exports.create = catchAsync(async (req, res) => {
   try {
     invitation = await Invitation.create(cleanData);
   } catch (err) {
-    // Sequelize validation errors — extract readable messages
-    if (err.name === 'SequelizeValidationError') {
-      const messages = err.errors.map(e => e.message).join(', ');
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(e => e.message).join(', ');
       throw AppError.badRequest(messages);
     }
     throw err;
   }
 
-  // Re-fetch with associations
-  const fullInvitation = await Invitation.findByPk(invitation.id, {
-    include: [
-      { association: 'eventType', attributes: ['id', 'name', 'label', 'icon'] },
-      { association: 'template', attributes: ['id', 'name', 'slug'] },
-    ],
-  });
+  const fullInvitation = await Invitation.findById(invitation._id)
+    .populate('eventTypeId', 'id name label icon')
+    .populate('templateId', 'id name slug');
 
-  // Attach the public link
-  const data = fullInvitation.toJSON();
+  const data = fullInvitation.toObject({ virtuals: true });
+  data.id = data._id;
   data.publicUrl = `${appConfig.appUrl}/invite/${data.slug}`;
 
   ApiResponse.created(res, data);
@@ -180,27 +157,22 @@ exports.create = catchAsync(async (req, res) => {
  * PUT /api/invitations/:id
  */
 exports.update = catchAsync(async (req, res) => {
-  const invitation = await Invitation.findByPk(req.params.id);
+  const invitation = await Invitation.findById(req.params.id);
   if (!invitation) throw AppError.notFound('Invitation not found');
 
-  // Prevent slug and date modification
   delete req.body.slug;
   delete req.body.eventDate;
-  delete req.body.event_date;
 
-  // Merge customFields instead of replacing
   if (req.body.customFields) {
-    req.body.customFields = { ...invitation.customFields, ...req.body.customFields };
+    req.body.customFields = { ...(invitation.customFields || {}), ...req.body.customFields };
   }
 
-  await invitation.update(req.body);
+  Object.assign(invitation, req.body);
+  await invitation.save();
 
-  const updated = await Invitation.findByPk(invitation.id, {
-    include: [
-      { association: 'eventType', attributes: ['id', 'name', 'label', 'icon'] },
-      { association: 'template', attributes: ['id', 'name', 'slug'] },
-    ],
-  });
+  const updated = await Invitation.findById(invitation._id)
+    .populate('eventTypeId', 'id name label icon')
+    .populate('templateId', 'id name slug');
 
   ApiResponse.success(res, updated);
 });
@@ -209,29 +181,22 @@ exports.update = catchAsync(async (req, res) => {
  * DELETE /api/invitations/:id
  */
 exports.remove = catchAsync(async (req, res) => {
-  const invitation = await Invitation.findByPk(req.params.id);
+  const invitation = await Invitation.findById(req.params.id);
   if (!invitation) throw AppError.notFound('Invitation not found');
-
-  await invitation.destroy();
+  await invitation.deleteOne();
   ApiResponse.noContent(res);
 });
 
 /**
- * GET /invite/:slug  (PUBLIC)
- * Public endpoint — increments view count.
+ * GET /invite/:slug (PUBLIC)
  */
 exports.getBySlug = catchAsync(async (req, res) => {
-  const invitation = await Invitation.findOne({
-    where: { slug: req.params.slug, isPublished: true },
-    include: [
-      { association: 'eventType' },
-      { association: 'template' },
-    ],
-  });
+  const invitation = await Invitation.findOne({ slug: req.params.slug, isPublished: true })
+    .populate('eventTypeId')
+    .populate('templateId');
 
   if (!invitation) throw AppError.notFound('Invitation not found');
 
-  // Check expiration
   if (invitation.expiresAt && new Date(invitation.expiresAt) < new Date()) {
     throw AppError.notFound('This invitation has expired');
   }
@@ -241,20 +206,18 @@ exports.getBySlug = catchAsync(async (req, res) => {
 
 /**
  * GET /api/invitations/check-slug
- * Validates whether a custom slug is securely available and conforms to formatting rules
  */
 exports.checkSlug = catchAsync(async (req, res) => {
   let { slug } = req.query;
-  if (!slug) {
-    return res.json({ available: false, missing: true });
-  }
+  if (!slug) return res.json({ available: false, missing: true });
+
   slug = slug.toLowerCase().trim();
   if (!/^[a-z0-9-]{3,30}$/.test(slug)) {
-    return res.json({ available: false, error: "Lotin harflari, raqamlar va chiziqcha (-). Kamida 3ta belgi." });
+    return res.json({ available: false, error: 'Lotin harflari, raqamlar va chiziqcha (-). Kamida 3ta belgi.' });
   }
-  const existing = await Invitation.findOne({ where: { slug } });
+  const existing = await Invitation.findOne({ slug });
   if (existing) {
-    return res.json({ available: false, error: "Bu manzil hozirda band. Iltimos, boshqasini tanlang." });
+    return res.json({ available: false, error: 'Bu manzil hozirda band. Iltimos, boshqasini tanlang.' });
   }
   return res.json({ available: true });
 });

@@ -9,9 +9,9 @@ const JWT_EXPIRES = process.env.JWT_EXPIRES || '30d';
 const VERIFY_BOT_TOKEN = process.env.VERIFY_BOT_TOKEN || '';
 const VERIFY_CHAT_ID = process.env.VERIFY_CHAT_ID || '';
 
-// ── In-memory OTP store (code → { phone, name, passwordHash, expiresAt }) ──
+// ── In-memory OTP store ──────────────────────────────────
 const otpStore = new Map();
-const OTP_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
+const OTP_EXPIRY_MS = 5 * 60 * 1000;
 
 function signToken(userId) {
   return jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
@@ -21,13 +21,10 @@ function generateOTP() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-/**
- * Send OTP code to Telegram bot
- */
 async function sendOTPToTelegram(phone, code) {
   if (!VERIFY_BOT_TOKEN || !VERIFY_CHAT_ID) {
     console.log(`\n📱 OTP Code for ${phone}: ${code}\n`);
-    return true; // Fallback: log to console
+    return true;
   }
 
   const message = `🔐 Taklifnoma OTP\n\n📱 Telefon: ${phone}\n🔑 Tasdiqlash kodi: *${code}*\n\n⏱ 5 daqiqa ichida kiring.`;
@@ -37,11 +34,7 @@ async function sendOTPToTelegram(phone, code) {
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: VERIFY_CHAT_ID,
-        text: message,
-        parse_mode: 'Markdown',
-      }),
+      body: JSON.stringify({ chat_id: VERIFY_CHAT_ID, text: message, parse_mode: 'Markdown' }),
     });
     const data = await res.json();
     return data.ok;
@@ -53,8 +46,6 @@ async function sendOTPToTelegram(phone, code) {
 
 /**
  * POST /api/auth/register
- * Direct registration — no OTP required
- * Body: { phone, name, password }
  */
 exports.register = catchAsync(async (req, res) => {
   const { phone, name, password } = req.body;
@@ -72,28 +63,20 @@ exports.register = catchAsync(async (req, res) => {
     throw AppError.badRequest('Parol kamida 4 ta belgidan iborat bo\'lishi kerak');
   }
 
-  // Check if phone already exists
-  const existing = await User.findOne({ where: { phone: cleanPhone } });
+  const existing = await User.findOne({ phone: cleanPhone });
   if (existing) {
     throw AppError.badRequest('Bu telefon raqam allaqachon ro\'yxatdan o\'tgan');
   }
 
-  // Create user directly (no OTP)
   const passwordHash = await User.hashPassword(password);
-  const user = await User.create({
-    phone: cleanPhone,
-    name,
-    passwordHash,
-  });
+  const user = await User.create({ phone: cleanPhone, name, passwordHash });
 
-  const token = signToken(user.id);
+  const token = signToken(user._id);
   ApiResponse.success(res, { token, user }, 'Muvaffaqiyatli ro\'yxatdan o\'tildi', 201);
 });
 
 /**
  * POST /api/auth/verify
- * Step 2: Verify OTP code and create user
- * Body: { phone, code }
  */
 exports.verify = catchAsync(async (req, res) => {
   const { phone, code } = req.body;
@@ -103,48 +86,35 @@ exports.verify = catchAsync(async (req, res) => {
   }
 
   const cleanPhone = phone.replace(/[^\d+]/g, '');
-
-  // Find OTP data
   const otpData = otpStore.get(code);
-  if (!otpData) {
-    throw AppError.badRequest('Tasdiqlash kodi noto\'g\'ri');
-  }
+  if (!otpData) throw AppError.badRequest('Tasdiqlash kodi noto\'g\'ri');
 
-  // Check expiry
   if (otpData.expiresAt < Date.now()) {
     otpStore.delete(code);
     throw AppError.badRequest('Tasdiqlash kodi muddati tugagan. Qaytadan urinib ko\'ring.');
   }
 
-  // Check phone match
-  if (otpData.phone !== cleanPhone) {
-    throw AppError.badRequest('Tasdiqlash kodi noto\'g\'ri');
-  }
+  if (otpData.phone !== cleanPhone) throw AppError.badRequest('Tasdiqlash kodi noto\'g\'ri');
 
-  // Double check phone isn't taken
-  const existing = await User.findOne({ where: { phone: cleanPhone } });
+  const existing = await User.findOne({ phone: cleanPhone });
   if (existing) {
     otpStore.delete(code);
     throw AppError.badRequest('Bu telefon raqam allaqachon ro\'yxatdan o\'tgan');
   }
 
-  // Create user
   const user = await User.create({
     phone: otpData.phone,
     name: otpData.name,
     passwordHash: otpData.passwordHash,
   });
 
-  // Clean up OTP
   otpStore.delete(code);
-
-  const token = signToken(user.id);
+  const token = signToken(user._id);
   ApiResponse.success(res, { token, user }, 'Muvaffaqiyatli ro\'yxatdan o\'tildi', 201);
 });
 
 /**
  * POST /api/auth/login
- * Body: { phone, password }
  */
 exports.login = catchAsync(async (req, res) => {
   const { phone, password } = req.body;
@@ -154,7 +124,7 @@ exports.login = catchAsync(async (req, res) => {
   }
 
   const cleanPhone = phone.replace(/[^\d+]/g, '');
-  const user = await User.findOne({ where: { phone: cleanPhone } });
+  const user = await User.findOne({ phone: cleanPhone });
 
   if (!user || !(await user.checkPassword(password))) {
     throw AppError.unauthorized('Telefon yoki parol noto\'g\'ri');
@@ -164,13 +134,12 @@ exports.login = catchAsync(async (req, res) => {
     throw AppError.unauthorized('Akkaunt bloklangan');
   }
 
-  const token = signToken(user.id);
+  const token = signToken(user._id);
   ApiResponse.success(res, { token, user }, 'Muvaffaqiyatli kirildi');
 });
 
 /**
  * GET /api/auth/me
- * Protected — returns current user
  */
 exports.me = catchAsync(async (req, res) => {
   ApiResponse.success(res, { user: req.user });

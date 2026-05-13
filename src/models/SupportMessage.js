@@ -1,38 +1,22 @@
-const { DataTypes } = require('sequelize');
+const mongoose = require('mongoose');
 
-module.exports = (sequelize) => {
-  const SupportMessage = sequelize.define('SupportMessage', {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    ticketId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      field: 'ticket_id',
-    },
-    sender: {
-      // 'user' = client, 'admin' = support team
-      type: DataTypes.ENUM('user', 'admin'),
-      allowNull: false,
-    },
-    text: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-  }, {
-    tableName: 'support_messages',
-    underscored: true,
-    timestamps: true,
-  });
+const SupportMessageSchema = new mongoose.Schema({
+  ticketId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SupportTicket',
+    required: true,
+  },
+  sender: {
+    type: String,
+    enum: ['user', 'admin'],
+    required: true,
+  },
+  text: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: true,
+});
 
-  SupportMessage.associate = (models) => {
-    SupportMessage.belongsTo(models.SupportTicket, {
-      foreignKey: 'ticket_id',
-      as: 'ticket',
-    });
-  };
-
-  return SupportMessage;
-};
+module.exports = SupportMessageSchema;

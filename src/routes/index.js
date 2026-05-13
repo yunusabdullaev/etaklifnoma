@@ -167,7 +167,7 @@ router.get('/api/bot/check-link', async (req, res) => {
     const { token } = req.query;
     if (!token) return res.json({ success: false });
 
-    const doc = await BotConnection.findOne({ where: { token } });
+    const doc = await BotConnection.findOne({ token });
     if (doc && doc.chatId) {
       return res.json({ success: true, chatId: doc.chatId });
     }

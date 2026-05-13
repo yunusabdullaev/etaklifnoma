@@ -10,19 +10,27 @@ const AppError = require('../utils/AppError');
 exports.getAll = catchAsync(async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 20;
-  const offset = (page - 1) * limit;
+  const skip = (page - 1) * limit;
+  const includeContent = req.query.includeContent === 'true';
 
-  const where = { isActive: true };
-  if (req.query.eventTypeId) where.eventTypeId = req.query.eventTypeId;
-  if (req.query.isPremium !== undefined) where.isPremium = req.query.isPremium === 'true';
+  const filter = { isActive: true };
+  if (req.query.eventTypeId) filter.eventTypeId = req.query.eventTypeId;
+  if (req.query.isPremium !== undefined) filter.isPremium = req.query.isPremium === 'true';
 
-  const { rows, count } = await Template.findAndCountAll({
-    where,
-    include: [{ association: 'eventType', attributes: ['id', 'name', 'label', 'icon'] }],
-    order: [['sort_order', 'ASC'], ['created_at', 'DESC']],
-    limit,
-    offset,
-  });
+  let query = Template.find(filter)
+    .populate('eventTypeId', 'id name label icon')
+    .sort({ sortOrder: 1, createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  if (!includeContent) {
+    query = query.select('-htmlContent -cssContent');
+  }
+
+  const [rows, count] = await Promise.all([
+    query,
+    Template.countDocuments(filter),
+  ]);
 
   ApiResponse.paginated(res, { rows, count, page, limit });
 });
@@ -31,9 +39,8 @@ exports.getAll = catchAsync(async (req, res) => {
  * GET /api/templates/:id
  */
 exports.getById = catchAsync(async (req, res) => {
-  const template = await Template.findByPk(req.params.id, {
-    include: [{ association: 'eventType', attributes: ['id', 'name', 'label', 'icon'] }],
-  });
+  const template = await Template.findById(req.params.id)
+    .populate('eventTypeId', 'id name label icon');
   if (!template) throw AppError.notFound('Template not found');
   ApiResponse.success(res, template);
 });
@@ -44,13 +51,11 @@ exports.getById = catchAsync(async (req, res) => {
 exports.create = catchAsync(async (req, res) => {
   const { eventTypeId, name } = req.body;
 
-  // Verify event type exists
-  const eventType = await EventType.findByPk(eventTypeId);
+  const eventType = await EventType.findById(eventTypeId);
   if (!eventType) throw AppError.badRequest('Invalid event type ID');
 
-  // Generate unique slug from name
   let slug = slugify(name, { lower: true, strict: true });
-  const existingSlug = await Template.findOne({ where: { slug } });
+  const existingSlug = await Template.findOne({ slug });
   if (existingSlug) slug = `${slug}-${Date.now()}`;
 
   const template = await Template.create({ ...req.body, slug });
@@ -61,18 +66,18 @@ exports.create = catchAsync(async (req, res) => {
  * PUT /api/templates/:id
  */
 exports.update = catchAsync(async (req, res) => {
-  const template = await Template.findByPk(req.params.id);
+  const template = await Template.findById(req.params.id);
   if (!template) throw AppError.notFound('Template not found');
 
-  // Re-slug if the name changed
   if (req.body.name && req.body.name !== template.name) {
     let slug = slugify(req.body.name, { lower: true, strict: true });
-    const existing = await Template.findOne({ where: { slug } });
-    if (existing && existing.id !== template.id) slug = `${slug}-${Date.now()}`;
+    const existing = await Template.findOne({ slug });
+    if (existing && String(existing._id) !== String(template._id)) slug = `${slug}-${Date.now()}`;
     req.body.slug = slug;
   }
 
-  await template.update(req.body);
+  Object.assign(template, req.body);
+  await template.save();
   ApiResponse.success(res, template);
 });
 
@@ -80,9 +85,8 @@ exports.update = catchAsync(async (req, res) => {
  * DELETE /api/templates/:id
  */
 exports.remove = catchAsync(async (req, res) => {
-  const template = await Template.findByPk(req.params.id);
+  const template = await Template.findById(req.params.id);
   if (!template) throw AppError.notFound('Template not found');
-
-  await template.destroy();
+  await template.deleteOne();
   ApiResponse.noContent(res);
 });

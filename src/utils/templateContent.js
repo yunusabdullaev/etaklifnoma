@@ -857,7 +857,7 @@ exports.birthdayPremiumHtml = `
     <div class="container">
       <div class="footer-names"><span class="fn bd-fn"><span data-tp="hostName">{{hostName}}</span></div>
       <div class="footer-date"><span data-tp="date">{{eventDateFormatted}}</span></div>
-      <p class="footer-msg">Sizni kutib qolamiz! 🎈</p>
+      <p class="footer-msg" data-i18n="bdWaitingMsg">Sizni kutib qolamiz! 🎈</p>
       <div class="footer-hearts">🎈 🎉 🎈</div>
     </div>
   </footer>
@@ -1016,7 +1016,7 @@ exports.graduationPremiumHtml = `
     <div class="container">
       <div class="footer-names"><span class="fn grad-fn"><span data-tp="hostName">{{hostName}}</span></div>
       <div class="footer-date"><span data-tp="date">{{eventDateFormatted}}</span></div>
-      <p class="footer-msg">Sizni kutib qolamiz! 🎓</p>
+      <p class="footer-msg" data-i18n="bdWaitingMsg">Sizni kutib qolamiz! 🎓</p>
       <div class="footer-hearts">🎓 ✨ 🎓</div>
     </div>
   </footer>
@@ -1140,7 +1140,7 @@ exports.jubileePremiumHtml = `
     <div class="container">
       <div class="footer-names"><span class="fn jub-fn"><span data-tp="hostName">{{hostName}}</span></div>
       <div class="footer-date"><span data-tp="date">{{eventDateFormatted}}</span></div>
-      <p class="footer-msg">Sizni kutib qolamiz! 🎉</p>
+      <p class="footer-msg" data-i18n="bdWaitingMsg">Sizni kutib qolamiz! 🎉</p>
       <div class="footer-hearts">🎉 ✨ 🎉</div>
     </div>
   </footer>

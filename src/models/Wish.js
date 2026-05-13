@@ -1,31 +1,22 @@
-const { DataTypes } = require('sequelize');
+const mongoose = require('mongoose');
 
-module.exports = (sequelize) => {
-  const Wish = sequelize.define('Wish', {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    invitationSlug: {
-      type: DataTypes.STRING(30),
-      allowNull: false,
-      field: 'invitation_slug',
-    },
-    guestName: {
-      type: DataTypes.STRING(200),
-      allowNull: false,
-      field: 'guest_name',
-    },
-    message: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-  }, {
-    tableName: 'wishes',
-    underscored: true,
-    timestamps: true,
-  });
+const WishSchema = new mongoose.Schema({
+  invitationSlug: {
+    type: String,
+    required: true,
+    maxlength: 30,
+  },
+  guestName: {
+    type: String,
+    required: true,
+    maxlength: 200,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: true,
+});
 
-  return Wish;
-};
+module.exports = WishSchema;

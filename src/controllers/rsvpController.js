@@ -2,7 +2,7 @@ const catchAsync = require('../utils/catchAsync');
 const ApiResponse = require('../utils/ApiResponse');
 
 /**
- * POST /api/invitations/:slug/rsvp — guest submits attendance
+ * POST /api/invitations/:slug/rsvp
  */
 exports.submitRsvp = catchAsync(async (req, res) => {
   const { Rsvp } = require('../models');
@@ -25,15 +25,12 @@ exports.submitRsvp = catchAsync(async (req, res) => {
 });
 
 /**
- * GET /api/invitations/:slug/rsvp — owner gets RSVP list
+ * GET /api/invitations/:slug/rsvp
  */
 exports.getRsvps = catchAsync(async (req, res) => {
   const { Rsvp } = require('../models');
 
-  const rsvps = await Rsvp.findAll({
-    where: { invitationSlug: req.params.slug },
-    order: [['created_at', 'DESC']],
-  });
+  const rsvps = await Rsvp.find({ invitationSlug: req.params.slug }).sort({ createdAt: -1 });
 
   const stats = {
     total: rsvps.length,
