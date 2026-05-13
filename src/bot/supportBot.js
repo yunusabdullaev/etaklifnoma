@@ -1,11 +1,6 @@
 /**
  * Telegram Support Bot
- *
- * Listens for admin replies to support tickets.
- * Commands:
- *   /reply <ticket_id> <message> — Reply to a support ticket
- *   /tickets — List open tickets
- *   /close <ticket_id> — Close a ticket
+ * Commands: /reply <ticket_id> <message>, /tickets, /close <ticket_id>
  */
 
 const SUPPORT_BOT_TOKEN = process.env.SUPPORT_BOT_TOKEN || '';
@@ -30,61 +25,39 @@ async function botApi(method, body = {}) {
 }
 
 async function sendMessage(text) {
-  return botApi('sendMessage', {
-    chat_id: SUPPORT_CHAT_ID,
-    text,
-    parse_mode: 'HTML',
-  });
+  return botApi('sendMessage', { chat_id: SUPPORT_CHAT_ID, text, parse_mode: 'HTML' });
 }
 
 /**
  * /reply <ticket_short_id> <message>
+ * Finds ticket by last 8 chars of MongoDB ObjectId
  */
 async function handleReply(text) {
   const match = text.match(/^\/reply\s+(\S+)\s+(.+)$/s);
-  if (!match) {
-    return sendMessage('❌ Format: /reply <ticket_id> <javob matni>');
-  }
+  if (!match) return sendMessage('❌ Format: /reply <ticket_id> <javob matni>');
 
   const shortId = match[1];
   const replyText = match[2].trim();
 
   try {
     const { SupportTicket, SupportMessage } = require('../models');
-    const { sequelize } = require('../models');
 
-    // Find ticket by short ID prefix (cast UUID to text for LIKE)
-    const ticket = await SupportTicket.findOne({
-      where: sequelize.where(
-        sequelize.cast(sequelize.col('SupportTicket.id'), 'text'),
-        { [require('sequelize').Op.like]: `${shortId}%` }
-      ),
-      include: [{ association: 'user', attributes: ['name', 'phone'] }],
-    });
+    // Find by last N chars of ObjectId string
+    const tickets = await SupportTicket.find().select('_id subject message adminReply status');
+    const ticket = tickets.find(t => String(t._id).endsWith(shortId) || String(t._id).startsWith(shortId));
 
-    if (!ticket) {
-      return sendMessage(`❌ Ticket "${shortId}" topilmadi`);
-    }
+    if (!ticket) return sendMessage(`❌ Ticket "${shortId}" topilmadi`);
 
-    // Create admin reply as chat message
-    await SupportMessage.create({
-      ticketId: ticket.id,
-      sender: 'admin',
-      text: replyText,
-    });
+    await SupportMessage.create({ ticketId: ticket._id, sender: 'admin', text: replyText });
 
-    // Update ticket status
-    await ticket.update({
-      adminReply: replyText,
-      status: 'answered',
-      repliedAt: new Date(),
-    });
+    ticket.adminReply = replyText;
+    ticket.status = 'answered';
+    ticket.repliedAt = new Date();
+    await ticket.save();
 
     const msg = `✅ <b>Javob yuborildi!</b>\n\n` +
-      `📋 Ticket: #${ticket.id.slice(0, 8)}\n` +
-      `👤 ${ticket.user?.name || '—'} (${ticket.user?.phone || '—'})\n` +
+      `📋 Ticket: #${String(ticket._id).slice(-8)}\n` +
       `💬 ${replyText}`;
-
     return sendMessage(msg);
   } catch (err) {
     return sendMessage(`❌ Xatolik: ${err.message}`);
@@ -97,27 +70,18 @@ async function handleReply(text) {
 async function handleTickets() {
   try {
     const { SupportTicket } = require('../models');
+    const tickets = await SupportTicket.find({ status: 'open' }).sort({ createdAt: -1 }).limit(20);
 
-    const tickets = await SupportTicket.findAll({
-      where: { status: 'open' },
-      order: [['created_at', 'DESC']],
-      limit: 20,
-      include: [{ association: 'user', attributes: ['name', 'phone'] }],
-    });
-
-    if (tickets.length === 0) {
-      return sendMessage('✅ Ochiq murojaatlar yo\'q!');
-    }
+    if (tickets.length === 0) return sendMessage("✅ Ochiq murojaatlar yo'q!");
 
     let msg = `📬 <b>Ochiq murojaatlar</b> (${tickets.length} ta)\n\n`;
-
     tickets.forEach((t, i) => {
       const date = new Date(t.createdAt).toLocaleDateString('uz-UZ');
-      msg += `${i + 1}. <b>#${t.id.slice(0, 8)}</b> — ${t.subject}\n`;
-      msg += `   👤 ${t.user?.name || '—'} · ${date}\n`;
+      const shortId = String(t._id).slice(-8);
+      msg += `${i + 1}. <b>#${shortId}</b> — ${t.subject}\n`;
+      msg += `   📅 ${date}\n`;
       msg += `   💬 ${t.message.slice(0, 80)}${t.message.length > 80 ? '...' : ''}\n\n`;
     });
-
     msg += `📝 Javob: /reply <id> <matn>`;
     return sendMessage(msg);
   } catch (err) {
@@ -130,35 +94,24 @@ async function handleTickets() {
  */
 async function handleClose(text) {
   const match = text.match(/^\/close\s+(\S+)/);
-  if (!match) {
-    return sendMessage('❌ Format: /close <ticket_id>');
-  }
+  if (!match) return sendMessage('❌ Format: /close <ticket_id>');
 
   try {
     const { SupportTicket } = require('../models');
-    const { sequelize } = require('../models');
+    const shortId = match[1];
+    const tickets = await SupportTicket.find().select('_id status');
+    const ticket = tickets.find(t => String(t._id).endsWith(shortId) || String(t._id).startsWith(shortId));
 
-    const ticket = await SupportTicket.findOne({
-      where: sequelize.where(
-        sequelize.cast(sequelize.col('SupportTicket.id'), 'text'),
-        { [require('sequelize').Op.like]: `${match[1]}%` }
-      ),
-    });
+    if (!ticket) return sendMessage(`❌ Ticket "${shortId}" topilmadi`);
 
-    if (!ticket) {
-      return sendMessage(`❌ Ticket "${match[1]}" topilmadi`);
-    }
-
-    await ticket.update({ status: 'closed' });
-    return sendMessage(`✅ Ticket #${ticket.id.slice(0, 8)} yopildi`);
+    ticket.status = 'closed';
+    await ticket.save();
+    return sendMessage(`✅ Ticket #${String(ticket._id).slice(-8)} yopildi`);
   } catch (err) {
     return sendMessage(`❌ Xatolik: ${err.message}`);
   }
 }
 
-/**
- * /start
- */
 async function handleStart() {
   const msg = `🛟 <b>eTaklifnoma Support Bot</b>\n\n` +
     `Komandalar:\n\n` +
@@ -177,19 +130,10 @@ async function processUpdate(update) {
   const cmd = text.split(' ')[0].toLowerCase();
 
   switch (cmd) {
-    case '/start':
-    case '/help':
-      await handleStart();
-      break;
-    case '/tickets':
-      await handleTickets();
-      break;
-    case '/reply':
-      await handleReply(text);
-      break;
-    case '/close':
-      await handleClose(text);
-      break;
+    case '/start': case '/help': await handleStart(); break;
+    case '/tickets': await handleTickets(); break;
+    case '/reply': await handleReply(text); break;
+    case '/close': await handleClose(text); break;
   }
 }
 
