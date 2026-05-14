@@ -20,7 +20,7 @@ exports.createEventType = [
 ];
 
 exports.updateEventType = [
-  param('id').isUUID().withMessage('Invalid event type ID'),
+  param('id').isMongoId().withMessage('Invalid event type ID'),
   body('label')
     .optional()
     .trim()
@@ -37,13 +37,13 @@ exports.updateEventType = [
 ];
 
 exports.getById = [
-  param('id').isUUID().withMessage('Invalid ID format'),
+  param('id').isMongoId().withMessage('Invalid ID format'),
 ];
 
 exports.createTemplate = [
   body('eventTypeId')
     .notEmpty().withMessage('Event type ID is required')
-    .isUUID().withMessage('Invalid event type ID'),
+    .isMongoId().withMessage('Invalid event type ID'),
   body('name')
     .trim()
     .notEmpty().withMessage('Template name is required')
@@ -73,7 +73,7 @@ exports.createTemplate = [
 ];
 
 exports.updateTemplate = [
-  param('id').isUUID().withMessage('Invalid template ID'),
+  param('id').isMongoId().withMessage('Invalid template ID'),
   body('name')
     .optional()
     .trim()
@@ -101,10 +101,10 @@ exports.updateTemplate = [
 exports.createInvitation = [
   body('eventTypeId')
     .notEmpty().withMessage('Event type ID is required')
-    .isUUID().withMessage('Invalid event type ID'),
+    .isMongoId().withMessage('Invalid event type ID'),
   body('templateId')
     .optional()
-    .isUUID().withMessage('Invalid template ID'),
+    .isMongoId().withMessage('Invalid template ID'),
   body('hostName')
     .trim()
     .notEmpty().withMessage('Host name is required')
@@ -144,7 +144,7 @@ exports.createInvitation = [
 ];
 
 exports.updateInvitation = [
-  param('id').isUUID().withMessage('Invalid invitation ID'),
+  param('id').isMongoId().withMessage('Invalid invitation ID'),
   body('hostName')
     .optional()
     .trim()
