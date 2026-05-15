@@ -168,7 +168,9 @@ exports.update = catchAsync(async (req, res) => {
   }
 
   Object.assign(invitation, req.body);
+  invitation.markModified('customFields'); // required for Mongoose Mixed type
   await invitation.save();
+
 
   const updated = await Invitation.findById(invitation._id)
     .populate('eventTypeId', 'id name label icon')

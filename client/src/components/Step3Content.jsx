@@ -390,51 +390,74 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           const def = defaults[ev] || '✨';
           const sugg = suggestions[ev] || suggestions.custom;
           const current = data.customFields?.heroEmoji || '';
+          const isHidden = current === 'none';
           return (
             <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3">
-              <h3 className="text-[13px] font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-2">
-                🎭 Yuqori belgi (shapka emoji)
-              </h3>
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="text-4xl leading-none bg-white/5 rounded-xl p-2 border border-white/10 min-w-[52px] text-center">
-                  {current || def}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <label className="label mb-1">Emoji yoki matn kiriting</label>
-                  <input
-                    type="text"
-                    placeholder={def}
-                    className="input-field"
-                    maxLength={8}
-                    value={current}
-                    onChange={(e) => handleCustomFieldChange('heroEmoji', e.target.value)}
-                  />
+              <div className="flex items-center justify-between">
+                <h3 className="text-[13px] font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-2">
+                  🎭 Yuqori belgi (shapka emoji)
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => handleCustomFieldChange('heroEmoji', isHidden ? '' : 'none')}
+                  className={`text-xs px-3 py-1 rounded-full border transition-all duration-200 flex items-center gap-1
+                    ${isHidden
+                      ? 'bg-red-500/20 border-red-400/50 text-red-300 hover:bg-red-500/30'
+                      : 'bg-white/5 border-white/15 text-surface-400 hover:bg-red-500/10 hover:border-red-500/30 hover:text-red-400'}`}
+                >
+                  {isHidden ? "👁️ Ko'rsatish" : "🗑️ Olib tashlash"}
+                </button>
+              </div>
+
+              {isHidden ? (
+                <div className="flex items-center gap-2 py-2 px-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                  <span className="text-2xl opacity-30 line-through">{def}</span>
+                  <p className="text-[11px] text-red-400">Shapka yashirilgan — taklifnomada ko'rinmaydi</p>
                 </div>
-                {current && (
-                  <button type="button"
-                    onClick={() => handleCustomFieldChange('heroEmoji', '')}
-                    className="text-xs text-surface-400 hover:text-red-400 shrink-0 px-2 py-1 rounded border border-surface-600 hover:border-red-500/40 transition-colors"
-                  >
-                    Standart
-                  </button>
-                )}
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {sugg.map(em => (
-                  <button
-                    key={em}
-                    type="button"
-                    onClick={() => handleCustomFieldChange('heroEmoji', em)}
-                    className={`text-xl w-10 h-10 rounded-lg border transition-all duration-150 flex items-center justify-center
-                      ${(current || def) === em
-                        ? 'bg-yellow-500/20 border-yellow-400/60 scale-110'
-                        : 'bg-white/5 border-white/10 hover:bg-white/10 hover:scale-105'}`}
-                    title={em}
-                  >
-                    {em}
-                  </button>
-                ))}
-              </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-4xl leading-none bg-white/5 rounded-xl p-2 border border-white/10 min-w-[52px] text-center">
+                      {current || def}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <label className="label mb-1">Emoji yoki matn kiriting</label>
+                      <input
+                        type="text"
+                        placeholder={def}
+                        className="input-field"
+                        maxLength={8}
+                        value={current}
+                        onChange={(e) => handleCustomFieldChange('heroEmoji', e.target.value)}
+                      />
+                    </div>
+                    {current && current !== 'none' && (
+                      <button type="button"
+                        onClick={() => handleCustomFieldChange('heroEmoji', '')}
+                        className="text-xs text-surface-400 hover:text-yellow-400 shrink-0 px-2 py-1 rounded border border-surface-600 hover:border-yellow-500/40 transition-colors"
+                      >
+                        Standart
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {sugg.map(em => (
+                      <button
+                        key={em}
+                        type="button"
+                        onClick={() => handleCustomFieldChange('heroEmoji', em)}
+                        className={`text-xl w-10 h-10 rounded-lg border transition-all duration-150 flex items-center justify-center
+                          ${(current || def) === em
+                            ? 'bg-yellow-500/20 border-yellow-400/60 scale-110'
+                            : 'bg-white/5 border-white/10 hover:bg-white/10 hover:scale-105'}`}
+                        title={em}
+                      >
+                        {em}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           );
         })()}
