@@ -43,10 +43,18 @@ const QQ_MONTHS = [
   'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
   'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr',
 ];
+const QQ_MONTHS_CYR = [
+  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+];
 
 const QQ_DAYS = [
   'Ekshenbi', 'Dúyshenbi', 'Seyshenbi', 'Sárshenbi',
   'Piyshenbi', 'Juma', 'Shambe',
+];
+const QQ_DAYS_CYR = [
+  'Екшенби', 'Дүйшенби', 'Сейшенби', 'Сәршенби',
+  'Пийшенби', 'Жума', 'Шамбе',
 ];
 
 
@@ -95,7 +103,18 @@ function formatDateRu(dateStr) {
 
 /**
  * Formats a date string (YYYY-MM-DD) into Karakalpak human-readable format.
+ * @param {string} dateStr
+ * @param {string} [script='latin'] - 'cyrillic' | 'latin'
+ */
+function formatDateQq(dateStr, script) {
+  if (!dateStr) return '';
+  try {
+    const [year, month, day] = dateStr.split('-').map(Number);
     const d = new Date(year, month - 1, day);
+    if (script === 'cyrillic') {
+      const dayName = QQ_DAYS_CYR[d.getDay()];
+      return `${day}-${QQ_MONTHS_CYR[month - 1]} ${year}-жыл, ${dayName}`;
+    }
     const dayName = QQ_DAYS[d.getDay()];
     return `${day}-${QQ_MONTHS[month - 1]} ${year}-jıl, ${dayName}`;
   } catch {
