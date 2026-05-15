@@ -167,8 +167,18 @@ function getPreferredScript(customFields = {}, lang) {
   return 'cyrillic';
 }
 
+// Detect if string is already Cyrillic — if so, skip transliteration
+function isCyrillicText(str) {
+  if (!str) return false;
+  const cyrCount = (str.match(/[\u0400-\u04FF]/g) || []).length;
+  const latCount = (str.match(/[a-zA-Z]/g) || []).length;
+  return cyrCount > 0 && cyrCount >= latCount;
+}
+
 function transliterateText(str, script, lang = 'uz') {
   if (!str || script !== 'cyrillic') return str;
+  // If text is already predominantly Cyrillic — skip to avoid double-conversion
+  if (isCyrillicText(str)) return str;
 
   const ltCy = {
     Ya: 'Я', ya: 'я', Ye: 'Е', ye: 'е', Yo: 'Ё', yo: 'ё', Yu: 'Ю', yu: 'ю', Ch: 'Ч', ch: 'ч', Sh: 'Ш', sh: 'ш',
@@ -187,7 +197,18 @@ function transliterateText(str, script, lang = 'uz') {
 
   const keys = Object.keys(ltCy).sort((a, b) => b.length - a.length);
   const regex = new RegExp(keys.join('|'), 'g');
-  return str.replace(regex, (match) => ltCy[match] || match);
+  let result = str.replace(regex, (match) => ltCy[match] || match);
+
+  // QQ: E→Е (not Э) at word-start or after vowel/space/punctuation
+  if (lang === 'qq') {
+    const vowels = 'АаЕеИиОоУуЫыӘәӨөҮүЭэ';
+    const re1 = new RegExp('(^|[\\s\\-,.(\"«\'' + vowels + '])Э', 'g');
+    const re2 = new RegExp('(^|[\\s\\-,.(\"«\'' + vowels + '])э', 'g');
+    result = result.replace(re1, '$1Е');
+    result = result.replace(re2, '$1е');
+  }
+
+  return result;
 }
 
 function transliterateProgram(programValue, script, lang) {
