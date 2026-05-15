@@ -526,6 +526,68 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           );
         })()}
 
+        {/* ── Footer kutish xabari — "Sizni kutib qolamiz!" kabi ── */}
+        {data.eventType && (
+          <div className="glass p-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl mb-2 space-y-3">
+            <h3 className="text-[13px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
+              💌 Kutish xabari
+              <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-rose-700/30 px-1.5 py-0.5 rounded">
+                pastki — "Сизлерди күтип қаламыз!" kabi
+              </span>
+            </h3>
+            <div className="space-y-2">
+              {isUzOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇺🇿 O'zbekcha</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="Sizni kutib qolamiz! ✨"
+                    value={data.customFields?.customWaitingMsg || ''}
+                    onChange={(e) => handleCustomFieldChange('customWaitingMsg', e.target.value)}
+                  />
+                </div>
+              )}
+              {isQqOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇰🇦 Qaraqalpaqcha</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="Sizdi kútip qalamız! ✨"
+                    value={data.customFields?.customWaitingMsgQq || ''}
+                    onChange={(e) => handleCustomFieldChange('customWaitingMsgQq', e.target.value)}
+                  />
+                </div>
+              )}
+              {isRuOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇷🇺 Ruscha</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="Ждём вас! ✨"
+                    value={data.customFields?.customWaitingMsgRu || ''}
+                    onChange={(e) => handleCustomFieldChange('customWaitingMsgRu', e.target.value)}
+                  />
+                </div>
+              )}
+              {!isUzOn && !isQqOn && !isRuOn && (
+                <div>
+                  <label className="label mb-1">Kutish xabari</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="Sizni kutib qolamiz! ✨"
+                    value={data.customFields?.customWaitingMsg || ''}
+                    onChange={(e) => handleCustomFieldChange('customWaitingMsg', e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
         {data.eventType && (
           <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3">
