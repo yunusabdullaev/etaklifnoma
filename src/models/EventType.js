@@ -6,7 +6,7 @@ const EventTypeSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true,
-    enum: ['wedding', 'birthday', 'jubilee', 'graduation'],
+    enum: ['wedding', 'birthday', 'jubilee', 'graduation', 'custom'],
     maxlength: 50,
   },
   label: {

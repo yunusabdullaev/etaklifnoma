@@ -135,6 +135,7 @@ async function run() {
 
     console.log(`\n── NEW UNIQUE DESIGNS ──`);
     for (const [etName, etId] of Object.entries(etMap)) {
+      if (etName === 'custom') continue; // custom type uses all templates, no separate prefix
       const prefix = prefixMap[etName];
       const config = eventTypeConfig[etName];
 
