@@ -46,6 +46,7 @@ export default function App() {
   const [token, setToken] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [view, setView] = useState('dashboard'); // 'dashboard' | 'wizard' | 'support'
+  const [editingInvitationId, setEditingInvitationId] = useState(null); // tahrirlash rejimida invitation ID
   const GLOBAL_DRAFT_KEY = 'etaklifnoma_wizard_draft';
 
   // Global wizard draft auto-save
@@ -105,18 +106,44 @@ export default function App() {
   const resetWizard = () => {
     setData(INITIAL_DATA);
     setStep(1);
+    setEditingInvitationId(null);
     setView('dashboard');
     localStorage.removeItem(GLOBAL_DRAFT_KEY);
   };
 
   const startWizard = (defaultSettings = null) => {
     localStorage.removeItem(GLOBAL_DRAFT_KEY);
+    setEditingInvitationId(null);
     let freshData = { ...INITIAL_DATA };
     if (defaultSettings && Object.keys(defaultSettings).length > 0) {
         freshData.customFields = { ...defaultSettings };
     }
     setData(freshData);
     setStep(1);
+    setView('wizard');
+  };
+
+  // To'liq wizard orqali mavjud invitationni tahrirlash
+  const editInvitation = (inv) => {
+    localStorage.removeItem(GLOBAL_DRAFT_KEY);
+    setEditingInvitationId(inv.id);
+    const editData = {
+      eventType: inv.eventType || null,
+      eventTypeId: inv.eventTypeId || inv.eventType?._id || null,
+      template: inv.template || null,
+      templateId: inv.templateId || inv.template?._id || null,
+      hostName: inv.hostName || '',
+      guestName: inv.guestName || '',
+      eventTitle: inv.eventTitle || '',
+      eventDate: inv.eventDate ? inv.eventDate.substring(0, 10) : '',
+      eventTime: inv.eventTime ? inv.eventTime.substring(0, 5) : '',
+      location: inv.location || '',
+      locationUrl: inv.locationUrl || '',
+      message: inv.message || '',
+      customFields: inv.customFields || {},
+    };
+    setData(editData);
+    setStep(3); // To'g'ridan to'g'ri kontent muharririga o'tish
     setView('wizard');
   };
 
@@ -144,9 +171,9 @@ export default function App() {
     switch (step) {
       case 1: return <Step1EventType data={data} onUpdate={updateData} onNext={nextStep} />;
       case 2: return <Step2Template data={data} onUpdate={updateData} onNext={nextStep} onBack={prevStep} />;
-      case 3: return <Step3Content data={data} onUpdate={updateData} onNext={nextStep} onBack={prevStep} />;
+      case 3: return <Step3Content data={data} onUpdate={updateData} onNext={nextStep} onBack={prevStep} editingInvitationId={editingInvitationId} token={token} />;
       case 4: return <Step4Preview data={data} onNext={nextStep} onBack={prevStep} />;
-      case 5: return <Step5Generate data={data} onReset={resetWizard} onBack={prevStep} />;
+      case 5: return <Step5Generate data={data} onReset={resetWizard} onBack={prevStep} editingInvitationId={editingInvitationId} token={token} />;
       default: return null;
     }
   };
@@ -287,7 +314,7 @@ export default function App() {
               transition={{ duration: 0.3 }}
             >
               <Suspense fallback={<ScreenLoader />}>
-                <Dashboard token={token} onCreateNew={startWizard} onContinueDraft={continueWizard} />
+                <Dashboard token={token} onCreateNew={startWizard} onContinueDraft={continueWizard} onEditFull={editInvitation} />
               </Suspense>
             </motion.div>
           ) : showSupport ? (

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ExternalLink, Copy, Eye, Calendar, MapPin, Clock, Trash2, Check, LayoutGrid, Pencil, X, Save, Loader2, QrCode, Users, Download, UserCheck, UserX, HelpCircle, MessageSquare, Copy as CopyIcon, Share2, Send } from 'lucide-react';
 import { useLang } from '../i18n';
 
-export default function Dashboard({ token, onCreateNew, onContinueDraft }) {
+export default function Dashboard({ token, onCreateNew, onContinueDraft, onEditFull }) {
   const [invitations, setInvitations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedSlug, setCopiedSlug] = useState(null);
@@ -500,10 +500,18 @@ export default function Dashboard({ token, onCreateNew, onContinueDraft }) {
                   {duplicating === inv.slug ? <Loader2 size={12} className="animate-spin" /> : <Copy size={12} />}
                   📋
                 </button>
-                <button onClick={() => openEdit(inv)} title={t('dashboard.edit')}
-                  className="p-1.5 rounded-lg text-surface-500 hover:text-amber-400 hover:bg-amber-400/10 transition-all">
-                  <Pencil size={12} />
-                </button>
+                {/* To'liq tahrirlash tugmasi — wizard Step3 ga yo'naltiradi */}
+                {onEditFull && (
+                  <button
+                    onClick={() => onEditFull(inv)}
+                    title={t('dashboard.edit') || "To'liq tahrirlash"}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[11px] font-semibold
+                      bg-amber-500/10 text-amber-400 border border-amber-500/20
+                      hover:bg-amber-500/20 hover:border-amber-400/40 hover:text-amber-300 transition-all"
+                  >
+                    <Pencil size={12} /> {t('dashboard.edit') || 'Tahrirlash'}
+                  </button>
+                )}
                 <button onClick={() => deleteInvitation(inv.id)} title={t('dashboard.delete')}
                   className="p-1.5 rounded-lg text-surface-500 hover:text-rose-400 hover:bg-rose-400/10 transition-all">
                   <Trash2 size={12} />

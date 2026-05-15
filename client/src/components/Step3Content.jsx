@@ -178,15 +178,18 @@ const PRESET_SONGS = [
   { id: 'alcocer-idea15', title: 'Idea 15', artist: 'Gibran Alcocer', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
 ];
 
-export default function Step3Content({ data, onUpdate, onNext, onBack }) {
+export default function Step3Content({ data, onUpdate, onNext, onBack, editingInvitationId, token }) {
   const [showPreview, setShowPreview] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
   const [uploading, setUploading] = useState(null); // 'photo' | 'music' | null
   const [draftSaved, setDraftSaved] = useState(false);
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
   const [slugState, setSlugState] = useState({ status: 'idle', message: '' });
   const [locConfirmed, setLocConfirmed] = useState(false);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editSaved, setEditSaved] = useState(false);
   const saveTimerRef = useRef(null);
   const { t, lang } = useLang();
+  const API = import.meta.env.VITE_API_URL || '';
   const trLocal = trStep3[lang] || trStep3['uz'];
   const orderArr = (data.customFields?.langOrder || 'uz,ru,qq').split(',');
 
@@ -275,6 +278,41 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
     onUpdate({
       customFields: { ...data.customFields, [key]: value },
     });
+  };
+
+  // Tahrirlash rejimida o'zgarishlarni API'ga saqlash
+  const handleSaveEdit = async () => {
+    if (!editingInvitationId || !token) return;
+    setEditSaving(true);
+    try {
+      const { enableRsvp, ...customFieldsRest } = data.customFields || {};
+      const res = await fetch(`${API}/api/invitations/${editingInvitationId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          hostName: data.hostName,
+          guestName: data.guestName,
+          eventTitle: data.eventTitle,
+          eventTime: data.eventTime,
+          location: data.location,
+          locationUrl: data.locationUrl,
+          message: data.message,
+          customFields: data.customFields,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setEditSaved(true);
+        setTimeout(() => {
+          setEditSaved(false);
+          onBack(); // Dashboardga qaytish
+        }, 1500);
+      }
+    } catch (err) {
+      console.error('Saqlashda xatolik:', err);
+    } finally {
+      setEditSaving(false);
+    }
   };
 
   const templateFields = data.template?.structure?.fields || [];
@@ -1349,10 +1387,26 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl md:text-3xl font-display font-bold">
-            {t('step3.title')}
-          </h2>
-          <p className="text-surface-400 text-sm mt-1">{t('step3.desc')}</p>
+          {editingInvitationId ? (
+            <>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  ✏️ Tahrirlash rejimi
+                </span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-amber-300">
+                Taklifnomani tahrirlash
+              </h2>
+              <p className="text-surface-400 text-sm mt-1">O'zgarishlarni kiritib, "Saqlash" tugmasini bosing</p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl md:text-3xl font-display font-bold">
+                {t('step3.title')}
+              </h2>
+              <p className="text-surface-400 text-sm mt-1">{t('step3.desc')}</p>
+            </>
+          )}
         </div>
         <button
           onClick={() => setShowPreview(!showPreview)}
@@ -1391,26 +1445,53 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
 
       <div className="sticky bottom-0 z-20 bg-surface-950/90 backdrop-blur-lg border-t border-white/5 
         -mx-4 px-4 py-4 mt-6 sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-0 sm:mx-0 sm:px-0 sm:py-0 sm:mt-0">
-        <div className="flex justify-between items-center gap-3">
-          <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">{t('step3.back')}</button>
-          <div className="flex flex-col sm:flex-row items-center justify-end w-full sm:w-auto relative group">
-            <button onClick={onNext}
-              disabled={
-                !activeHostName || 
-                !data.eventDate || 
-                !data.location || 
-                (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)
-              }
-              className={`btn-primary flex-1 sm:flex-none w-full min-w-[160px] text-center py-3.5 ${(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) ? 'bg-surface-700 text-surface-400 hover:scale-100 cursor-not-allowed' : ''}`}>
-              {t('step3.next')}
+        {/* Tahrirlash rejimi: Saqlash tugmasi */}
+        {editingInvitationId ? (
+          <div className="flex justify-between items-center gap-3">
+            <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">
+              ← {t('step3.back') || 'Orqaga'}
             </button>
-            {(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) && (
-              <span className="absolute -top-10 right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 bg-black/80 backdrop-blur-md text-white text-[10px] whitespace-nowrap px-3 py-1.5 rounded-lg opacity-0 transition-opacity drop-shadow-xl pointer-events-none w-auto delay-200">
-                {trLocal.confirmTip}
-              </span>
-            )}
+            <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
+              {editSaved && (
+                <span className="text-emerald-400 text-sm flex items-center gap-1 animate-fade-in">
+                  ✅ Saqlandi!
+                </span>
+              )}
+              <button
+                onClick={handleSaveEdit}
+                disabled={editSaving || !activeHostName || !data.eventDate || !data.location}
+                className="btn-primary flex items-center justify-center gap-2 min-w-[160px] py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {editSaving ? (
+                  <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saqlanmoqda...</>
+                ) : (
+                  <>💾 O'zgarishlarni saqlash</>
+                )}
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex justify-between items-center gap-3">
+            <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">{t('step3.back')}</button>
+            <div className="flex flex-col sm:flex-row items-center justify-end w-full sm:w-auto relative group">
+              <button onClick={onNext}
+                disabled={
+                  !activeHostName || 
+                  !data.eventDate || 
+                  !data.location || 
+                  (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)
+                }
+                className={`btn-primary flex-1 sm:flex-none w-full min-w-[160px] text-center py-3.5 ${(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) ? 'bg-surface-700 text-surface-400 hover:scale-100 cursor-not-allowed' : ''}`}>
+                {t('step3.next')}
+              </button>
+              {(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) && (
+                <span className="absolute -top-10 right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 bg-black/80 backdrop-blur-md text-white text-[10px] whitespace-nowrap px-3 py-1.5 rounded-lg opacity-0 transition-opacity drop-shadow-xl pointer-events-none w-auto delay-200">
+                  {trLocal.confirmTip}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );
