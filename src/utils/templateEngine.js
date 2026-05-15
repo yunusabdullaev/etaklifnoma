@@ -1120,6 +1120,56 @@ function buildLanguageToggle(cf) {
         jubProgramTitle: 'Tantana baǵdarlanması',
         jubWaitingMsg: 'Sizdi kútip qalamız! 🎉'
       },
+      // QQ Cyrillic — pre-converted to avoid transliteration errors
+      qqCyr: {
+        eventLabel: 'Некеx шақырыwы',
+        countdownTitle: 'Тойға шекем қалған wақыт',
+        days: 'Күн', hours: 'Сағат', minutes: 'Минут', seconds: 'Секунд',
+        detailsTitle: 'Той тафсилатлары',
+        dateLabel: 'Сәнеси', timeLabel: 'Wақыт', venueLabel: 'Мәнзил',
+
+        guestWelcome: 'Меxманлар күтип алыw',
+        locationTitle: 'Локация',
+        viewMap: 'Картада көриw',
+        programTitle: 'Кеше программасы',
+        dressCode: 'Дресс код',
+        waitingMsg: 'Сизди күтип қаламыз!',
+        galleryTitle: 'Фото көргізбе',
+        wishesTitle: '💌 Тилек hәм қутлықлаw',
+        wishesSubtitle: 'Тилек hем қутлықлаwларыңызды қалдырыń',
+        wishesName: 'Атыńыз',
+        wishesMessage: 'Тилеклериниз...',
+        wishesSend: 'Жибериw',
+        wishesSent: 'Тилеклериниз жиберилди! Рахмет!',
+        wishesError: 'Қателик жүз берди.',
+        envOpen: 'Ашыw үшін басыń',
+        shareWa: 'WhatsApp тармағында үлесиw',
+        shareTg: 'Telegram тармағында үлесиw',
+        calBtn: 'Календарыма қосыw',
+        printBtn: 'PDF қылып сақлаw',
+        inviteText: '💍 Сизди такlifнамамызға шақырамыз!',
+
+        bdEventLabel: 'Туwылған күн шақырыwы',
+        bdCountdownTitle: 'Байрамға шекем қалған wақыт',
+        bdDetailsTitle: 'Байрам тафсилатлары',
+        bdWaitingMsg: 'Сизди күтип қаламыз! 🎉',
+        bdProgramTitle: 'Байрам бағдарламасы',
+        bdAge: "жас",
+        gradYear: "питириwшилер",
+        jubYears: "жыллық",
+
+        gradEventLabel: 'Питкериwшилер кешеси',
+        gradCountdownTitle: 'Ушырасыw кешесине қалған wақыт:',
+        gradDetailsTitle: 'Ушырасыw тафсилатлары',
+        gradProgramTitle: 'Кеше программасы',
+        gradWaitingMsg: 'Сизди күтип қаламыз! 🎓',
+
+        jubEventLabel: 'Юбилей шақырыwы',
+        jubCountdownTitle: 'Байрамға шекем қалған wақыт',
+        jubDetailsTitle: 'Тафсилатлар',
+        jubProgramTitle: 'Тантана бағдарламасы',
+        jubWaitingMsg: 'Сизди күтип қаламыз! 🎉'
+      },
       ru: {
         eventLabel: 'Свадебное приглашение',
         countdownTitle: 'До свадьбы осталось',
@@ -1248,7 +1298,9 @@ function buildLanguageToggle(cf) {
 
     function switchLang(lang, isScriptChange) {
       if(!isScriptChange && window.currentLang === lang && !window._forceSwap) return;
-      var t = Object.assign({}, translations[lang] || translations.uz);
+      // For QQ Cyrillic: use pre-translated Cyrillic strings to avoid transliteration errors
+      var tKey = (lang === 'qq' && window._curScript === 'cyrillic') ? 'qqCyr' : lang;
+      var t = Object.assign({}, translations[tKey] || translations[lang] || translations.uz);
       
       var evObj = d.eventType || {};
       var ev = (typeof evObj === 'string' ? evObj : (evObj.name || '')).toLowerCase();
