@@ -583,6 +583,22 @@ function renderInvitation(invitation, eventType, template) {
     eventTimeRaw: invitation.eventTime ? invitation.eventTime.substring(0, 5) : '',
     eventTitleDisplay: context['eventTitle'] || context['hostName'] || '',
     locationDisplay: context['location'] || '',
+    // ── Custom label overrides (user-defined in Step3) ──
+    customEventLabel:         customFields.customEventLabel         || '',
+    customEventLabelQq:       customFields.customEventLabelQq       || '',
+    customEventLabelRu:       customFields.customEventLabelRu       || '',
+    customCountdownTitle:     customFields.customCountdownTitle     || '',
+    customCountdownTitleQq:   customFields.customCountdownTitleQq   || '',
+    customCountdownTitleRu:   customFields.customCountdownTitleRu   || '',
+    customDetailsTitle:       customFields.customDetailsTitle       || '',
+    customDetailsTitleQq:     customFields.customDetailsTitleQq     || '',
+    customDetailsTitleRu:     customFields.customDetailsTitleRu     || '',
+    customProgramTitle:       customFields.customProgramTitle       || '',
+    customProgramTitleQq:     customFields.customProgramTitleQq     || '',
+    customProgramTitleRu:     customFields.customProgramTitleRu     || '',
+    customWaitingMsg:         customFields.customWaitingMsg         || '',
+    customWaitingMsgQq:       customFields.customWaitingMsgQq       || '',
+    customWaitingMsgRu:       customFields.customWaitingMsgRu       || '',
   })};</script>
   ${buildShareButtons(invitation.customFields)}
   ${(invitation.customFields?.showCalendarBtn === true) ? buildCalendarButton() : ''}
