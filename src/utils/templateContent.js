@@ -759,7 +759,7 @@ exports.birthdayPremiumHtml = `
       <div class="shape s2"></div>
     </div>
     <div class="hero-inner">
-      <div class="bd-emoji">🎂</div>
+      <div class="bd-emoji" id="hero-emoji">{{heroEmoji|🎂}}</div>
       <p class="hero-label" data-i18n="bdEventLabel">{{eventTypeLabel|Tug'ilgan kun}}</span></p>
       <h1 class="bd-title"><span data-tp="eventTitle">{{eventTitle|Tug'ilgan kun bayrami}}</span></h1>
       {{#if age}}
@@ -923,7 +923,7 @@ exports.graduationPremiumHtml = `
       <div class="shape s2"></div>
     </div>
     <div class="hero-inner">
-      <div class="grad-emoji">🎓</div>
+      <div class="grad-emoji" id="hero-emoji">{{heroEmoji|🎓}}</div>
       <p class="hero-label" data-i18n="gradEventLabel">{{eventTypeLabel|Bitiruv kechasi}}</span></p>
       <h1 class="grad-title"><span data-tp="eventTitle">{{eventTitle|Bitiruv kechasi}}</span></h1>
       {{#if graduationYear}}
@@ -1047,7 +1047,7 @@ exports.jubileePremiumHtml = `
       <div class="shape s2"></div>
     </div>
     <div class="hero-inner">
-      <div class="jub-emoji">🎉</div>
+      <div class="jub-emoji" id="hero-emoji">{{heroEmoji|🎉}}</div>
       <p class="hero-label" data-i18n="jubEventLabel">{{eventTypeLabel|Yubiley}}</span></p>
       <h1 class="jub-title"><span data-tp="eventTitle">{{eventTitle|Yubiley bayramiga taklif}}</span></h1>
       {{#if years}}

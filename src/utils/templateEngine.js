@@ -311,6 +311,9 @@ function buildContext(invitation, eventType, template) {
     ctx['icon'] = eventType.icon || '';
   }
 
+  // Hero emoji — user can override the top icon of the invitation
+  ctx['heroEmoji'] = (customFields && customFields.heroEmoji) ? customFields.heroEmoji : '';
+
   // Template info
   if (template) {
     ctx['templateName'] = template.name || '';

@@ -376,6 +376,69 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           ✍️ {t('step3.textGroupTitle')}
         </h3>
 
+        {/* ── Hero Emoji / Shapka ── */}
+        {data.eventType && (() => {
+          const ev = data.eventType?.name || 'custom';
+          const defaults = { wedding: '💍', birthday: '🎂', graduation: '🎓', jubilee: '🎉', custom: '✨' };
+          const suggestions = {
+            wedding:    ['💍','💒','🌹','💐','🕊️','🥂','✨','🎊'],
+            birthday:   ['🎂','🎈','🎉','🎁','🎀','🥳','⭐','🌟'],
+            graduation: ['🎓','📚','🏆','📜','⭐','🌟','✨','🎊'],
+            jubilee:    ['🎉','🥂','🏆','👑','🌟','💫','✨','🎊'],
+            custom:     ['✨','🌟','💫','🎊','🎈','🌸','🕊️','🔑'],
+          };
+          const def = defaults[ev] || '✨';
+          const sugg = suggestions[ev] || suggestions.custom;
+          const current = data.customFields?.heroEmoji || '';
+          return (
+            <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3">
+              <h3 className="text-[13px] font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-2">
+                🎭 Yuqori belgi (shapka emoji)
+              </h3>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-4xl leading-none bg-white/5 rounded-xl p-2 border border-white/10 min-w-[52px] text-center">
+                  {current || def}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <label className="label mb-1">Emoji yoki matn kiriting</label>
+                  <input
+                    type="text"
+                    placeholder={def}
+                    className="input-field"
+                    maxLength={8}
+                    value={current}
+                    onChange={(e) => handleCustomFieldChange('heroEmoji', e.target.value)}
+                  />
+                </div>
+                {current && (
+                  <button type="button"
+                    onClick={() => handleCustomFieldChange('heroEmoji', '')}
+                    className="text-xs text-surface-400 hover:text-red-400 shrink-0 px-2 py-1 rounded border border-surface-600 hover:border-red-500/40 transition-colors"
+                  >
+                    Standart
+                  </button>
+                )}
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {sugg.map(em => (
+                  <button
+                    key={em}
+                    type="button"
+                    onClick={() => handleCustomFieldChange('heroEmoji', em)}
+                    className={`text-xl w-10 h-10 rounded-lg border transition-all duration-150 flex items-center justify-center
+                      ${(current || def) === em
+                        ? 'bg-yellow-500/20 border-yellow-400/60 scale-110'
+                        : 'bg-white/5 border-white/10 hover:bg-white/10 hover:scale-105'}`}
+                    title={em}
+                  >
+                    {em}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {/* ── Ichki matnlarni o'zgartirish — barcha event turlari uchun ── */}
         {data.eventType && (
           <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2">
