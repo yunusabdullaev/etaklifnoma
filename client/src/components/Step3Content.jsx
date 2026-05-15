@@ -1161,8 +1161,23 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               let val = e.target.value;
               const urlMatch = val.match(/(https?:\/\/[^\s]+)/i);
               if (urlMatch) val = urlMatch[0];
-              handleChange('locationUrl', val.trim());
+              const trimmed = val.trim();
+              handleChange('locationUrl', trimmed);
               setLocConfirmed(false);
+
+              // Auto-resolve Yandex/Google short URLs
+              const isShortYandex = /yandex\.[^/]+\/maps\/-\//.test(trimmed);
+              const isShortGoogle = /maps\.app\.goo\.gl|goo\.gl\/maps/.test(trimmed);
+              if ((isShortYandex || isShortGoogle) && trimmed.length > 10) {
+                fetch(`${API}/api/resolve-map?url=${encodeURIComponent(trimmed)}`)
+                  .then(r => r.json())
+                  .then(d => {
+                    if (d.success && d.resolved && d.resolved !== trimmed) {
+                      handleChange('locationUrl', d.resolved);
+                    }
+                  })
+                  .catch(() => {}); // silently fail
+              }
             }}
             className={`input-field ${data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) ? 'border-red-500/50 focus:border-red-500 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}`} />
           {data.locationUrl && !/^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (

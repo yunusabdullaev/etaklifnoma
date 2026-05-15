@@ -86,6 +86,52 @@ router.get(
   renderController.renderBySlug,
 );
 
+// ── Map URL Resolver (short URLs → full URL with coords) ────
+router.get('/api/resolve-map', async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.json({ success: false, resolved: url });
+  try {
+    // Follow redirects using fetch (Node 18+ supports it natively)
+    const response = await fetch(url, {
+      method: 'HEAD',
+      redirect: 'follow',
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; etaklifnoma/1.0)' },
+      signal: AbortSignal.timeout(5000),
+    });
+    const resolved = response.url || url;
+    // Extract coordinates from resolved URL
+    let mapEmbedUrl = resolved;
+    try {
+      const u = new URL(resolved);
+      // poi[point]=lon,lat
+      const poi = u.searchParams.get('poi[point]');
+      if (poi) {
+        const [lon, lat] = poi.split(',');
+        if (lon && lat) {
+          mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${lon},${lat},pm2rdm&z=16`;
+        }
+      }
+      // pt=lon,lat,style
+      const pt = u.searchParams.get('pt');
+      if (!poi && pt) {
+        const [lon, lat] = pt.split(',');
+        if (lon && lat) {
+          mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${pt}&z=16`;
+        }
+      }
+      // ll=lon,lat fallback
+      const ll = u.searchParams.get('ll');
+      if (!poi && !pt && ll) {
+        const z = u.searchParams.get('z') || '15';
+        mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${ll}&z=${z}`;
+      }
+    } catch(e) {}
+    return res.json({ success: true, resolved, mapEmbedUrl });
+  } catch (err) {
+    return res.json({ success: false, resolved: url, mapEmbedUrl: null, error: err.message });
+  }
+});
+
 // ── Health check ────────────────────────────────────────
 router.get('/health', (_req, res) => {
   res.json({
