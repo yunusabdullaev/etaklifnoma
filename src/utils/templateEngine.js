@@ -598,6 +598,12 @@ function renderInvitation(invitation, eventType, template) {
     ${getMusicPlayerStyles()}
     ${getWishesFormStyles()}
     ${getLanguageToggleStyles()}
+    /* Hide empty hostName placeholder */
+    [data-tp="hostName"]:empty,
+    [data-tp="hostName"]:empty + br,
+    p:has(> [data-tp="hostName"]:empty),
+    .greeting-family:has(> [data-tp="hostName"]:empty),
+    .footer-names:has([data-tp="hostName"]:empty) { display: none !important; }
   </style>
 </head>
 <body>
