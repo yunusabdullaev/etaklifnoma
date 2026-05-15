@@ -108,12 +108,14 @@ exports.serve = catchAsync(async (req, res) => {
     cacheSet(id, file);
   }
 
+  const buf = Buffer.isBuffer(file.data) ? file.data : Buffer.from(file.data);
+
   res.set({
     'Content-Type': file.mimetype,
-    'Content-Length': file.size,
+    'Content-Length': buf.length,
     'Cache-Control': 'public, max-age=31536000, immutable',
     'Content-Disposition': `inline; filename="${file.filename}"`,
   });
 
-  res.send(file.data);
+  res.send(buf);
 });

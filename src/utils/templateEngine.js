@@ -613,7 +613,7 @@ function buildMusicPlayer(musicUrl) {
     </svg>
   </div>
   <audio id="bgMusic" loop preload="auto">
-    <source src="${musicUrl}" type="audio/mpeg">
+    <source src="${musicUrl}">
   </audio>
   <script>
   (function() {
