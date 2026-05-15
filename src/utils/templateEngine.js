@@ -343,7 +343,52 @@ function buildContext(invitation, eventType, template) {
   ctx['hasProgram'] = !!(ctx['program'] || ctx['programRu'] || ctx['programQq']);
   ctx['has_program'] = ctx['hasProgram'];
 
+  // Map embed URL — converts locationUrl to iframe-embeddable format
+  ctx['mapEmbedUrl'] = getMapEmbedUrl(ctx['locationUrl'] || '', ctx['location'] || '');
+
   return ctx;
+}
+
+/**
+/**
+ * Converts a maps URL (Yandex, Google, 2GIS) into an embeddable iframe src.
+ */
+function getMapEmbedUrl(locationUrl, locationName) {
+  const fallback = locationName
+    ? `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName)}&z=15`
+    : '';
+  if (!locationUrl) return fallback;
+  try {
+    const url = new URL(locationUrl);
+
+    // ── Yandex Maps ──
+    if (url.hostname.includes('yandex')) {
+      if (url.pathname.includes('map-widget')) return locationUrl;
+      const w = new URL(locationUrl);
+      if (!w.pathname.includes('map-widget')) {
+        w.pathname = w.pathname.replace(/^\/maps/, '/map-widget/v1');
+        if (!w.pathname.includes('map-widget')) w.pathname = '/map-widget/v1/';
+      }
+      if (!w.searchParams.has('z')) w.searchParams.set('z', '15');
+      return w.toString();
+    }
+
+    // ── Google Maps ── extract lat/lng and build embed
+    if (url.hostname.includes('google.com') || url.hostname.includes('goo.gl') || url.hostname.includes('maps.app.goo.gl')) {
+      const coordMatch = locationUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (coordMatch) {
+        const lat = coordMatch[1], lng = coordMatch[2];
+        return `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+      }
+      const q = url.searchParams.get('q') || locationName || '';
+      if (q) return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=15&output=embed`;
+    }
+
+    // ── 2GIS / others — fallback to Yandex search ──
+    return fallback;
+  } catch (e) {
+    return fallback;
+  }
 }
 
 /**

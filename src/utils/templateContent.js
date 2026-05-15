@@ -103,7 +103,11 @@ const weddingSharedHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        <p class="map-venue-addr">{{location}}</span></p>
+        {{#if mapEmbedUrl}}
+        <div class="map-iframe-wrap">
+          <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
+        </div>
+        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
           <span data-i18n="viewMap">Xaritada ko'rish</span>
@@ -376,6 +380,8 @@ body{font-family:var(--ff-sans);background:var(--dark);color:var(--text-light);l
 .map-venue-icon svg{width:100%;height:100%}
 .map-venue-name{font-family:var(--ff-serif);font-size:1.65rem;font-weight:500;color:var(--accent-bright);margin-bottom:8px}
 .map-venue-addr{font-size:1rem;color:rgba(232,226,214,0.5);font-weight:300;margin-bottom:20px}
+.map-iframe-wrap{width:100%;border-radius:14px;overflow:hidden;margin:18px 0 20px;border:1px solid var(--glass-border);box-shadow:0 4px 24px rgba(0,0,0,0.4)}
+.map-iframe{display:block;width:100%;height:280px;border:0;border-radius:14px;min-height:200px}
 .map-nav-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 30px;background:var(--btn-bg);border-radius:50px;color:var(--btn-text);font-family:var(--ff-sans);font-size:0.9rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;transition:all 0.4s cubic-bezier(.25,.46,.45,.94);text-decoration:none}
 .map-nav-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px var(--glow)}
 
@@ -817,6 +823,11 @@ exports.birthdayPremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
+        {{#if mapEmbedUrl}}
+        <div class="map-iframe-wrap">
+          <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
+        </div>
+        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
@@ -982,6 +993,11 @@ exports.graduationPremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
+        {{#if mapEmbedUrl}}
+        <div class="map-iframe-wrap">
+          <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
+        </div>
+        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
@@ -1106,6 +1122,11 @@ exports.jubileePremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
+        {{#if mapEmbedUrl}}
+        <div class="map-iframe-wrap">
+          <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
+        </div>
+        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
