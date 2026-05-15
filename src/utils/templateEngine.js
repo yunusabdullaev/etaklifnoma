@@ -95,11 +95,6 @@ function formatDateRu(dateStr) {
 
 /**
  * Formats a date string (YYYY-MM-DD) into Karakalpak human-readable format.
- */
-function formatDateQq(dateStr) {
-  if (!dateStr) return '';
-  try {
-    const [year, month, day] = dateStr.split('-').map(Number);
     const d = new Date(year, month - 1, day);
     const dayName = QQ_DAYS[d.getDay()];
     return `${day}-${QQ_MONTHS[month - 1]} ${year}-jıl, ${dayName}`;
@@ -266,7 +261,7 @@ function buildContext(invitation, eventType, template) {
   const initialScript = getPreferredScript(customFields, primaryLang);
   const initialDateFormatted = primaryLang === 'ru'
     ? formatDateRu(invitation.eventDate)
-    : (primaryLang === 'qq' ? formatDateQq(invitation.eventDate) : formatDateUz(invitation.eventDate));
+    : (primaryLang === 'qq' ? formatDateQq(invitation.eventDate, initialScript) : formatDateUz(invitation.eventDate));
 
   // Merge custom fields (flattened) before core values so language-aware defaults win.
   for (const [key, value] of Object.entries(customFields)) {
@@ -648,7 +643,8 @@ function renderInvitation(invitation, eventType, template) {
   <script>window.__INVITE_DATA__=${JSON.stringify({
     dateUz: formatDateUz(invitation.eventDate),
     dateRu: formatDateRu(invitation.eventDate),
-    dateQq: formatDateQq(invitation.eventDate),
+    dateQq: formatDateQq(invitation.eventDate, 'latin'),
+    dateQqCyr: formatDateQq(invitation.eventDate, 'cyrillic'),
 
     message: langPayload.uz.message || (eventTypeName==='wedding' ? "Sizni farzandlarimiz nikoh to'yiga tashrif buyurishingizni so'rab qolamiz." : eventTypeName==='birthday' ? "Sizni bayramimizga taklif qilamiz. Birga shodlanaylik!" : eventTypeName==='graduation' ? "Bizning bitiruv kechamizga marhamat qiling!" : "Yubiley bayramimizga marhamat qiling!"),
     messageRu: langPayload.ru.message || (eventTypeName==='wedding' ? "Приглашаем вас разделить радость нашего бракосочетания." : eventTypeName==='birthday' ? "Приглашаем вас на наш праздник. Если вы приедете, мы будем счастливы." : eventTypeName==='graduation' ? "Разделите с нами радость окончания университета!" : "Пожалуйста, приглашаем вас на наш юбилейный вечер!"),
@@ -1279,7 +1275,7 @@ function buildLanguageToggle(cf) {
     // Data maps for each language
     var langData = {
       uz: { hostName: d.hostName, guestName: d.guestName, eventTitle: d.eventTitle, message: d.message, program: d.program, date: d.dateUz, programTitle: d.programCustomTitle },
-      qq: { hostName: d.hostNameQq || d.hostName, guestName: d.guestNameQq || d.guestName, eventTitle: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: d.dateQq || d.dateUz, programTitle: d.programCustomTitleQq },
+      qq: { hostName: d.hostNameQq || d.hostName, guestName: d.guestNameQq || d.guestName, eventTitle: d.eventTitleQq || d.eventTitle, message: d.messageQq || d.message, program: d.programQq || d.program, date: (window._curScript === 'cyrillic' ? (d.dateQqCyr || d.dateQq) : d.dateQq) || d.dateUz, programTitle: d.programCustomTitleQq },
       ru: { hostName: d.hostNameRu || d.hostName, guestName: d.guestNameRu || d.guestName, eventTitle: d.eventTitleRu || d.eventTitle, message: d.messageRu || d.message, program: d.programRu || d.program, date: d.dateRu || d.dateUz, programTitle: d.programCustomTitleRu },
     };
 
