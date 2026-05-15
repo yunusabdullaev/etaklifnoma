@@ -305,10 +305,16 @@ function buildContext(invitation, eventType, template) {
   // Event type info
   if (eventType) {
     ctx['eventTypeName'] = eventType.name || '';
-    ctx['eventTypeLabel'] = eventType.label || '';
     ctx['eventTypeIcon'] = eventType.icon || '';
     ctx['event_type'] = eventType.label || '';
     ctx['icon'] = eventType.icon || '';
+    // Allow user override for the hero-label text ("BITIRUVCHILAR KECHASI" etc)
+    const _langSfx = primaryLang === 'qq' ? 'Qq' : primaryLang === 'ru' ? 'Ru' : '';
+    const _customLabel = customFields && (
+      (customFields['customEventLabel' + _langSfx] && customFields['customEventLabel' + _langSfx].trim()) ||
+      (customFields.customEventLabel && customFields.customEventLabel.trim())
+    );
+    ctx['eventTypeLabel'] = _customLabel || eventType.label || '';
   }
 
   // Hero emoji — user can override OR remove the top icon
@@ -1128,7 +1134,13 @@ function buildLanguageToggle(cf) {
           var v = d['custom' + key + sfx] || d['custom' + key];
           return (v && v.trim()) ? v : t[tKey || key.charAt(0).toLowerCase() + key.slice(1)];
         };
-        if (d.customEventLabel    || d['customEventLabel'    + sfx]) t.eventLabel     = ov('EventLabel',     'eventLabel');
+        if (d.customEventLabel    || d['customEventLabel'    + sfx]) {
+          var label = ov('EventLabel', 'eventLabel');
+          t.eventLabel     = label;   // wedding
+          t.gradEventLabel = label;   // graduation
+          t.bdEventLabel   = label;   // birthday
+          t.jubEventLabel  = label;   // jubilee
+        }
         if (d.customCountdownTitle|| d['customCountdownTitle'+ sfx]) t.countdownTitle  = ov('CountdownTitle',  'countdownTitle');
         if (d.customDetailsTitle  || d['customDetailsTitle'  + sfx]) t.detailsTitle    = ov('DetailsTitle',    'detailsTitle');
         if (d.customProgramTitle  || d['customProgramTitle'  + sfx]) t.programTitle    = ov('ProgramTitle',    'programTitle');
