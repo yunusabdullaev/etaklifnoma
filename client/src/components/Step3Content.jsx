@@ -1619,7 +1619,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               )}
               <button
                 onClick={handleSaveEdit}
-                disabled={editSaving || !activeHostName || !data.eventDate || !data.location}
+                disabled={editSaving || !data.eventDate || !data.location}
                 className="btn-primary flex items-center justify-center gap-2 min-w-[160px] py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {editSaving ? (
@@ -1636,7 +1636,6 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             <div className="flex flex-col sm:flex-row items-center justify-end w-full sm:w-auto relative group">
               <button onClick={onNext}
                 disabled={
-                  !activeHostName || 
                   !data.eventDate || 
                   !data.location || 
                   (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)
