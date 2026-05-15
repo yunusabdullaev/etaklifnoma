@@ -199,13 +199,9 @@ function transliterateText(str, script, lang = 'uz') {
   const regex = new RegExp(keys.join('|'), 'g');
   let result = str.replace(regex, (match) => ltCy[match] || match);
 
-  // QQ: E→Е (not Э) at word-start or after vowel/space/punctuation
+  // QQ: replace ALL Э→Е, э→е (Karakalpak almost never uses Э in native words)
   if (lang === 'qq') {
-    const vowels = 'АаЕеИиОоУуЫыӘәӨөҮүЭэ';
-    const re1 = new RegExp('(^|[\\s\\-,.(\"«\'' + vowels + '])Э', 'g');
-    const re2 = new RegExp('(^|[\\s\\-,.(\"«\'' + vowels + '])э', 'g');
-    result = result.replace(re1, '$1Е');
-    result = result.replace(re2, '$1е');
+    result = result.replace(/Э/g, 'Е').replace(/э/g, 'е');
   }
 
   return result;
@@ -1174,8 +1170,16 @@ function buildLanguageToggle(cf) {
       }
     };
 
+    function isCyrillic(str) {
+      if (!str) return false;
+      var cyr = (str.match(/[Ѐ-ӿ]/g) || []).length;
+      var lat = (str.match(/[a-zA-Z]/g) || []).length;
+      return cyr > 0 && cyr >= lat;
+    }
     function translit(str, script) {
       if (!str) return str;
+      // If already Cyrillic and converting to Cyrillic — skip
+      if (script === 'cyrillic' && isCyrillic(str)) return str;
       var ltCy = { 
         'Ya':'Я','ya':'я','Ye':'Е','ye':'е','Yo':'Ё','yo':'ё','Yu':'Ю','yu':'ю','Ch':'Ч','ch':'ч','Sh':'Ш','sh':'ш', 
         "O'":"Ў", "o'":"ў", "O‘":"Ў", "o‘":"ў", "Oʻ":"Ў", "oʻ":"ў", "G'":"Ғ", "g'":"ғ", "G‘":"Ғ", "g‘":"ғ", "Gʻ":"Ғ", "gʻ":"ғ",
@@ -1193,10 +1197,15 @@ function buildLanguageToggle(cf) {
         cyLt['Ғ'] = 'Ǵ'; cyLt['ғ'] = 'ǵ'; cyLt['Ў'] = 'w'; cyLt['ў'] = 'w';
         cyLt['Ы'] = 'Í'; cyLt['ы'] = 'í';
       }
+      // QQ: Э is almost never used in native Karakalpak — replace with Е after applying map
       var map = (script === 'cyrillic') ? ltCy : cyLt;
       var keys = Object.keys(map).sort(function(a,b){return b.length - a.length;});
       var regex = new RegExp(keys.join('|'), 'g');
-      return str.replace(regex, function(m) { return map[m]; });
+      var res = str.replace(regex, function(m) { return map[m]; });
+      if (script === 'cyrillic' && window.currentLang === 'qq') {
+        res = res.replace(/Э/g, 'Е').replace(/э/g, 'е');
+      }
+      return res;
     }
     
     // Determine initial language based on strictly defined order
