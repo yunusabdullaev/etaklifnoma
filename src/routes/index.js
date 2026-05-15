@@ -91,19 +91,29 @@ router.get('/api/resolve-map', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.json({ success: false, resolved: url });
   try {
-    // Follow redirects using fetch (Node 18+ supports it natively)
-    const response = await fetch(url, {
-      method: 'HEAD',
-      redirect: 'follow',
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; etaklifnoma/1.0)' },
-      signal: AbortSignal.timeout(5000),
-    });
-    const resolved = response.url || url;
-    // Extract coordinates from resolved URL
-    let mapEmbedUrl = resolved;
+    // Try HEAD first, fallback to GET (some servers don't redirect on HEAD)
+    let resolved = url;
+    for (const method of ['HEAD', 'GET']) {
+      try {
+        const response = await fetch(url, {
+          method,
+          redirect: 'follow',
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; etaklifnoma/1.0)' },
+          signal: AbortSignal.timeout(6000),
+        });
+        if (response.url && response.url !== url) {
+          resolved = response.url;
+          break;
+        }
+      } catch(e) { if (method === 'GET') throw e; }
+    }
+
+    // Build embed URL from resolved coordinates
+    let mapEmbedUrl = null;
     try {
       const u = new URL(resolved);
-      // poi[point]=lon,lat
+
+      // ── Yandex: poi[point]=lon,lat ──
       const poi = u.searchParams.get('poi[point]');
       if (poi) {
         const [lon, lat] = poi.split(',');
@@ -111,21 +121,35 @@ router.get('/api/resolve-map', async (req, res) => {
           mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${lon},${lat},pm2rdm&z=16`;
         }
       }
-      // pt=lon,lat,style
-      const pt = u.searchParams.get('pt');
-      if (!poi && pt) {
-        const [lon, lat] = pt.split(',');
-        if (lon && lat) {
-          mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${pt}&z=16`;
+      // ── Yandex: pt=lon,lat,style ──
+      if (!mapEmbedUrl) {
+        const pt = u.searchParams.get('pt');
+        if (pt) {
+          const [lon, lat] = pt.split(',');
+          if (lon && lat) mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${pt}&z=16`;
         }
       }
-      // ll=lon,lat fallback
-      const ll = u.searchParams.get('ll');
-      if (!poi && !pt && ll) {
-        const z = u.searchParams.get('z') || '15';
-        mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${ll}&z=${z}`;
+      // ── Yandex: ll=lon,lat ──
+      if (!mapEmbedUrl) {
+        const ll = u.searchParams.get('ll');
+        if (ll) {
+          const z = u.searchParams.get('z') || '15';
+          mapEmbedUrl = `https://yandex.uz/map-widget/v1/?ll=${ll}&z=${z}`;
+        }
+      }
+      // ── Google Maps: /@lat,lng or ?q=lat,lng ──
+      if (!mapEmbedUrl && u.hostname.includes('google.com')) {
+        const coordMatch = resolved.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+        if (coordMatch) {
+          const lat = coordMatch[1], lng = coordMatch[2];
+          mapEmbedUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+        } else {
+          const q = u.searchParams.get('q');
+          if (q) mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=15&output=embed`;
+        }
       }
     } catch(e) {}
+
     return res.json({ success: true, resolved, mapEmbedUrl });
   } catch (err) {
     return res.json({ success: false, resolved: url, mapEmbedUrl: null, error: err.message });
