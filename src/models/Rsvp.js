@@ -34,4 +34,6 @@ const RsvpSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+RsvpSchema.index({ invitationSlug: 1, createdAt: -1 });
+
 module.exports = RsvpSchema;

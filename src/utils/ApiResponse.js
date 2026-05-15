@@ -10,8 +10,12 @@ class ApiResponse {
     });
   }
 
-  static created(res, data) {
-    return ApiResponse.success(res, data, 201);
+  static created(res, data, message = 'Created') {
+    return res.status(201).json({
+      success: true,
+      message,
+      data,
+    });
   }
 
   static noContent(res) {
@@ -28,6 +32,13 @@ class ApiResponse {
         limit,
         totalPages: Math.ceil(count / limit),
       },
+    });
+  }
+
+  static error(res, { message = 'Error' }, statusCode = 500) {
+    return res.status(statusCode).json({
+      success: false,
+      error: { message },
     });
   }
 }

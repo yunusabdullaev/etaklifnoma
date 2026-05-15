@@ -19,4 +19,6 @@ const WishSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+WishSchema.index({ invitationSlug: 1, createdAt: -1 });
+
 module.exports = WishSchema;

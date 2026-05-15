@@ -4,8 +4,7 @@ const mongoose = require('mongoose');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/taklifnoma';
 
-// ── Global plugin: add `id` string field to all documents ──
-// This ensures frontend code using `.id` works seamlessly with MongoDB `_id`
+// ── Global plugin: expose `id` alongside `_id` in all documents ──────────────
 mongoose.plugin((schema) => {
   schema.set('toJSON', {
     virtuals: true,
@@ -23,11 +22,29 @@ mongoose.plugin((schema) => {
   });
 });
 
+// ── Connection event listeners ────────────────────────────────────────────────
+mongoose.connection.on('disconnected', () => {
+  console.warn('⚠️ MongoDB disconnected — attempting reconnect...');
+});
+
+mongoose.connection.on('reconnected', () => {
+  console.log('🔄 MongoDB reconnected');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('❌ MongoDB connection error:', err.message);
+});
+
+// ── Connect ───────────────────────────────────────────────────────────────────
 async function connectDB() {
   await mongoose.connect(MONGODB_URI, {
     serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000,
+    maxPoolSize: 10,           // max 10 concurrent connections
+    minPoolSize: 2,            // keep 2 connections open always
+    connectTimeoutMS: 10000,
   });
-  console.log('✅ MongoDB connected:', mongoose.connection.host);
+  console.log(`✅ MongoDB connected: ${mongoose.connection.host} (${mongoose.connection.name})`);
 }
 
 module.exports = { connectDB, mongoose };

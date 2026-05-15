@@ -19,4 +19,6 @@ const SupportMessageSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+SupportMessageSchema.index({ ticketId: 1, createdAt: 1 });
+
 module.exports = SupportMessageSchema;
