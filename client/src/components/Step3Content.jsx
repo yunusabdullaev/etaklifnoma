@@ -708,34 +708,55 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="mt-4 border-t border-white/5 pt-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <label className="label flex items-center gap-2 mb-0">📅 Dastur (UZ)</label>
-                <input type="text" placeholder="Sarlavha (UZ)" value={data.customFields?.programCustomTitle || ''}
+                <input type="text" placeholder="Kecha dasturi" value={data.customFields?.programCustomTitle || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitle', e.target.value)}
-                  className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200" />
+                  className="input-field text-xs py-1 px-3 w-[140px]" />
               </div>
               {(() => {
+                const DEFAULT_UZ = [
+                  { time: data.eventTime || '10:00', text: 'Mehmonlarni kutib olish' },
+                  { time: '11:00', text: 'Rasmiy qism' },
+                  { time: '12:00', text: 'Bayram dasturxoni' },
+                  { time: '14:00', text: 'Musiqiy tanaffus' },
+                ];
                 let items = [];
                 try { items = data.customFields?.program ? JSON.parse(data.customFields.program) : []; } catch { items = []; }
-                if (items.length === 0) {
-                  items = [
-                    { time: data.eventTime || '18:00', text: 'Mehmonlarni kutib olish' },
-                    { time: '18:30', text: 'Rasmiy qism' },
-                    { time: '19:00', text: 'Bayram dasturxoni' },
-                    { time: '21:00', text: 'Musiqiy tanaffus' },
-                  ];
-                }
-                const updateProgram = (newItems) => { handleCustomFieldChange('program', JSON.stringify(newItems)); };
+                if (items.length === 0) items = DEFAULT_UZ;
+                const updateProgram = (newItems) => handleCustomFieldChange('program', JSON.stringify(newItems));
+                const moveItem = (idx, dir) => {
+                  const n = [...items];
+                  const to = idx + dir;
+                  if (to < 0 || to >= n.length) return;
+                  [n[idx], n[to]] = [n[to], n[idx]];
+                  updateProgram(n);
+                };
                 return (
                   <div className="space-y-2">
                     {items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <input type="time" value={item.time} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgram(n); }} className="input-field w-28 text-center" />
-                        <input type="text" value={item.text} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgram(n); }} className="input-field flex-1" placeholder="Tadbir nomi" />
-                        {items.length > 1 && (<button type="button" onClick={() => updateProgram(items.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>)}
+                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
+                        <div className="flex flex-col gap-0.5">
+                          <button type="button" onClick={() => moveItem(i, -1)} disabled={i === 0}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
+                          <button type="button" onClick={() => moveItem(i, 1)} disabled={i === items.length - 1}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
+                        </div>
+                        <input type="time" value={item.time}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgram(n); }}
+                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
+                        <input type="text" value={item.text}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgram(n); }}
+                          className="input-field flex-1 text-sm" placeholder="Tadbir nomi" />
+                        <button type="button" onClick={() => updateProgram(items.filter((_, j) => j !== i))}
+                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => updateProgram([...items, { time: '', text: '' }])} className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">+ Punkt qo'shish</button>
+                    <button type="button"
+                      onClick={() => updateProgram([...items, { time: '', text: '' }])}
+                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
+                      + Band qo'shish
+                    </button>
                   </div>
                 );
               })()}
@@ -780,34 +801,55 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="mt-4 border-t border-white/5 pt-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
-                <input type="text" placeholder="Sarlavha (QQ)" value={data.customFields?.programCustomTitleQq || ''}
+                <input type="text" placeholder="Ilaje bag'darlanması" value={data.customFields?.programCustomTitleQq || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
-                  className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200" />
+                  className="input-field text-xs py-1 px-3 w-[140px]" />
               </div>
               {(() => {
+                const DEFAULT_QQ = [
+                  { time: data.eventTime || '10:00', text: 'Mexmanlar kútip alıw' },
+                  { time: '11:00', text: 'Rásimiy bólim' },
+                  { time: '12:00', text: 'Ziyapat dástúrxanı' },
+                  { time: '14:00', text: 'Muzıkalı waqıtlar' },
+                ];
                 let items = [];
                 try { items = data.customFields?.programQq ? JSON.parse(data.customFields.programQq) : []; } catch { items = []; }
-                if (items.length === 0) {
-                  items = [
-                    { time: data.eventTime || '18:00', text: 'Mexmanlar kútip alıw' },
-                    { time: '18:30', text: 'Rásimiy bólim' },
-                    { time: '19:00', text: 'Ziyapat dástúrxanı' },
-                    { time: '21:00', text: 'Muzıkalı waqıtlar' },
-                  ];
-                }
-                const updateProgramQq = (newItems) => { handleCustomFieldChange('programQq', JSON.stringify(newItems)); };
+                if (items.length === 0) items = DEFAULT_QQ;
+                const updateProgramQq = (newItems) => handleCustomFieldChange('programQq', JSON.stringify(newItems));
+                const moveItemQq = (idx, dir) => {
+                  const n = [...items];
+                  const to = idx + dir;
+                  if (to < 0 || to >= n.length) return;
+                  [n[idx], n[to]] = [n[to], n[idx]];
+                  updateProgramQq(n);
+                };
                 return (
                   <div className="space-y-2">
                     {items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <input type="time" value={item.time} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }} className="input-field w-28 text-center" />
-                        <input type="text" value={item.text} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }} className="input-field flex-1" placeholder="Ilaje atı" />
-                        {items.length > 1 && (<button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>)}
+                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
+                        <div className="flex flex-col gap-0.5">
+                          <button type="button" onClick={() => moveItemQq(i, -1)} disabled={i === 0}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
+                          <button type="button" onClick={() => moveItemQq(i, 1)} disabled={i === items.length - 1}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
+                        </div>
+                        <input type="time" value={item.time}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
+                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
+                        <input type="text" value={item.text}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
+                          className="input-field flex-1 text-sm" placeholder="Ilaje atı" />
+                        <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
+                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => updateProgramQq([...items, { time: '', text: '' }])} className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">+ Punkt qosıw</button>
+                    <button type="button"
+                      onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
+                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
+                      + Band qosıw
+                    </button>
                   </div>
                 );
               })()}
@@ -852,34 +894,55 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="mt-4 border-t border-white/5 pt-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <label className="label flex items-center gap-2 mb-0">📅 Программа (RU)</label>
-                <input type="text" placeholder="Заголовок (RU)" value={data.customFields?.programCustomTitleRu || ''}
+                <input type="text" placeholder="Программа вечера" value={data.customFields?.programCustomTitleRu || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitleRu', e.target.value)}
-                  className="input-field text-xs py-1 px-3 w-[150px] shadow-sm bg-surface-50 border-surface-200" />
+                  className="input-field text-xs py-1 px-3 w-[140px]" />
               </div>
               {(() => {
+                const DEFAULT_RU = [
+                  { time: data.eventTime || '10:00', text: 'Встреча гостей' },
+                  { time: '11:00', text: 'Торжественная часть' },
+                  { time: '12:00', text: 'Праздничный банкет' },
+                  { time: '14:00', text: 'Музыкальная программа' },
+                ];
                 let items = [];
                 try { items = data.customFields?.programRu ? JSON.parse(data.customFields.programRu) : []; } catch { items = []; }
-                if (items.length === 0) {
-                  items = [
-                    { time: data.eventTime || '18:00', text: 'Встреча гостей' },
-                    { time: '18:30', text: 'Торжественная часть' },
-                    { time: '19:00', text: 'Праздничный банкет' },
-                    { time: '21:00', text: 'Музыкальная программа' },
-                  ];
-                }
-                const updateProgramRu = (newItems) => { handleCustomFieldChange('programRu', JSON.stringify(newItems)); };
+                if (items.length === 0) items = DEFAULT_RU;
+                const updateProgramRu = (newItems) => handleCustomFieldChange('programRu', JSON.stringify(newItems));
+                const moveItemRu = (idx, dir) => {
+                  const n = [...items];
+                  const to = idx + dir;
+                  if (to < 0 || to >= n.length) return;
+                  [n[idx], n[to]] = [n[to], n[idx]];
+                  updateProgramRu(n);
+                };
                 return (
                   <div className="space-y-2">
                     {items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <input type="time" value={item.time} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramRu(n); }} className="input-field w-28 text-center" />
-                        <input type="text" value={item.text} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramRu(n); }} className="input-field flex-1" placeholder="Событие" />
-                        {items.length > 1 && (<button type="button" onClick={() => updateProgramRu(items.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-300 text-sm px-2 py-1 shrink-0">✕</button>)}
+                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
+                        <div className="flex flex-col gap-0.5">
+                          <button type="button" onClick={() => moveItemRu(i, -1)} disabled={i === 0}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
+                          <button type="button" onClick={() => moveItemRu(i, 1)} disabled={i === items.length - 1}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
+                        </div>
+                        <input type="time" value={item.time}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramRu(n); }}
+                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
+                        <input type="text" value={item.text}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramRu(n); }}
+                          className="input-field flex-1 text-sm" placeholder="Событие" />
+                        <button type="button" onClick={() => updateProgramRu(items.filter((_, j) => j !== i))}
+                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
                       </div>
                     ))}
-                    <button type="button" onClick={() => updateProgramRu([...items, { time: '', text: '' }])} className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1 mt-1">+ Добавить пункт</button>
+                    <button type="button"
+                      onClick={() => updateProgramRu([...items, { time: '', text: '' }])}
+                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
+                      + Добавить пункт
+                    </button>
                   </div>
                 );
               })()}
