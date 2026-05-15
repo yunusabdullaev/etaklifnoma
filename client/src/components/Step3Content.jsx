@@ -376,7 +376,129 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           ✍️ {t('step3.textGroupTitle')}
         </h3>
 
-        {/* UZ fields */}
+        {/* ── Custom Event Labels (only for 'custom' event type) ── */}
+        {data.eventType?.name === 'custom' && (
+          <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2">
+            <h3 className="text-[13px] font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2 border-b border-cyan-500/20 pb-3">
+              ✨ Tadbir belgilarini sozlash
+            </h3>
+            <p className="text-[11px] text-surface-400">
+              Bu yerda taklifnoma ichidagi sarlavhalar, hisob-kitob matni va kutish xabari o‘zgartiriladi.
+            </p>
+
+            {/* UZ labels */}
+            {isUzOn && (
+              <div className="space-y-3">
+                <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20">
+                  🇺🇿 O‘zbekcha matnlar
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Tadbir nomi (UZ)</label>
+                    <input type="text" placeholder="Sunnat to’yi" className="input-field"
+                      value={data.customFields?.customEventLabel || ''}
+                      onChange={(e) => handleCustomFieldChange('customEventLabel', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Hisob-kitob sarlavhasi (UZ)</label>
+                    <input type="text" placeholder="Tadbirgacha qolgan vaqt" className="input-field"
+                      value={data.customFields?.customCountdownTitle || ''}
+                      onChange={(e) => handleCustomFieldChange('customCountdownTitle', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Kutish xabari (UZ)</label>
+                    <input type="text" placeholder="Sizni kutib qolamiz! ✨" className="input-field"
+                      value={data.customFields?.customWaitingMsg || ''}
+                      onChange={(e) => handleCustomFieldChange('customWaitingMsg', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Tafsilotlar bo‘limi (UZ)</label>
+                    <input type="text" placeholder="Tadbir tafsilotlari" className="input-field"
+                      value={data.customFields?.customDetailsTitle || ''}
+                      onChange={(e) => handleCustomFieldChange('customDetailsTitle', e.target.value)} />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="label">Dastur bo‘limi sarlavhasi (UZ)</label>
+                    <input type="text" placeholder="Tadbir dasturi" className="input-field"
+                      value={data.customFields?.customProgramTitle || ''}
+                      onChange={(e) => handleCustomFieldChange('customProgramTitle', e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* QQ labels */}
+            {isQqOn && (
+              <div className="space-y-3 pt-3 border-t border-white/5">
+                <h4 className="text-[11px] font-bold text-amber-400 bg-amber-500/10 inline-block px-2.5 py-1 rounded-md border border-amber-500/20">
+                  🇰🇦 Qaraqalpaqsha matnlar
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Ilaje atı (QQ)</label>
+                    <input type="text" placeholder="Sünnet toyi" className="input-field"
+                      value={data.customFields?.customEventLabelQq || ''}
+                      onChange={(e) => handleCustomFieldChange('customEventLabelQq', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Hisap-esap sarlavhası (QQ)</label>
+                    <input type="text" placeholder="Ilajege qalǵan waqıt" className="input-field"
+                      value={data.customFields?.customCountdownTitleQq || ''}
+                      onChange={(e) => handleCustomFieldChange('customCountdownTitleQq', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Kütiw xabari (QQ)</label>
+                    <input type="text" placeholder="Sizdi kútip qalamız! ✨" className="input-field"
+                      value={data.customFields?.customWaitingMsgQq || ''}
+                      onChange={(e) => handleCustomFieldChange('customWaitingMsgQq', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Táfsiyler bólimi (QQ)</label>
+                    <input type="text" placeholder="Ilaje tafsilatları" className="input-field"
+                      value={data.customFields?.customDetailsTitleQq || ''}
+                      onChange={(e) => handleCustomFieldChange('customDetailsTitleQq', e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* RU labels */}
+            {isRuOn && (
+              <div className="space-y-3 pt-3 border-t border-white/5">
+                <h4 className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 inline-block px-2.5 py-1 rounded-md border border-indigo-500/20">
+                  🇷🇺 Русские тексты
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Название мероприятия (RU)</label>
+                    <input type="text" placeholder="Обрезание" className="input-field"
+                      value={data.customFields?.customEventLabelRu || ''}
+                      onChange={(e) => handleCustomFieldChange('customEventLabelRu', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Счётчик (заголовок) (RU)</label>
+                    <input type="text" placeholder="До мероприятия осталось" className="input-field"
+                      value={data.customFields?.customCountdownTitleRu || ''}
+                      onChange={(e) => handleCustomFieldChange('customCountdownTitleRu', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Сообщение ожидания (RU)</label>
+                    <input type="text" placeholder="Ждём вас! ✨" className="input-field"
+                      value={data.customFields?.customWaitingMsgRu || ''}
+                      onChange={(e) => handleCustomFieldChange('customWaitingMsgRu', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="label">Заголовок деталей (RU)</label>
+                    <input type="text" placeholder="Детали мероприятия" className="input-field"
+                      value={data.customFields?.customDetailsTitleRu || ''}
+                      onChange={(e) => handleCustomFieldChange('customDetailsTitleRu', e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {isUzOn && (
           <div className={`space-y-4 ${orderArr.indexOf('uz') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('uz') }}>
             <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20 shadow-sm">🇺🇿 {trLocal.uzFields}</h4>

@@ -6,7 +6,7 @@ module.exports = {
   appUrl: process.env.APP_URL || 'http://localhost:3000',
 
   // Supported event types — single source of truth
-  eventTypes: ['wedding', 'birthday', 'jubilee', 'graduation'],
+  eventTypes: ['wedding', 'birthday', 'jubilee', 'graduation', 'custom'],
 
   // Slug generation settings
   slug: {

@@ -431,7 +431,10 @@ export default function Step2Template({ data, onUpdate, onNext, onBack }) {
     setLoading(true);
     templateCacheRef.current = {};
     pendingTemplateFetchesRef.current.clear();
-    getTemplates({ eventTypeId: data.eventTypeId })
+    // For 'custom' event type — show ALL templates so user can pick any design
+    const isCustom = data.eventType?.name === 'custom';
+    const params = isCustom ? { limit: 100 } : { eventTypeId: data.eventTypeId, limit: 100 };
+    getTemplates(params)
       .then((res) => {
         setTemplates(res.data);
         setPreviewTemplate(null);

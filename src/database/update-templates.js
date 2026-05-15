@@ -61,6 +61,7 @@ async function run() {
       birthday:   { label: "Tug'ilgan kun",  description: "Tug'ilgan kun bayramlari uchun quvnoq taklifnomalar", icon: '🎂' },
       graduation: { label: 'Bitiruvchilar',  description: 'Bitiruvchilar kechasi va tantanalar uchun', icon: '🎓' },
       jubilee:    { label: 'Yubiley',        description: 'Yubiley va bayramlar uchun taklifnomalar', icon: '🎉' },
+      custom:     { label: 'Boshqa tadbir',  description: 'Sunnat, Novruz yoki boshqa har qanday tadbir uchun', icon: '✨' },
     };
 
     // Ensure event types exist

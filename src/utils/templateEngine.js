@@ -1108,6 +1108,16 @@ function buildLanguageToggle(cf) {
         t.detailsTitle = t.jubDetailsTitle || t.detailsTitle;
         t.programTitle = t.jubProgramTitle || t.programTitle;
         t.bdWaitingMsg = t.jubWaitingMsg || t.bdWaitingMsg;
+      } else if (ev === 'custom') {
+        // Use user-provided custom labels from invitation customFields
+        var sfx = (lang === 'qq') ? 'Qq' : (lang === 'ru') ? 'Ru' : '';
+        var cl = function(key) { return d['custom' + key + sfx] || d['custom' + key] || t[key]; };
+        t.eventLabel      = cl('EventLabel')      || t.eventLabel;
+        t.countdownTitle  = cl('CountdownTitle')  || t.countdownTitle;
+        t.detailsTitle    = cl('DetailsTitle')    || t.detailsTitle;
+        t.programTitle    = cl('ProgramTitle')    || t.programTitle;
+        t.waitingMsg      = cl('WaitingMsg')      || t.waitingMsg;
+        t.bdWaitingMsg    = t.waitingMsg;
       }
 
 
