@@ -1148,17 +1148,23 @@ function buildLanguageToggle(cf) {
           var v = d['custom' + key + sfx] || d['custom' + key];
           return (v && v.trim()) ? v : t[tKey || key.charAt(0).toLowerCase() + key.slice(1)];
         };
-        if (d.customEventLabel    || d['customEventLabel'    + sfx]) {
+        // Check ALL lang variants — user may have filled only QQ or RU version
+        var hasEventLabel = d.customEventLabel || d.customEventLabelQq || d.customEventLabelRu;
+        if (hasEventLabel) {
           var label = ov('EventLabel', 'eventLabel');
           t.eventLabel     = label;   // wedding
           t.gradEventLabel = label;   // graduation
           t.bdEventLabel   = label;   // birthday
           t.jubEventLabel  = label;   // jubilee
         }
-        if (d.customCountdownTitle|| d['customCountdownTitle'+ sfx]) t.countdownTitle  = ov('CountdownTitle',  'countdownTitle');
-        if (d.customDetailsTitle  || d['customDetailsTitle'  + sfx]) t.detailsTitle    = ov('DetailsTitle',    'detailsTitle');
-        if (d.customProgramTitle  || d['customProgramTitle'  + sfx]) t.programTitle    = ov('ProgramTitle',    'programTitle');
-        if (d.customWaitingMsg    || d['customWaitingMsg'    + sfx]) {
+        var hasCountdown = d.customCountdownTitle || d.customCountdownTitleQq || d.customCountdownTitleRu;
+        if (hasCountdown) t.countdownTitle = ov('CountdownTitle', 'countdownTitle');
+        var hasDetails = d.customDetailsTitle || d.customDetailsTitleQq || d.customDetailsTitleRu;
+        if (hasDetails) t.detailsTitle = ov('DetailsTitle', 'detailsTitle');
+        var hasProgram = d.customProgramTitle || d.customProgramTitleQq || d.customProgramTitleRu;
+        if (hasProgram) t.programTitle = ov('ProgramTitle', 'programTitle');
+        var hasWaiting = d.customWaitingMsg || d.customWaitingMsgQq || d.customWaitingMsgRu;
+        if (hasWaiting) {
           t.waitingMsg   = ov('WaitingMsg', 'waitingMsg');
           t.bdWaitingMsg = t.waitingMsg;
         }
