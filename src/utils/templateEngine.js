@@ -1126,7 +1126,7 @@ function buildLanguageToggle(cf) {
         countdownTitle: 'Тойға шекем қалған ўақыт',
         days: 'Күн', hours: 'Сағат', minutes: 'Минут', seconds: 'Секунд',
         detailsTitle: 'Той тафсилатлары',
-        dateLabel: 'Сәнеси', timeLabel: 'Wақыт', venueLabel: 'Мәнзил',
+        dateLabel: 'Сәнеси', timeLabel: 'Ўақыт', venueLabel: 'Мәнзил',
 
         guestWelcome: 'Меxманлар күтип алыў',
         locationTitle: 'Локация',
@@ -1149,7 +1149,7 @@ function buildLanguageToggle(cf) {
         printBtn: 'PDF қылып сақлаў',
         inviteText: '💍 Сизди такlifнамамызға шақырамыз!',
 
-        bdEventLabel: 'Туwылған күн шақырыўы',
+        bdEventLabel: 'Туўылған күн шақырыўы',
         bdCountdownTitle: 'Байрамға шекем қалған ўақыт',
         bdDetailsTitle: 'Байрам тафсилатлары',
         bdWaitingMsg: 'Сизди күтип қаламыз! 🎉',
