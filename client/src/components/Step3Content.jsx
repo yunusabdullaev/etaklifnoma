@@ -162,15 +162,44 @@ const getMapEmbedUrl = (urlStr, locationName) => {
 
     // ── Yandex Maps ──
     if (url.hostname.includes('yandex')) {
+      // Already a widget URL — use as-is
       if (url.pathname.includes('map-widget')) return urlStr;
 
-      // Yandex short link: yandex.uz/maps/-/XXXX → map-widget/v1/-/XXXX
+      // Yandex short link (/-/XXXX): can't extract coordinates without redirect.
+      // Use location name search for proper centering.
       const shortMatch = url.pathname.match(/\/-\/([A-Za-z0-9_-]+)/);
       if (shortMatch) {
-        return `https://yandex.uz/map-widget/v1/-/${shortMatch[1]}`;
+        // Prefer location name search (centers perfectly on the place)
+        return fallback;
       }
 
-      // Regular Yandex URL
+      // Full Yandex URL — try to extract pt (placemark) for precise centering
+      const ptParam = url.searchParams.get('pt');
+      if (ptParam) {
+        // pt=lon,lat,style — use those coords as ll too
+        const coords = ptParam.split(',');
+        if (coords.length >= 2) {
+          const lon = coords[0], lat = coords[1];
+          return `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${ptParam}&z=16`;
+        }
+      }
+      // poi[point] param
+      const poiPoint = url.searchParams.get('poi[point]') || url.searchParams.get('poi%5Bpoint%5D');
+      if (poiPoint) {
+        const coords = poiPoint.split(',');
+        if (coords.length >= 2) {
+          const lon = coords[0], lat = coords[1];
+          return `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${lon},${lat},pm2rdm&z=16`;
+        }
+      }
+      // ll param only
+      const ll = url.searchParams.get('ll');
+      if (ll) {
+        const z = url.searchParams.get('z') || '15';
+        return `https://yandex.uz/map-widget/v1/?ll=${ll}&z=${z}`;
+      }
+
+      // Generic /maps/... → /map-widget/v1/...
       url.pathname = url.pathname.replace(/^\/maps/, '/map-widget/v1');
       if (!url.pathname.includes('map-widget')) url.pathname = '/map-widget/v1/';
       if (!url.searchParams.has('z')) url.searchParams.set('z', '15');

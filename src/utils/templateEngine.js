@@ -365,13 +365,35 @@ function getMapEmbedUrl(locationUrl, locationName) {
     if (url.hostname.includes('yandex')) {
       if (url.pathname.includes('map-widget')) return locationUrl;
 
-      // Yandex short link: yandex.uz/maps/-/XXXX → map-widget/v1/-/XXXX
+      // Yandex short link (/-/XXXX): can't extract coords without redirect
+      // Use location name search — perfectly centered
       const shortMatch = url.pathname.match(/\/-\/([A-Za-z0-9_-]+)/);
-      if (shortMatch) {
-        return `https://yandex.uz/map-widget/v1/-/${shortMatch[1]}`;
+      if (shortMatch) return fallback;
+
+      // Full Yandex URL — extract pt or poi[point] for precise pin centering
+      const ptParam = url.searchParams.get('pt');
+      if (ptParam) {
+        const coords = ptParam.split(',');
+        if (coords.length >= 2) {
+          const lon = coords[0], lat = coords[1];
+          return `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${ptParam}&z=16`;
+        }
+      }
+      const poiPoint = url.searchParams.get('poi[point]');
+      if (poiPoint) {
+        const coords = poiPoint.split(',');
+        if (coords.length >= 2) {
+          const lon = coords[0], lat = coords[1];
+          return `https://yandex.uz/map-widget/v1/?ll=${lon},${lat}&pt=${lon},${lat},pm2rdm&z=16`;
+        }
+      }
+      const ll = url.searchParams.get('ll');
+      if (ll) {
+        const z = url.searchParams.get('z') || '15';
+        return `https://yandex.uz/map-widget/v1/?ll=${ll}&z=${z}`;
       }
 
-      // Regular Yandex URL: convert /maps/... → /map-widget/v1/...
+      // Generic /maps/... → /map-widget/v1/...
       const w = new URL(locationUrl);
       w.pathname = w.pathname.replace(/^\/maps/, '/map-widget/v1');
       if (!w.pathname.includes('map-widget')) w.pathname = '/map-widget/v1/';
