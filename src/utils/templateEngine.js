@@ -364,6 +364,14 @@ function getMapEmbedUrl(locationUrl, locationName) {
     // ── Yandex Maps ──
     if (url.hostname.includes('yandex')) {
       if (url.pathname.includes('map-widget')) return locationUrl;
+
+      // Yandex short link: yandex.uz/maps/-/XXXX → map-widget/v1/-/XXXX
+      const shortMatch = url.pathname.match(/\/-\/([A-Za-z0-9_-]+)/);
+      if (shortMatch) {
+        return `https://yandex.uz/map-widget/v1/-/${shortMatch[1]}`;
+      }
+
+      // Regular Yandex URL: convert /maps/... → /map-widget/v1/...
       const w = new URL(locationUrl);
       w.pathname = w.pathname.replace(/^\/maps/, '/map-widget/v1');
       if (!w.pathname.includes('map-widget')) w.pathname = '/map-widget/v1/';
