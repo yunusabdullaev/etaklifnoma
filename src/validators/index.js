@@ -106,9 +106,9 @@ exports.createInvitation = [
     .optional()
     .isMongoId().withMessage('Invalid template ID'),
   body('hostName')
+    .optional()
     .trim()
-    .notEmpty().withMessage('Host name is required')
-    .isLength({ min: 1, max: 200 }).withMessage('Host name must be 1–200 characters'),
+    .isLength({ max: 200 }),
   body('guestName')
     .optional()
     .trim()
