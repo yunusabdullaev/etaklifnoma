@@ -462,6 +462,59 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           );
         })()}
 
+        {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
+        {data.eventType && (
+          <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3">
+            <h3 className="text-[13px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
+              🔤 Yuqori yozuv matni
+              <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-sky-700/30 px-1.5 py-0.5 rounded">
+                masalan: ПИТКЭРИЎШИЛЭР КЭШЭСИ
+              </span>
+            </h3>
+            <div className="space-y-2">
+              {isUzOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇺🇿 O'zbekcha yozuv</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Bitiruvchilar kechasi"
+                    value={data.customFields?.customEventLabel || ''}
+                    onChange={(e) => handleCustomFieldChange('customEventLabel', e.target.value)}
+                  />
+                </div>
+              )}
+              {isQqOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇰🇿 Qaraqalpaqcha yozuv</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Pitkeriwshiler keshesi"
+                    value={data.customFields?.customEventLabelQq || ''}
+                    onChange={(e) => handleCustomFieldChange('customEventLabelQq', e.target.value)}
+                  />
+                </div>
+              )}
+              {isRuOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇷🇺 Ruscha yozuv</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Выпускной вечер"
+                    value={data.customFields?.customEventLabelRu || ''}
+                    onChange={(e) => handleCustomFieldChange('customEventLabelRu', e.target.value)}
+                  />
+                </div>
+              )}
+              {!isUzOn && !isQqOn && !isRuOn && (
+                <p className="text-[11px] text-surface-500">Til sazlamalarini yoqing</p>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ── Ichki matnlarni o'zgartirish — barcha event turlari uchun ── */}
         {data.eventType && (
           <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2">
