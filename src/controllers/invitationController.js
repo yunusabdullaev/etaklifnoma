@@ -84,7 +84,9 @@ exports.create = catchAsync(async (req, res) => {
   if (templateId) {
     const template = await Template.findById(templateId);
     if (!template) throw AppError.badRequest('Invalid template ID');
-    if (String(template.eventTypeId) !== String(eventTypeId)) {
+    // 'custom' event type can use any template
+    const isCustom = eventType.name === 'custom';
+    if (!isCustom && String(template.eventTypeId) !== String(eventTypeId)) {
       throw AppError.badRequest('Template does not belong to the selected event type');
     }
   }
