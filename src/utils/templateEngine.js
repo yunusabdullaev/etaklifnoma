@@ -1109,17 +1109,27 @@ function buildLanguageToggle(cf) {
         t.programTitle = t.jubProgramTitle || t.programTitle;
         t.bdWaitingMsg = t.jubWaitingMsg || t.bdWaitingMsg;
       } else if (ev === 'custom') {
-        // Use user-provided custom labels from invitation customFields
-        var sfx = (lang === 'qq') ? 'Qq' : (lang === 'ru') ? 'Ru' : '';
-        var cl = function(key) { return d['custom' + key + sfx] || d['custom' + key] || t[key]; };
-        t.eventLabel      = cl('EventLabel')      || t.eventLabel;
-        t.countdownTitle  = cl('CountdownTitle')  || t.countdownTitle;
-        t.detailsTitle    = cl('DetailsTitle')    || t.detailsTitle;
-        t.programTitle    = cl('ProgramTitle')    || t.programTitle;
-        t.waitingMsg      = cl('WaitingMsg')      || t.waitingMsg;
-        t.bdWaitingMsg    = t.waitingMsg;
+        // 'custom' has no dedicated defaults — will be fully overridden below
       }
 
+      // ── Universal user-override: applies to ALL event types ──
+      // If user filled in custom labels in Step3, those always win over defaults.
+      (function() {
+        var sfx = (lang === 'qq') ? 'Qq' : (lang === 'ru') ? 'Ru' : '';
+        // Returns user value if non-empty, else falls back to current t value
+        var ov = function(key, tKey) {
+          var v = d['custom' + key + sfx] || d['custom' + key];
+          return (v && v.trim()) ? v : t[tKey || key.charAt(0).toLowerCase() + key.slice(1)];
+        };
+        if (d.customEventLabel    || d['customEventLabel'    + sfx]) t.eventLabel     = ov('EventLabel',     'eventLabel');
+        if (d.customCountdownTitle|| d['customCountdownTitle'+ sfx]) t.countdownTitle  = ov('CountdownTitle',  'countdownTitle');
+        if (d.customDetailsTitle  || d['customDetailsTitle'  + sfx]) t.detailsTitle    = ov('DetailsTitle',    'detailsTitle');
+        if (d.customProgramTitle  || d['customProgramTitle'  + sfx]) t.programTitle    = ov('ProgramTitle',    'programTitle');
+        if (d.customWaitingMsg    || d['customWaitingMsg'    + sfx]) {
+          t.waitingMsg   = ov('WaitingMsg', 'waitingMsg');
+          t.bdWaitingMsg = t.waitingMsg;
+        }
+      })();
 
       var prevLang = window.currentLang || d.primaryLang || 'uz';
       var prevData = langData[prevLang] || langData.uz;

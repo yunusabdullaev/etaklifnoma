@@ -376,8 +376,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack }) {
           ✍️ {t('step3.textGroupTitle')}
         </h3>
 
-        {/* ── Custom Event Labels (only for 'custom' event type) ── */}
-        {data.eventType?.name === 'custom' && (
+        {/* ── Ichki matnlarni o'zgartirish — barcha event turlari uchun ── */}
+        {data.eventType && (
           <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2">
             <h3 className="text-[13px] font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2 border-b border-cyan-500/20 pb-3">
               ✨ Tadbir belgilarini sozlash
