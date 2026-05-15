@@ -526,6 +526,68 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           );
         })()}
 
+        {/* ── Asosiy sarlavha (katta h1 — "Питириў кэшэси" kabi) ── */}
+        {data.eventType && (
+          <div className="glass p-4 border border-violet-500/20 bg-violet-500/5 rounded-2xl mb-2 space-y-3">
+            <h3 className="text-[13px] font-bold text-violet-300 uppercase tracking-wider flex items-center gap-2">
+              ✏️ Asosiy sarlavha
+              <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-violet-700/30 px-1.5 py-0.5 rounded">
+                katta matn — "Питириў кэшэси" kabi
+              </span>
+            </h3>
+            <div className="space-y-2">
+              {isUzOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇺🇿 O'zbekcha sarlavha</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Bitiruv kechasi"
+                    value={data.customFields?.eventTitleUz || data.customFields?.eventTitle || ''}
+                    onChange={(e) => handleCustomFieldChange('eventTitle', e.target.value)}
+                  />
+                </div>
+              )}
+              {isQqOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇰🇦 Qaraqalpaqcha sarlavha</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Pitiriw keshesi"
+                    value={data.customFields?.eventTitleQq || ''}
+                    onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
+                  />
+                </div>
+              )}
+              {isRuOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇷🇺 Ruscha sarlavha</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Выпускной вечер"
+                    value={data.customFields?.eventTitleRu || ''}
+                    onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
+                  />
+                </div>
+              )}
+              {!isUzOn && !isQqOn && !isRuOn && (
+                <div>
+                  <label className="label mb-1">Sarlavha</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="Tadbir sarlavhasi"
+                    value={data.customFields?.eventTitle || ''}
+                    onChange={(e) => handleCustomFieldChange('eventTitle', e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
         {data.eventType && (
           <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3">
