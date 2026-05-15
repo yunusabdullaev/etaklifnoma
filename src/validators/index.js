@@ -108,7 +108,7 @@ exports.createInvitation = [
   body('hostName')
     .trim()
     .notEmpty().withMessage('Host name is required')
-    .isLength({ min: 2, max: 200 }).withMessage('Host name must be 2–200 characters'),
+    .isLength({ min: 1, max: 200 }).withMessage('Host name must be 1–200 characters'),
   body('guestName')
     .optional()
     .trim()
@@ -148,7 +148,7 @@ exports.updateInvitation = [
   body('hostName')
     .optional()
     .trim()
-    .isLength({ min: 2, max: 200 }),
+    .isLength({ min: 1, max: 200 }),
   body('guestName')
     .optional()
     .trim()
