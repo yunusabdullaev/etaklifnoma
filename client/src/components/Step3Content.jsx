@@ -155,18 +155,44 @@ function BotTestButton({ bot, apiBase, t }) {
 }
 
 const getMapEmbedUrl = (urlStr, locationName) => {
-  if (!urlStr) return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}&z=15`;
+  const fallback = `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}&z=15`;
+  if (!urlStr) return fallback;
   try {
     const url = new URL(urlStr);
+
+    // ── Yandex Maps ──
     if (url.hostname.includes('yandex')) {
       url.pathname = url.pathname.replace(/^\/maps/, '/map-widget/v1');
-      if (!url.searchParams.has('z')) {
-        url.searchParams.set('z', '15');
-      }
+      if (!url.pathname.includes('map-widget')) url.pathname = '/map-widget/v1/';
+      if (!url.searchParams.has('z')) url.searchParams.set('z', '15');
       return url.toString();
     }
+
+    // ── Google Maps (full URL with coordinates) ──
+    if (url.hostname.includes('google.com')) {
+      const coordMatch = urlStr.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (coordMatch) {
+        const lat = coordMatch[1], lng = coordMatch[2];
+        return `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+      }
+      const q = url.searchParams.get('q') || locationName || '';
+      return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=15&output=embed`;
+    }
+
+    // ── Google Maps short URL (maps.app.goo.gl, goo.gl) ──
+    // Can't resolve server-side; use location name on Yandex
+    if (url.hostname.includes('goo.gl') || url.hostname.includes('maps.app')) {
+      if (locationName) return fallback;
+    }
+
+    // ── 2GIS ──
+    if (url.hostname.includes('2gis')) {
+      // 2GIS doesn't support iframe; fallback to Yandex search
+      return fallback;
+    }
+
   } catch(e) {}
-  return `https://yandex.uz/map-widget/v1/?mode=search&text=${encodeURIComponent(locationName || 'Tashkent')}&z=15`;
+  return fallback;
 };
 
 const PRESET_SONGS = [

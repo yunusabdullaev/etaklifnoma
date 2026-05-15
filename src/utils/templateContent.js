@@ -103,11 +103,9 @@ const weddingSharedHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        {{#if mapEmbedUrl}}
         <div class="map-iframe-wrap">
           <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
         </div>
-        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
           <span data-i18n="viewMap">Xaritada ko'rish</span>
@@ -823,11 +821,9 @@ exports.birthdayPremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        {{#if mapEmbedUrl}}
         <div class="map-iframe-wrap">
           <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
         </div>
-        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
@@ -993,11 +989,9 @@ exports.graduationPremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        {{#if mapEmbedUrl}}
         <div class="map-iframe-wrap">
           <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
         </div>
-        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
@@ -1122,11 +1116,9 @@ exports.jubileePremiumHtml = `
       <div class="map-card">
         <div class="map-venue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <h3 class="map-venue-name">{{location}}</h3>
-        {{#if mapEmbedUrl}}
         <div class="map-iframe-wrap">
           <iframe src="{{mapEmbedUrl}}" width="100%" height="300" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-iframe"></iframe>
         </div>
-        {{/if}}
         <a href="{{locationUrl}}" target="_blank" rel="noopener" class="map-nav-btn" data-i18n="viewMap">Xaritada ko'rish</a>
       </div>
     </div>
