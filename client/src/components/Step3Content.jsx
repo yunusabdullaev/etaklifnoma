@@ -495,7 +495,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           const current = data.customFields?.heroEmoji || '';
           const isHidden = current === 'none';
           return (
-            <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3" onMouseEnter={() => setActiveSection('heroEmoji')} onMouseLeave={() => setActiveSection(null)}>
+            <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3" onFocusCapture={() => setActiveSection('heroEmoji')} onBlurCapture={() => setActiveSection(null)}>
               <div className="flex items-center justify-between">
                 <h3 className="text-[13px] font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-2">
                   {t('step3.heroSection')}
@@ -567,7 +567,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Footer kutish xabari — "Sizni kutib qolamiz!" kabi ── */}
         {data.eventType && (
-          <div className="glass p-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl mb-2 space-y-3" onMouseEnter={() => setActiveSection('waitingMsg')} onMouseLeave={() => setActiveSection(null)}>
+          <div className="glass p-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl mb-2 space-y-3" onFocusCapture={() => setActiveSection('waitingMsg')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
               {t('step3.waitingSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-rose-700/30 px-1.5 py-0.5 rounded">
@@ -629,7 +629,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
         {data.eventType && (
-          <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3" onMouseEnter={() => setActiveSection('heroText')} onMouseLeave={() => setActiveSection(null)}>
+          <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3" onFocusCapture={() => setActiveSection('heroText')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
               {t('step3.heroTextSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-sky-700/30 px-1.5 py-0.5 rounded">
@@ -682,7 +682,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Ichki matnlarni o'zgartirish — barcha event turlari uchun ── */}
         {data.eventType && (
-          <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2" onMouseEnter={() => setActiveSection('labels')} onMouseLeave={() => setActiveSection(null)}>
+          <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2" onFocusCapture={() => setActiveSection('labels')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2 border-b border-cyan-500/20 pb-3">
               {t('step3.labelsSection')}
             </h3>
@@ -1128,7 +1128,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
       )}
 
             {/* Date & location */}
-      <div className="space-y-4">
+      <div className="space-y-4" onFocusCapture={() => setActiveSection('dateLocation')} onBlurCapture={() => setActiveSection(null)}>
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           <Calendar size={13} /> {t('step3.dateLocation')}
         </h3>
@@ -1625,14 +1625,14 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
       <div className={`flex gap-6 ${showPreview ? 'flex-col lg:flex-row' : 'flex-col'}`}>
         {/* Form column */}
-        <div className={`w-full ${showPreview ? 'hidden lg:block lg:w-1/2' : 'max-w-2xl mx-auto'}`}>
+        <div className={`w-full ${showPreview ? 'lg:block lg:w-1/2' : 'max-w-2xl mx-auto'}`}>
           {formContent}
         </div>
 
         {/* Live preview column */}
         {showPreview && (
           <div className="w-full lg:w-1/2">
-            <div className="sticky top-6">
+            <div className="sticky top-4 self-start">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs text-surface-400 uppercase tracking-wider font-medium">
@@ -1642,7 +1642,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <LivePreview
                 data={data}
                 activeSection={activeSection}
-                className="h-[600px] rounded-2xl border border-white/10 overflow-hidden"
+                className="h-[calc(100vh-110px)] rounded-2xl border border-white/10 overflow-hidden"
               />
             </div>
           </div>
