@@ -204,8 +204,9 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
                 if (isSelected) onNext();
                 else handleSelect(et);
               }}
-              className={`relative group p-6 rounded-2xl border backdrop-blur-xl text-left
+              className={`relative group p-6 rounded-2xl border backdrop-blur-xl
                 transition-all duration-300 cursor-pointer
+                ${isCustom ? 'text-left' : 'text-center'}
                 bg-gradient-to-br ${gradientMap[et.name] || 'from-surface-700/50 to-surface-800/50 border-white/10'}
                 ${isCustom ? 'sm:col-span-2' : ''}
                 ${isSelected
@@ -233,7 +234,7 @@ export default function Step1EventType({ data, onUpdate, onNext }) {
                   <Icon size={isCustom ? 28 : 24} />
                 </div>
                 <div className={isCustom ? 'flex-1 text-left' : 'text-center w-full'}>
-                  <h3 className="text-lg font-semibold text-white mb-1 flex items-center gap-2">
+                  <h3 className={`text-lg font-semibold text-white mb-1 flex items-center gap-2 ${isCustom ? '' : 'justify-center'}`}>
                     {eventTypeTranslations[lang]?.[et.name]?.label || et.label}
                     {isCustom && (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 uppercase tracking-wider">
