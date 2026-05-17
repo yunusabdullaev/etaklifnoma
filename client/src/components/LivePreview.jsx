@@ -91,15 +91,36 @@ export default function LivePreview({ data, className = '', activeSection = null
             lastHighlighted = [];
             var sec = e.data.section;
             if (!sec) return;
+
+            // 1. Try CSS selector approach first
             var selectors = sectionMap[sec] || [];
             selectors.forEach(function(sel) {
-              var els = document.querySelectorAll(sel);
-              els.forEach(function(el) {
-                el.classList.add('__preview_highlight');
-                lastHighlighted.push(el);
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              });
+              try {
+                var els = document.querySelectorAll(sel);
+                els.forEach(function(el) {
+                  el.classList.add('__preview_highlight');
+                  lastHighlighted.push(el);
+                });
+              } catch(e) {}
             });
+
+            // 2. If no match AND we have a text value, search by text content
+            var val = (e.data.value || '').trim();
+            if (lastHighlighted.length === 0 && val.length > 1) {
+              var candidates = document.querySelectorAll('h1,h2,h3,h4,p,span,div,strong,em,b');
+              candidates.forEach(function(el) {
+                // Only leaf-level or near-leaf elements
+                if (el.children.length <= 2 && el.textContent.trim().includes(val)) {
+                  el.classList.add('__preview_highlight');
+                  lastHighlighted.push(el);
+                }
+              });
+            }
+
+            // Scroll to first highlighted element
+            if (lastHighlighted.length > 0) {
+              lastHighlighted[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
           });
         })();
         <\/script>`
@@ -144,7 +165,24 @@ export default function LivePreview({ data, className = '', activeSection = null
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe || !iframe.contentWindow) return;
-    iframe.contentWindow.postMessage({ type: 'highlight', section: activeSection }, '*');
+    if (!activeSection) {
+      iframe.contentWindow.postMessage({ type: 'highlight', section: null }, '*');
+    } else {
+      // Build value map so preview can find elements by text content
+      const valueMap = {
+        hostName:    data?.hostName || '',
+        guestName:   data?.guestName || '',
+        heroText:    data?.eventTitle || '',
+        message:     data?.message || '',
+        dateLocation: data?.eventDate || '',
+        location:    data?.location || '',
+      };
+      iframe.contentWindow.postMessage({
+        type: 'highlight',
+        section: activeSection,
+        value: valueMap[activeSection] || '',
+      }, '*');
+    }
   }, [activeSection]);
 
   // Debounced effect — re-renders 400ms after last data change
