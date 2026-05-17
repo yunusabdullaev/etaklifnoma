@@ -14,6 +14,8 @@ export default function LivePreview({ data, className = '', activeSection = null
   const API = import.meta.env.VITE_API_URL || '';
   const debounceRef = useRef(null);
   const iframeRef = useRef(null);
+  const activeSectionRef = useRef(null);
+  const highlightTimerRef = useRef(null);
 
   const fetchPreview = useCallback(async (previewData) => {
     if (!previewData.templateId) return;
@@ -162,14 +164,12 @@ export default function LivePreview({ data, className = '', activeSection = null
     }
   }, [API]);
 
-  // Send highlight message to iframe when activeSection changes
-  useEffect(() => {
-    const iframe = iframeRef.current;
-    if (!iframe || !iframe.contentWindow) return;
-    if (!activeSection) {
-      iframe.contentWindow.postMessage({ type: 'highlight', section: null }, '*');
-    } else {
-      // Build value map so preview can find elements by text content
+  // Helper: send highlight to iframe (with delay to let tagger script run first)
+  const sendHighlight = (section) => {
+    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    highlightTimerRef.current = setTimeout(() => {
+      const iframe = iframeRef.current;
+      if (!iframe || !iframe.contentWindow) return;
       const valueMap = {
         hostName:    data?.hostName || '',
         guestName:   data?.guestName || '',
@@ -180,11 +180,17 @@ export default function LivePreview({ data, className = '', activeSection = null
       };
       iframe.contentWindow.postMessage({
         type: 'highlight',
-        section: activeSection,
-        value: valueMap[activeSection] || '',
+        section: section || null,
+        value: valueMap[section] || '',
       }, '*');
-    }
-  }, [activeSection]);
+    }, 120); // wait for iframe DOMContentLoaded tagger to finish
+  };
+
+  // Track latest activeSection in ref so onLoad can access it
+  useEffect(() => {
+    activeSectionRef.current = activeSection;
+    sendHighlight(activeSection);
+  }, [activeSection]); // eslint-disable-line
 
   // Debounced effect — re-renders 400ms after last data change
   useEffect(() => {
@@ -220,6 +226,12 @@ export default function LivePreview({ data, className = '', activeSection = null
           srcDoc={htmlContent}
           className="w-full h-full border-0 rounded-2xl bg-[#0a0a12]"
           sandbox="allow-scripts allow-same-origin allow-forms"
+          onLoad={() => {
+            // Re-send highlight after iframe reloads (srcDoc change clears old DOM)
+            if (activeSectionRef.current) {
+              sendHighlight(activeSectionRef.current);
+            }
+          }}
         />
       ) : (
         <div className="w-full h-full rounded-2xl bg-[#0a0a12] flex items-center justify-center">
