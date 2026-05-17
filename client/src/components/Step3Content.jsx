@@ -495,7 +495,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           const current = data.customFields?.heroEmoji || '';
           const isHidden = current === 'none';
           return (
-            <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3" onFocusCapture={() => setActiveSection('heroEmoji')} onBlurCapture={() => setActiveSection(null)}>
+            <div className={`glass p-4 border rounded-2xl mb-2 space-y-3 transition-all duration-200 ${activeSection==='heroEmoji' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-yellow-500/20 bg-yellow-500/5'}`} onFocusCapture={() => setActiveSection('heroEmoji')} onBlurCapture={() => setActiveSection(null)}>
               <div className="flex items-center justify-between">
                 <h3 className="text-[13px] font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-2">
                   {t('step3.heroSection')}
@@ -567,7 +567,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Footer kutish xabari — "Sizni kutib qolamiz!" kabi ── */}
         {data.eventType && (
-          <div className="glass p-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl mb-2 space-y-3" onFocusCapture={() => setActiveSection('waitingMsg')} onBlurCapture={() => setActiveSection(null)}>
+          <div className={`glass p-4 border rounded-2xl mb-2 space-y-3 transition-all duration-200 ${activeSection==='waitingMsg' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-rose-500/20 bg-rose-500/5'}`} onFocusCapture={() => setActiveSection('waitingMsg')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
               {t('step3.waitingSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-rose-700/30 px-1.5 py-0.5 rounded">
@@ -629,7 +629,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
         {data.eventType && (
-          <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3" onFocusCapture={() => setActiveSection('heroText')} onBlurCapture={() => setActiveSection(null)}>
+          <div className={`glass p-4 border rounded-2xl mb-2 space-y-3 transition-all duration-200 ${activeSection==='heroText' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-sky-500/20 bg-sky-500/5'}`} onFocusCapture={() => setActiveSection('heroText')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
               {t('step3.heroTextSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-sky-700/30 px-1.5 py-0.5 rounded">
@@ -682,7 +682,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Ichki matnlarni o'zgartirish — barcha event turlari uchun ── */}
         {data.eventType && (
-          <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2" onFocusCapture={() => setActiveSection('labels')} onBlurCapture={() => setActiveSection(null)}>
+          <div className={`glass p-5 space-y-4 border rounded-2xl mb-2 transition-all duration-200 ${activeSection==='labels' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-cyan-500/20 bg-cyan-500/5'}`} onFocusCapture={() => setActiveSection('labels')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2 border-b border-cyan-500/20 pb-3">
               {t('step3.labelsSection')}
             </h3>
@@ -1128,7 +1128,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
       )}
 
             {/* Date & location */}
-      <div className="space-y-4" onFocusCapture={() => setActiveSection('dateLocation')} onBlurCapture={() => setActiveSection(null)}>
+      <div className={`space-y-4 transition-all duration-200 rounded-xl p-0 ${activeSection==='dateLocation' ? 'ring-1 ring-indigo-500/30' : ''}`} onFocusCapture={() => setActiveSection('dateLocation')} onBlurCapture={() => setActiveSection(null)}>
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           <Calendar size={13} /> {t('step3.dateLocation')}
         </h3>
@@ -1222,7 +1222,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
       </div>
 
             {/* Extra features: music + telegram */}
-      <div className="space-y-4">
+      <div className={`space-y-4 transition-all duration-200 rounded-xl ${activeSection==='music' ? 'ring-1 ring-indigo-500/30' : ''}`} onFocusCapture={() => setActiveSection('music')} onBlurCapture={() => setActiveSection(null)}>
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           ⚙️ {t('step3.extras')}
         </h3>
@@ -1482,7 +1482,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             onChange={(val) => handleCustomFieldChange('telegramChatId', val)} 
           />
         </div>
-        <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+        <div className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-200 ${activeSection==='rsvp' ? 'border-indigo-500/50 bg-indigo-500/8' : 'border-white/[0.06] bg-white/[0.02]'}`} onClick={() => setActiveSection('rsvp')}>
           <div>
             <label className="label flex items-center gap-1.5 !mb-0">✅ {t('step3.rsvp')}</label>
             <p className="text-[11px] text-surface-500 mt-0.5">{t('step3.rsvpHint')}</p>
@@ -1522,7 +1522,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           </div>
         )}
 
-        <div className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+        <div className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-200 ${activeSection==='wishes' ? 'border-indigo-500/50 bg-indigo-500/8' : 'border-white/[0.06] bg-white/[0.02]'}`} onClick={() => setActiveSection('wishes')}>
           <div>
             <label className="label flex items-center gap-1.5 !mb-0">💌 {t('step3.wishes')}</label>
             <p className="text-[11px] text-surface-500 mt-0.5">{t('step3.wishesHint')}</p>
