@@ -258,6 +258,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
   const orderArr = (data.customFields?.langOrder || 'uz,ru,qq').split(',');
 
   const [playingId, setPlayingId] = useState(null);
+  const [activeSection, setActiveSection] = useState(null);
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -494,7 +495,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           const current = data.customFields?.heroEmoji || '';
           const isHidden = current === 'none';
           return (
-            <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3">
+            <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3" onMouseEnter={() => setActiveSection('heroEmoji')} onMouseLeave={() => setActiveSection(null)}>
               <div className="flex items-center justify-between">
                 <h3 className="text-[13px] font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-2">
                   {t('step3.heroSection')}
@@ -566,7 +567,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Footer kutish xabari — "Sizni kutib qolamiz!" kabi ── */}
         {data.eventType && (
-          <div className="glass p-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl mb-2 space-y-3">
+          <div className="glass p-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl mb-2 space-y-3" onMouseEnter={() => setActiveSection('waitingMsg')} onMouseLeave={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
               {t('step3.waitingSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-rose-700/30 px-1.5 py-0.5 rounded">
@@ -628,7 +629,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
         {data.eventType && (
-          <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3">
+          <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3" onMouseEnter={() => setActiveSection('heroText')} onMouseLeave={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
               {t('step3.heroTextSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-sky-700/30 px-1.5 py-0.5 rounded">
@@ -681,7 +682,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Ichki matnlarni o'zgartirish — barcha event turlari uchun ── */}
         {data.eventType && (
-          <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2">
+          <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2" onMouseEnter={() => setActiveSection('labels')} onMouseLeave={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2 border-b border-cyan-500/20 pb-3">
               {t('step3.labelsSection')}
             </h3>
@@ -1640,6 +1641,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               </div>
               <LivePreview
                 data={data}
+                activeSection={activeSection}
                 className="h-[600px] rounded-2xl border border-white/10 overflow-hidden"
               />
             </div>
