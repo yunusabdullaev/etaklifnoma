@@ -811,12 +811,14 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <label className="label">👤 {trLocal.uzHostName} *</label>
                 <input type="text" placeholder="Aliyev Jasur"
                   value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
+                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
                   className="input-field" />
               </div>
               <div>
                 <label className="label">👥 {trLocal.uzGuestName}</label>
                 <input type="text" placeholder="Hurmatli mehmon"
                   value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
+                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
                   className="input-field" />
               </div>
             </div>
@@ -824,6 +826,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <label className="label flex items-center gap-1.5">✏️ {trLocal.uzEventTitle}</label>
               <input type="text" placeholder="Nikoh marosimi"
                 value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
+                onFocus={() => setActiveSection('heroText')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
             
@@ -831,6 +834,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
               <textarea rows={3} placeholder="Hurmatli mehmonlar, sizni..."
                 value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
+                onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
                 className="input-field resize-none" />
             </div>
 
@@ -1139,6 +1143,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               min={new Date().toISOString().split('T')[0]}
               max={new Date(Date.now() + 89 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
               onChange={(e) => handleChange('eventDate', e.target.value)}
+              onFocus={() => setActiveSection('dateLocation')} onBlur={() => setActiveSection(null)}
               className="input-field" />
           </div>
           <div>
@@ -1152,6 +1157,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           <label className="label flex items-center gap-1.5"><MapPin size={13} /> {t('step3.location')} *</label>
           <input type="text" placeholder="Navruz to'yxonasi, Toshkent"
             value={data.location || ''} onChange={(e) => handleChange('location', e.target.value)}
+            onFocus={() => setActiveSection('dateLocation')} onBlur={() => setActiveSection(null)}
             className="input-field" />
         </div>
         <div>

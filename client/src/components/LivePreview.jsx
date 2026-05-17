@@ -68,17 +68,20 @@ export default function LivePreview({ data, className = '', activeSection = null
         <script>
         (function() {
           var sectionMap = {
-            heroEmoji:   ['.hero-icon', '.hero-emoji', '.invitation-icon', '.envelope-icon img', '.hero img'],
-            waitingMsg:  ['.footer-msg', '.waiting-msg', '.waiting-message'],
-            heroText:    ['.hero-title', '.invitation-title', '.event-name', 'h1.title', '.hero-text', '.heading-main'],
-            dateLocation:['.details-section', '.info-cards', '.ic-wrap', '.details-wrap'],
-            schedule:    ['#program', '.timeline-section', '.program-section', '.schedule-section'],
-            location:    ['.map-card', '.location-section', '.map-section'],
-            music:       ['.music-player', '.audio-bar', '.music-bar'],
-            photos:      ['.photo-gallery-section', '#gallery', '.gallery-section'],
-            wishes:      ['.wishes-section', '.wishes-form'],
-            labels:      ['.event-label', '.countdown-section', '.cd-section'],
-            dressCode:   ['.dresscode-badge', '.dress-code'],
+            heroEmoji:   ['.hero-icon', '.hero-emoji', '.invitation-icon', '.envelope-icon img', '.hero img', '.hero-image'],
+            waitingMsg:  ['.footer-msg', '.waiting-msg', '.waiting-message', '.footer-waiting', '.cd-bottom'],
+            heroText:    ['.hero-title', '.invitation-title', '.event-name', 'h1.title', '.hero-text', '.heading-main', '[data-i18n="heroText"]', '.event-title-text'],
+            dateLocation:['.details-section', '.info-cards', '.ic-wrap', '.details-wrap', '.date-section', '.info-section'],
+            schedule:    ['#program', '.timeline-section', '.program-section', '.schedule-section', '.tl-item', '.program'],
+            location:    ['.map-card', '.location-section', '.map-section', '.map-wrap'],
+            music:       ['.music-toggle', '.music-player', '.audio-bar', '.music-bar', '#musicToggle'],
+            photos:      ['.photo-gallery-section', '#gallery', '.gallery-section', '.gallery-grid'],
+            wishes:      ['.wishes-section', '.wishes-form', '#wishes'],
+            labels:      ['.event-label', '.countdown-section', '.cd-section', '.cd-wrap', '.countdown'],
+            rsvp:        ['.rsvp-section', '#rsvp', '.rsvp-wrap'],
+            hostName:    ['[data-tp="hostName"]', '.host-name', '.greeting-family', '.footer-names', '.mezban'],
+            guestName:   ['[data-tp="guestName"]', '.guest-name', '.greeting-guest', '.mehman'],
+            message:     ['.greeting-section', '.invitation-message', '.message-section', '.message-text', 'section.greeting-section'],
           };
           var lastHighlighted = [];
           window.addEventListener('message', function(e) {
