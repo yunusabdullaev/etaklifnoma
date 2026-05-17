@@ -332,7 +332,7 @@ export default function Dashboard({ token, onCreateNew, onContinueDraft, onEditF
         <div className="flex flex-row gap-2 sm:gap-3 w-full sm:w-auto">
           {hasDraft && (
             <button onClick={onContinueDraft} className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 rounded-xl text-sm sm:text-base font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20 shadow-sm shadow-accent-500/10">
-              <Pencil size={16} /> Davom etish
+              {t('dashboard.continueDraft')}
             </button>
           )}
           <button onClick={handleCreateNew} className="btn-primary flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 text-sm sm:text-base">
@@ -360,7 +360,7 @@ export default function Dashboard({ token, onCreateNew, onContinueDraft, onEditF
           <div className="flex justify-center gap-3">
             {hasDraft && (
               <button onClick={onContinueDraft} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all text-accent-400 bg-accent-500/10 border border-accent-500/20 hover:bg-accent-500/20">
-                <Pencil size={18} /> Davom etish
+                {t('dashboard.continueDraft')}
               </button>
             )}
             <button onClick={handleCreateNew} className="btn-primary inline-flex items-center gap-2 px-6 py-3">

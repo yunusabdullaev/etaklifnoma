@@ -497,7 +497,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             <div className="glass p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl mb-2 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-[13px] font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-2">
-                  🎭 Yuqori belgi (shapka emoji)
+                  {t('step3.heroSection')}
                 </h3>
                 <button
                   type="button"
@@ -507,7 +507,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                       ? 'bg-red-500/20 border-red-400/50 text-red-300 hover:bg-red-500/30'
                       : 'bg-white/5 border-white/15 text-surface-400 hover:bg-red-500/10 hover:border-red-500/30 hover:text-red-400'}`}
                 >
-                  {isHidden ? "👁️ Ko'rsatish" : "🗑️ Olib tashlash"}
+                  {isHidden ? t('step3.heroShow') : t('step3.heroHide')}
                 </button>
               </div>
 
@@ -523,7 +523,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                       {current || def}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <label className="label mb-1">Emoji yoki matn kiriting</label>
+                      <label className="label mb-1">{t('step3.emojiInputLabel')}</label>
                       <input
                         type="text"
                         placeholder={def}
@@ -568,7 +568,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         {data.eventType && (
           <div className="glass p-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl mb-2 space-y-3">
             <h3 className="text-[13px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
-              💌 Kutish xabari
+              {t('step3.waitingSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-rose-700/30 px-1.5 py-0.5 rounded">
                 pastki — "Сизлерди күтип қаламыз!" kabi
               </span>
@@ -612,7 +612,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               )}
               {!isUzOn && !isQqOn && !isRuOn && (
                 <div>
-                  <label className="label mb-1">Kutish xabari</label>
+                  <label className="label mb-1">{t('step3.waitingLabel')}</label>
                   <input
                     type="text"
                     className="input-field"
@@ -630,7 +630,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         {data.eventType && (
           <div className="glass p-4 border border-sky-500/20 bg-sky-500/5 rounded-2xl mb-2 space-y-3">
             <h3 className="text-[13px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
-              🔤 Yuqori yozuv matni
+              {t('step3.heroTextSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-sky-700/30 px-1.5 py-0.5 rounded">
                 masalan: ПИТКЭРИЎШИЛЭР КЭШЭСИ
               </span>
@@ -650,7 +650,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               )}
               {isQqOn && (
                 <div>
-                  <label className="label mb-1 flex items-center gap-1">🇰🇿 Qaraqalpaqcha yozuv</label>
+                  <label className="label mb-1 flex items-center gap-1">{t('step3.qqTextLabel')}</label>
                   <input
                     type="text"
                     className="input-field"
@@ -683,10 +683,10 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         {data.eventType && (
           <div className="glass p-5 space-y-4 border border-cyan-500/20 bg-cyan-500/5 rounded-2xl -mx-0 mb-2">
             <h3 className="text-[13px] font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2 border-b border-cyan-500/20 pb-3">
-              ✨ Tadbir belgilarini sozlash
+              {t('step3.labelsSection')}
             </h3>
             <p className="text-[11px] text-surface-400">
-              Bu yerda taklifnoma ichidagi sarlavhalar, hisob-kitob matni va kutish xabari o‘zgartiriladi.
+              {t('step3.labelsDesc')}
             </p>
 
             {/* UZ labels */}
@@ -709,7 +709,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                       onChange={(e) => handleCustomFieldChange('customCountdownTitle', e.target.value)} />
                   </div>
                   <div>
-                    <label className="label">Kutish xabari (UZ)</label>
+                    <label className="label">{t('step3.waitingLabelUz')}</label>
                     <input type="text" placeholder="Sizni kutib qolamiz! ✨" className="input-field"
                       value={data.customFields?.customWaitingMsg || ''}
                       onChange={(e) => handleCustomFieldChange('customWaitingMsg', e.target.value)} />
@@ -881,7 +881,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                     <button type="button"
                       onClick={() => updateProgram([...items, { time: '', text: '' }])}
                       className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
-                      + Band qo'shish
+                      {t('step3.addScheduleItem')}
                     </button>
                   </div>
                 );

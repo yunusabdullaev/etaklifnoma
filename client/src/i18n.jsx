@@ -188,6 +188,22 @@ const translations = {
     'support.closed': 'Yopilgan',
     'support.admin': 'Support',
 
+
+    // Step3 extra labels
+    'dashboard.continueDraft': 'Davom etish',
+    'step3.heroSection': '🎭 Yuqori belgi (shapka emoji)',
+    'step3.heroShow': "👁️ Ko'rsatish",
+    'step3.heroHide': "🗑️ Olib tashlash",
+    'step3.emojiInputLabel': 'Emoji yoki matn kiriting',
+    'step3.waitingSection': '💌 Kutish xabari',
+    'step3.waitingLabel': 'Kutish xabari',
+    'step3.heroTextSection': '🔤 Yuqori yozuv matni',
+    'step3.qqTextLabel': '🇰🇿 Qaraqalpaqcha yozuv',
+    'step3.labelsSection': '✨ Tadbir belgilarini sozlash',
+    'step3.labelsDesc': "Bu yerda taklifnoma ichidagi sarlavhalar, hisob-kitob matni va kutish xabari o'zgartiriladi.",
+    'step3.waitingLabelUz': 'Kutish xabari (UZ)',
+    'step3.addScheduleItem': "+ Band qo'shish",
+
     // Common
     'common.loading': 'Yuklanmoqda...',
     'common.error': 'Xatolik yuz berdi',
@@ -379,6 +395,22 @@ const translations = {
     'support.answered': 'Ответили',
     'support.closed': 'Закрыто',
     'support.admin': 'Поддержка',
+
+
+    // Step3 extra labels
+    'dashboard.continueDraft': 'Продолжить',
+    'step3.heroSection': '🎭 Верхний значок (эмодзи)',
+    'step3.heroShow': '👁️ Показать',
+    'step3.heroHide': '🗑️ Скрыть',
+    'step3.emojiInputLabel': 'Введите emoji или текст',
+    'step3.waitingSection': '💌 Сообщение ожидания',
+    'step3.waitingLabel': 'Сообщение ожидания',
+    'step3.heroTextSection': '🔤 Верхний заголовок',
+    'step3.qqTextLabel': '🇰🇿 Каракалпакский текст',
+    'step3.labelsSection': '✨ Настройка меток события',
+    'step3.labelsDesc': 'Здесь изменяются заголовки внутри приглашения, текст обратного отсчёта и сообщение ожидания.',
+    'step3.waitingLabelUz': 'Сообщение ожидания (UZ)',
+    'step3.addScheduleItem': '+ Добавить пункт',
 
     // Common
     'common.loading': 'Загрузка...',
@@ -572,6 +604,22 @@ const translations = {
     'support.closed': 'Jabılǵan',
     'support.admin': 'Qollaw',
 
+
+    // Step3 extra labels
+    'dashboard.continueDraft': 'Dawam etiw',
+    'step3.heroSection': '🎭 Yuqorı belgi (shapka emoji)',
+    'step3.heroShow': '👁️ Kórsatiw',
+    'step3.heroHide': '🗑️ Alıp taslaw',
+    'step3.emojiInputLabel': 'Emoji yamasa matn kiritiń',
+    'step3.waitingSection': '💌 Kútiw xabarı',
+    'step3.waitingLabel': 'Kútiw xabarı',
+    'step3.heroTextSection': '🔤 Yuqorı jazıw matni',
+    'step3.qqTextLabel': '🇰🇿 Qaraqalpaqsha jazıw',
+    'step3.labelsSection': '✨ Ilaje belgilerin sazlaw',
+    'step3.labelsDesc': 'Bul jerde taklifnama ishindegi sarlavhalar, esap-sanaqlıq matni hám kútiw xabarı ózgertiriledi.',
+    'step3.waitingLabelUz': 'Kútiw xabarı (UZ)',
+    'step3.addScheduleItem': '+ Band qosıw',
+
     // Common
     'common.loading': 'Júklenip atır...',
     'common.error': 'Qátelik júz berdi',
@@ -763,6 +811,22 @@ const translations = {
     'support.answered': 'Answered',
     'support.closed': 'Closed',
     'support.admin': 'Support',
+
+
+    // Step3 extra labels
+    'dashboard.continueDraft': 'Continue',
+    'step3.heroSection': '🎭 Hero icon (top emoji)',
+    'step3.heroShow': '👁️ Show',
+    'step3.heroHide': '🗑️ Remove',
+    'step3.emojiInputLabel': 'Enter emoji or text',
+    'step3.waitingSection': '💌 Waiting message',
+    'step3.waitingLabel': 'Waiting message',
+    'step3.heroTextSection': '🔤 Hero text',
+    'step3.qqTextLabel': '🇰🇿 Karakalpak text',
+    'step3.labelsSection': '✨ Event label settings',
+    'step3.labelsDesc': 'Customize headings, countdown text and waiting message inside the invitation.',
+    'step3.waitingLabelUz': 'Waiting message (UZ)',
+    'step3.addScheduleItem': '+ Add item',
 
     // Common
     'common.loading': 'Loading...',
