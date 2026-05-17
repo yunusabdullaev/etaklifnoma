@@ -774,7 +774,7 @@ const LangContext = createContext();
 
 export function LangProvider({ children }) {
   const [lang, setLang] = useState(() => {
-    return localStorage.getItem('taklifnoma-lang') || 'uz';
+    return localStorage.getItem('taklifnoma-lang') || 'ru';
   });
 
   useEffect(() => {
