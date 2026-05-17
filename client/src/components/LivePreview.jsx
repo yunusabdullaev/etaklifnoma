@@ -67,21 +67,22 @@ export default function LivePreview({ data, className = '', activeSection = null
         </style>
         <script>
         (function() {
+          // data-section selectors (set by templateEngine.js tagger script) take priority
           var sectionMap = {
-            heroEmoji:   ['.hero-icon', '.hero-emoji', '.invitation-icon', '.envelope-icon img', '.hero img', '.hero-image'],
-            waitingMsg:  ['.footer-msg', '.waiting-msg', '.waiting-message', '.footer-waiting', '.cd-bottom'],
-            heroText:    ['.hero-title', '.invitation-title', '.event-name', 'h1.title', '.hero-text', '.heading-main', '[data-i18n="heroText"]', '.event-title-text'],
-            dateLocation:['.details-section', '.info-cards', '.ic-wrap', '.details-wrap', '.date-section', '.info-section'],
-            schedule:    ['#program', '.timeline-section', '.program-section', '.schedule-section', '.tl-item', '.program'],
-            location:    ['.map-card', '.location-section', '.map-section', '.map-wrap'],
-            music:       ['.music-toggle', '.music-player', '.audio-bar', '.music-bar', '#musicToggle'],
-            photos:      ['.photo-gallery-section', '#gallery', '.gallery-section', '.gallery-grid'],
-            wishes:      ['.wishes-section', '.wishes-form', '#wishes'],
-            labels:      ['.event-label', '.countdown-section', '.cd-section', '.cd-wrap', '.countdown'],
-            rsvp:        ['.rsvp-section', '#rsvp', '.rsvp-wrap'],
-            hostName:    ['[data-tp="hostName"]', '.host-name', '.greeting-family', '.footer-names', '.mezban'],
-            guestName:   ['[data-tp="guestName"]', '.guest-name', '.greeting-guest', '.mehman'],
-            message:     ['.greeting-section', '.invitation-message', '.message-section', '.message-text', 'section.greeting-section'],
+            heroEmoji:   ['[data-section="heroEmoji"]', '.hero-icon', '.hero-emoji', '.invitation-icon', '.envelope-icon img'],
+            waitingMsg:  ['[data-section="waitingMsg"]', '.footer-msg', '.waiting-msg', '.waiting-message'],
+            heroText:    ['[data-section="heroText"]', '.hero-title', '.invitation-title', '.event-name', 'h1'],
+            dateLocation:['[data-section="dateLocation"]', '.info-cards', '.ic-wrap', '.details-section'],
+            schedule:    ['[data-section="schedule"]', '#program', '.timeline-section', '.program-section'],
+            location:    ['[data-section="location"]', '.map-card', '.location-section', '.map-wrap'],
+            music:       ['[data-section="music"]', '#musicToggle', '.music-toggle'],
+            photos:      ['[data-section="photos"]', '#gallery', '.photo-gallery-section'],
+            wishes:      ['[data-section="wishes"]', '#wishes', '.wishes-section'],
+            labels:      ['[data-section="labels"]', '.countdown', '.cd-section', '.cd-wrap'],
+            rsvp:        ['[data-section="rsvp"]', '#rsvp', '.rsvp-section'],
+            hostName:    ['[data-section="hostName"]', '[data-tp="hostName"]', '.host-name', '.greeting-family'],
+            guestName:   ['[data-section="guestName"]', '[data-tp="guestName"]', '.guest-name'],
+            message:     ['[data-section="message"]', '.greeting-section', 'section.greeting-section'],
           };
           var lastHighlighted = [];
           window.addEventListener('message', function(e) {

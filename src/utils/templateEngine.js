@@ -724,6 +724,80 @@ function renderInvitation(invitation, eventType, template) {
   ${buildColorPaletteCss(invitation.customFields?.colorPalette || 'gold')}
   ${buildLanguageToggle(invitation.customFields)}
   ${buildBrandingFooter()}
+
+  <script>
+  /* ── Preview section tagger: marks DOM elements with data-section ── */
+  (function(){
+    function tagSections() {
+      var d = window.__INVITE_DATA__ || {};
+
+      // Fixed sections already tagged via data-section attribute on build functions
+      // (music, wishes, photos, rsvp)
+
+      // Text-based sections: find elements containing these field values
+      var textFields = [
+        { keys: ['hostName','hostNameRu','hostNameQq'], section: 'hostName' },
+        { keys: ['guestName','guestNameRu','guestNameQq'], section: 'guestName' },
+        { keys: ['eventTitle','eventTitleRu','eventTitleQq'], section: 'heroText' },
+        { keys: ['message','messageRu','messageQq'], section: 'message' },
+        { keys: ['locationDisplay','location'], section: 'dateLocation' },
+      ];
+
+      var candidates = Array.from(document.querySelectorAll(
+        'h1,h2,h3,h4,h5,p,span,strong,em,b,li,div.hero-title,div.event-name,.greeting-name,.greeting-title'
+      ));
+
+      textFields.forEach(function(f) {
+        var matched = false;
+        f.keys.forEach(function(key) {
+          if (matched) return;
+          var val = (d[key] || '').trim();
+          if (val.length < 2) return;
+          candidates.forEach(function(el) {
+            if (matched) return;
+            if (el.getAttribute('data-section')) return; // already tagged
+            // Only leaf-ish elements (<=2 element children)
+            var childElCount = Array.from(el.children).filter(function(c){ return c.tagName; }).length;
+            if (childElCount <= 2 && el.textContent.trim().includes(val)) {
+              el.setAttribute('data-section', f.section);
+              matched = true;
+            }
+          });
+        });
+      });
+
+      // Date/time section: find info-cards, details containers
+      var infoEls = document.querySelectorAll('.info-cards,.ic-wrap,.details-section,.details-wrap,.date-location-section,.event-details');
+      infoEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','dateLocation'); });
+
+      // Schedule/program
+      var progEls = document.querySelectorAll('#program,.timeline-section,.program-section,.tl-list,.schedule-section');
+      progEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','schedule'); });
+
+      // Map/location
+      var mapEls = document.querySelectorAll('.map-card,.map-section,.map-wrap,.location-map');
+      mapEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','location'); });
+
+      // Hero emoji
+      var heroEls = document.querySelectorAll('.hero-icon,.invitation-icon,.hero-emoji,.hero-image,.hero img,.envelope-icon');
+      heroEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','heroEmoji'); });
+
+      // Waiting/footer message
+      var waitEls = document.querySelectorAll('.footer-msg,.waiting-msg,.waiting-message,.cd-bottom,.footer-waiting');
+      waitEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','waitingMsg'); });
+
+      // Countdown
+      var cdEls = document.querySelectorAll('.countdown,.cd-section,.cd-wrap,.countdown-section');
+      cdEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','labels'); });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', tagSections);
+    } else {
+      tagSections();
+    }
+  })();
+  <\/script>
 </body>
 </html>`;
 }
@@ -765,7 +839,7 @@ function getBaseStyles() {
  */
 function buildMusicPlayer(musicUrl) {
   return `
-  <div class="music-toggle" id="musicToggle" onclick="toggleMusic()">
+  <div class="music-toggle" id="musicToggle" data-section="music" onclick="toggleMusic()">
     <svg class="music-icon playing" id="musicIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M9 18V5l12-2v13"/>
       <circle cx="6" cy="18" r="3"/>
@@ -865,7 +939,7 @@ function buildShareButtons(cf) {
  */
 function buildWishesForm(chatId, invitationSlug) {
   return `
-  <section class="section wishes-section" id="wishes">
+  <section class="section wishes-section" id="wishes" data-section="wishes">
     <div class="container">
       <h2 class="section-heading" style="margin-bottom:12px">💌 Tilak va tabriklar</h2>
       <p class="wishes-subtitle">Tilak va tabriklaringizni qoldiring</p>
@@ -1728,7 +1802,7 @@ function buildPhotoGallery(photos) {
   `).join('');
 
   return `
-  <section class="section photo-gallery-section" id="gallery" style="background:var(--greeting-bg);padding:80px 0;text-align:center;position:relative">
+  <section class="section photo-gallery-section" id="gallery" data-section="photos" style="background:var(--greeting-bg);padding:80px 0;text-align:center;position:relative">
     <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.2"></div>
     <div class="container" style="max-width:600px;margin:0 auto;padding:0 24px">
       <h2 class="section-heading light" data-i18n="galleryTitle" style="margin-bottom:24px;color:var(--greeting-text)">Foto lavhalar</h2>
@@ -1824,7 +1898,7 @@ function buildRsvpForm(slug, lang = 'uz') {
   const t = txt[lang] || txt.uz;
 
   return `
-  <section class="section rsvp-section" id="rsvp" style="background:var(--greeting-bg);text-align:center;padding:100px 0;position:relative">
+  <section class="section rsvp-section" id="rsvp" data-section="rsvp" style="background:var(--greeting-bg);text-align:center;padding:100px 0;position:relative">
     <div style="max-width:460px;margin:0 auto;padding:0 24px">
       <div style="margin-bottom:28px">
         <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(76,175,80,0.2)">
