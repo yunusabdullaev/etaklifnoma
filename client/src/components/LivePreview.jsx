@@ -69,23 +69,24 @@ export default function LivePreview({ data, className = '', activeSection = null
         </style>
         <script>
         (function() {
-          // data-section selectors (set by templateEngine.js tagger script) take priority
+          // data-section selectors — templateEngine tagger adds these at DOMContentLoaded
           var sectionMap = {
-            heroEmoji:   ['[data-section="heroEmoji"]', '.hero-icon', '.hero-emoji', '.invitation-icon', '.envelope-icon img'],
-            waitingMsg:  ['[data-section="waitingMsg"]', '[data-i18n="waitingMsg"]', '.footer-msg', '.waiting-msg'],
-            heroText:    ['[data-section="heroText"]', '[data-i18n="eventLabel"]', '[data-i18n="bdEventLabel"]', '[data-i18n="gradEventLabel"]', '[data-i18n="jubEventLabel"]', '.event-label', '.invitation-subtitle'],
+            heroEmoji:   ['[data-section="heroEmoji"]', '.hero-icon', '.hero-emoji', '.invitation-icon'],
+            waitingMsg:  ['[data-section="waitingMsg"]', '[data-i18n="waitingMsg"]', '[data-i18n="bdWaitingMsg"]'],
+            heroText:    ['[data-section="heroText"]', '[data-i18n="eventLabel"]', '[data-i18n="bdEventLabel"]', '[data-i18n="gradEventLabel"]', '[data-i18n="jubEventLabel"]'],
             eventTitle:  ['[data-section="eventTitle"]', '.hero-title', '.invitation-title', '.event-name', 'h1'],
-            dateLocation:['[data-section="dateLocation"]', '.info-cards', '.ic-wrap', '.details-section'],
-            schedule:    ['[data-section="schedule"]', '#program', '.timeline-section', '.program-section'],
-            location:    ['[data-section="location"]', '.map-card', '.location-section', '.map-wrap'],
-            music:       ['[data-section="music"]', '#musicToggle', '.music-toggle'],
-            photos:      ['[data-section="photos"]', '#gallery', '.photo-gallery-section'],
+            dateLocation:['[data-section="dateLocation"]', '[data-i18n="detailsTitle"]', '[data-i18n="dateLabel"]', '.info-cards', '.ic-wrap'],
+            schedule:    ['[data-section="schedule"]', '[data-i18n="programTitle"]', '#program', '.timeline-section'],
+            location:    ['[data-section="location"]', '[data-i18n="locationTitle"]', '[data-i18n="venueLabel"]', '.map-card'],
+            music:       ['[data-section="music"]', '#musicToggle'],
+            photos:      ['[data-section="photos"]', '[data-i18n="galleryTitle"]', '#gallery'],
             wishes:      ['[data-section="wishes"]', '#wishes', '.wishes-section'],
-            labels:      ['[data-section="labels"]', '[data-i18n="countdownTitle"]', '.countdown', '.cd-section'],
-            rsvp:        ['[data-section="rsvp"]', '#rsvp', '.rsvp-section'],
-            hostName:    ['[data-section="hostName"]', '[data-tp="hostName"]', '.host-name', '.greeting-family'],
-            guestName:   ['[data-section="guestName"]', '[data-tp="guestName"]', '.guest-name'],
+            labels:      ['[data-section="labels"]', '[data-i18n="countdownTitle"]', '[data-i18n="gradCountdownTitle"]', '.countdown'],
+            rsvp:        ['[data-section="rsvp"]', '#rsvp'],
+            hostName:    ['[data-section="hostName"]', '[data-tp="hostName"]', '.greeting-family'],
+            guestName:   ['[data-section="guestName"]', '[data-i18n="guestWelcome"]', '[data-tp="guestName"]'],
             message:     ['[data-section="message"]', '.greeting-section', 'section.greeting-section'],
+            dressCode:   ['[data-section="dressCode"]', '[data-i18n="dressCode"]', '.dresscode-badge'],
           };
           var lastHighlighted = [];
           window.addEventListener('message', function(e) {

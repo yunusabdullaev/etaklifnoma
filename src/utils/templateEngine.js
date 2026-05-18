@@ -790,17 +790,53 @@ function renderInvitation(invitation, eventType, template) {
       var cdEls = document.querySelectorAll('[data-i18n="countdownTitle"],.countdown,.cd-section,.cd-wrap,.countdown-section');
       cdEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','labels'); });
 
-      // heroText (Верхний заголовок) — data-i18n="eventLabel" / "bdEventLabel" / "gradEventLabel"
-      var heroTextEls = document.querySelectorAll('[data-i18n="eventLabel"],[data-i18n="bdEventLabel"],[data-i18n="gradEventLabel"],[data-i18n="jubEventLabel"],.event-label,.invitation-subtitle,.event-type-label');
-      heroTextEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','heroText'); });
-
-      // Details title — data-i18n="detailsTitle"
-      var detailTitleEls = document.querySelectorAll('[data-i18n="detailsTitle"]');
-      detailTitleEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','dateLocation'); });
-
-      // Program title — data-i18n="programTitle"
-      var progTitleEls = document.querySelectorAll('[data-i18n="programTitle"]');
-      progTitleEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','schedule'); });
+      // ── data-i18n based tagging — most precise ──
+      var di18nMap = {
+        // heroText: event label / banner heading
+        'eventLabel':         'heroText',
+        'bdEventLabel':       'heroText',
+        'gradEventLabel':     'heroText',
+        'jubEventLabel':      'heroText',
+        // waitingMsg: footer waiting message
+        'waitingMsg':         'waitingMsg',
+        'bdWaitingMsg':       'waitingMsg',
+        // labels: countdown section
+        'countdownTitle':     'labels',
+        'gradCountdownTitle': 'labels',
+        'days':               'labels',
+        'hours':              'labels',
+        'minutes':            'labels',
+        'seconds':            'labels',
+        'jubYears':           'labels',
+        // dateLocation: date, time, details
+        'detailsTitle':       'dateLocation',
+        'dateLabel':          'dateLocation',
+        'timeLabel':          'dateLocation',
+        'gradYear':           'dateLocation',
+        // location: venue and map
+        'locationTitle':      'location',
+        'venueLabel':         'location',
+        'viewMap':            'location',
+        // schedule: program
+        'programTitle':       'schedule',
+        'prog1':              'schedule',
+        'prog2':              'schedule',
+        'prog3':              'schedule',
+        'prog4':              'schedule',
+        // guestName: welcome/greeting line
+        'guestWelcome':       'guestName',
+        // gallery title
+        'galleryTitle':       'photos',
+        // dressCode
+        'dressCode':          'dressCode',
+      };
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        var sec = di18nMap[key];
+        if (sec && !el.getAttribute('data-section')) {
+          el.setAttribute('data-section', sec);
+        }
+      });
     }
 
     if (document.readyState === 'loading') {
