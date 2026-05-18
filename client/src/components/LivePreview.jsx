@@ -128,7 +128,87 @@ export default function LivePreview({ data, className = '', activeSection = null
             }
           });
         })();
-        <\/script>`
+        \<\/script>`;
+
+        // ── Tagger: run INSIDE iframe to add data-section attrs to DOM elements ──
+        const taggerScript = `<script>
+        (function() {
+          function runTagger() {
+            var d = window.__INVITE_DATA__ || {};
+
+            // ── data-i18n based (most precise — already in template HTML) ──
+            var di18nMap = {
+              'eventLabel':'heroText','bdEventLabel':'heroText','gradEventLabel':'heroText','jubEventLabel':'heroText',
+              'waitingMsg':'waitingMsg','bdWaitingMsg':'waitingMsg',
+              'countdownTitle':'labels','gradCountdownTitle':'labels',
+              'days':'labels','hours':'labels','minutes':'labels','seconds':'labels','jubYears':'labels',
+              'detailsTitle':'dateLocation','dateLabel':'dateLocation','timeLabel':'dateLocation','gradYear':'dateLocation',
+              'locationTitle':'location','venueLabel':'location','viewMap':'location',
+              'programTitle':'schedule','prog1':'schedule','prog2':'schedule','prog3':'schedule','prog4':'schedule',
+              'guestWelcome':'guestName',
+              'galleryTitle':'photos',
+              'dressCode':'dressCode',
+            };
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+              var sec = di18nMap[el.getAttribute('data-i18n')];
+              if (sec && !el.getAttribute('data-section')) el.setAttribute('data-section', sec);
+            });
+
+            // ── CSS class based fallbacks ──
+            var cssMap = [
+              ['.hero-icon,.invitation-icon,.hero-emoji,.hero-image', 'heroEmoji'],
+              ['.footer-msg,.waiting-msg,.waiting-message', 'waitingMsg'],
+              ['.info-cards,.ic-wrap,.details-section,.details-wrap', 'dateLocation'],
+              ['#program,.timeline-section,.program-section', 'schedule'],
+              ['.map-card,.location-section,.map-wrap', 'location'],
+              ['#musicToggle,.music-toggle', 'music'],
+              ['section.wishes-section,#wishes', 'wishes'],
+              ['section.rsvp-section,#rsvp', 'rsvp'],
+              ['section.photo-gallery-section,#gallery', 'photos'],
+              ['.countdown,.cd-section,.cd-wrap', 'labels'],
+              ['.dresscode-badge,.dress-code', 'dressCode'],
+              ['[data-tp="hostName"],.host-name,.greeting-family,.footer-names', 'hostName'],
+              ['[data-tp="guestName"],.guest-name', 'guestName'],
+              ['section.greeting-section,.invitation-message', 'message'],
+            ];
+            cssMap.forEach(function(pair) {
+              try {
+                document.querySelectorAll(pair[0]).forEach(function(el) {
+                  if (!el.getAttribute('data-section')) el.setAttribute('data-section', pair[1]);
+                });
+              } catch(e) {}
+            });
+
+            // ── Text value based (last resort) ──
+            var textFields = [
+              {keys:['hostName','hostNameRu','hostNameQq'], sec:'hostName'},
+              {keys:['guestName','guestNameRu','guestNameQq'], sec:'guestName'},
+              {keys:['message','messageRu','messageQq'], sec:'message'},
+              {keys:['locationDisplay','location'], sec:'dateLocation'},
+            ];
+            var candidates = Array.from(document.querySelectorAll('h1,h2,h3,h4,p,span,strong,em'));
+            textFields.forEach(function(f) {
+              f.keys.forEach(function(key) {
+                var val = (d[key] || '').trim();
+                if (val.length < 2) return;
+                candidates.forEach(function(el) {
+                  if (el.getAttribute('data-section')) return;
+                  var childEls = Array.from(el.children).filter(function(c){return c.tagName;}).length;
+                  if (childEls <= 1 && el.textContent.trim().includes(val)) {
+                    el.setAttribute('data-section', f.sec);
+                  }
+                });
+              });
+            });
+          }
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runTagger);
+          } else {
+            runTagger();
+          }
+        })();
+        <\/script>`;
+
         + `<style>
           .section, .info-card, .tl-item, .map-card, .dresscode-badge,
           [class*="section"], [class*="card"], [class*="reveal"] {
@@ -154,7 +234,9 @@ export default function LivePreview({ data, className = '', activeSection = null
         })();
 
         <\/script>`;
-        const injectedHtml = html.replace('</head>', previewOverride + '</head>');
+        const injectedHtml = html
+          .replace('</head>', previewOverride + '</head>')
+          .replace('</body>', taggerScript + '</body>');
         setHtmlContent(injectedHtml);
       } else {
         setError('Bo\'sh javob');
