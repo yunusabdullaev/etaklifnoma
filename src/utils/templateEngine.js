@@ -738,7 +738,7 @@ function renderInvitation(invitation, eventType, template) {
       var textFields = [
         { keys: ['hostName','hostNameRu','hostNameQq'], section: 'hostName' },
         { keys: ['guestName','guestNameRu','guestNameQq'], section: 'guestName' },
-        { keys: ['eventTitle','eventTitleRu','eventTitleQq'], section: 'heroText' },
+        { keys: ['eventTitle','eventTitleRu','eventTitleQq'], section: 'eventTitle' },
         { keys: ['message','messageRu','messageQq'], section: 'message' },
         { keys: ['locationDisplay','location'], section: 'dateLocation' },
       ];
@@ -782,13 +782,25 @@ function renderInvitation(invitation, eventType, template) {
       var heroEls = document.querySelectorAll('.hero-icon,.invitation-icon,.hero-emoji,.hero-image,.hero img,.envelope-icon');
       heroEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','heroEmoji'); });
 
-      // Waiting/footer message
-      var waitEls = document.querySelectorAll('.footer-msg,.waiting-msg,.waiting-message,.cd-bottom,.footer-waiting');
+      // Waiting/footer message — data-i18n="waitingMsg" is most precise
+      var waitEls = document.querySelectorAll('[data-i18n="waitingMsg"],.footer-msg,.waiting-msg,.waiting-message,.cd-bottom,.footer-waiting');
       waitEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','waitingMsg'); });
 
-      // Countdown
-      var cdEls = document.querySelectorAll('.countdown,.cd-section,.cd-wrap,.countdown-section');
+      // Countdown & labels — data-i18n="countdownTitle"
+      var cdEls = document.querySelectorAll('[data-i18n="countdownTitle"],.countdown,.cd-section,.cd-wrap,.countdown-section');
       cdEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','labels'); });
+
+      // heroText (Верхний заголовок) — data-i18n="eventLabel" / "bdEventLabel" / "gradEventLabel"
+      var heroTextEls = document.querySelectorAll('[data-i18n="eventLabel"],[data-i18n="bdEventLabel"],[data-i18n="gradEventLabel"],[data-i18n="jubEventLabel"],.event-label,.invitation-subtitle,.event-type-label');
+      heroTextEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','heroText'); });
+
+      // Details title — data-i18n="detailsTitle"
+      var detailTitleEls = document.querySelectorAll('[data-i18n="detailsTitle"]');
+      detailTitleEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','dateLocation'); });
+
+      // Program title — data-i18n="programTitle"
+      var progTitleEls = document.querySelectorAll('[data-i18n="programTitle"]');
+      progTitleEls.forEach(function(el){ if(!el.getAttribute('data-section')) el.setAttribute('data-section','schedule'); });
     }
 
     if (document.readyState === 'loading') {
