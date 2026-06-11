@@ -6,7 +6,9 @@ import { useTheme } from '../theme';
 
 const labels = {
   uz: { title: 'Sozlamalar', theme: 'Mavzu', dark: "Qorong'u", light: "Yorug'", language: 'Til' },
+  qq: { title: 'Sazlawlar', theme: 'Tema', dark: "Qarańǵı", light: "Jarıq", language: 'Til' },
   ru: { title: 'Настройки', theme: 'Тема', dark: 'Тёмная', light: 'Светлая', language: 'Язык' },
+  en: { title: 'Settings', theme: 'Theme', dark: 'Dark', light: 'Light', language: 'Language' },
 };
 
 export default function SettingsDropdown() {
