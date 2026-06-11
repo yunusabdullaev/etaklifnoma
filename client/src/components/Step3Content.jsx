@@ -664,7 +664,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <label className="label flex items-center gap-1.5">✏️ {trLocal.uzEventTitle}</label>
               <input type="text" placeholder="Nikoh marosimi"
                 value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
-                onFocus={() => setActiveSection('heroText')} onBlur={() => setActiveSection(null)}
+                onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -697,6 +697,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <label className="label flex items-center gap-2 mb-0">📅 Dastur (UZ)</label>
                 <input type="text" placeholder="Kecha dasturi" value={data.customFields?.programCustomTitle || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitle', e.target.value)}
+                  onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                   className="input-field text-xs py-1 px-3 w-[140px]" />
               </div>
               {(() => {
@@ -729,9 +730,11 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                         </div>
                         <input type="time" value={item.time}
                           onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgram(n); }}
+                          onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                           className="input-field w-[100px] text-center text-sm flex-shrink-0" />
                         <input type="text" value={item.text}
                           onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgram(n); }}
+                          onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                           className="input-field flex-1 text-sm" placeholder="Tadbir nomi" />
                         <button type="button" onClick={() => updateProgram(items.filter((_, j) => j !== i))}
                           className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
@@ -758,6 +761,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <input type="text" placeholder="Nikax márásimi"
                 value={data.customFields?.eventTitleQq || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
+                onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -766,6 +770,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <input type="text" placeholder="Aliyev Jasur"
                   value={data.customFields?.hostNameQq || ''}
                   onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
+                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
                   className="input-field" />
               </div>
               <div>
@@ -773,6 +778,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <input type="text" placeholder="Húrmetli mexmanlar"
                   value={data.customFields?.guestNameQq || ''}
                   onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
+                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
                   className="input-field" />
               </div>
             </div>
@@ -782,6 +788,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
                 value={data.customFields?.messageQq || ''}
                 onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
+                onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
                 className="input-field resize-none" />
             </div>
 
@@ -790,6 +797,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
                 <input type="text" placeholder="Ilaje bag'darlanması" value={data.customFields?.programCustomTitleQq || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
+                  onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                   className="input-field text-xs py-1 px-3 w-[140px]" />
               </div>
               {(() => {
@@ -822,9 +830,11 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                         </div>
                         <input type="time" value={item.time}
                           onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
+                          onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                           className="input-field w-[100px] text-center text-sm flex-shrink-0" />
                         <input type="text" value={item.text}
                           onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
+                          onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                           className="input-field flex-1 text-sm" placeholder="Ilaje atı" />
                         <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
                           className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
@@ -851,6 +861,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <input type="text" placeholder="Свадебное торжество"
                 value={data.customFields?.eventTitleRu || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
+                onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -859,6 +870,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <input type="text" placeholder="Абдуллаев Юнус"
                   value={data.customFields?.hostNameRu || ''}
                   onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
+                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
                   className="input-field" />
               </div>
               <div>
@@ -866,6 +878,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <input type="text" placeholder="Уважаемые гости"
                   value={data.customFields?.guestNameRu || ''}
                   onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
+                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
                   className="input-field" />
               </div>
             </div>
@@ -875,6 +888,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
                 value={data.customFields?.messageRu || ''}
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
+                onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
                 className="input-field resize-none" />
             </div>
 
@@ -883,6 +897,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 <label className="label flex items-center gap-2 mb-0">📅 Программа (RU)</label>
                 <input type="text" placeholder="Программа вечера" value={data.customFields?.programCustomTitleRu || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitleRu', e.target.value)}
+                  onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                   className="input-field text-xs py-1 px-3 w-[140px]" />
               </div>
               {(() => {
@@ -915,9 +930,11 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                         </div>
                         <input type="time" value={item.time}
                           onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramRu(n); }}
+                          onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                           className="input-field w-[100px] text-center text-sm flex-shrink-0" />
                         <input type="text" value={item.text}
                           onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramRu(n); }}
+                          onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
                           className="input-field flex-1 text-sm" placeholder="Событие" />
                         <button type="button" onClick={() => updateProgramRu(items.filter((_, j) => j !== i))}
                           className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
@@ -1187,6 +1204,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             <label className="label flex items-center gap-1.5"><Clock size={13} /> {t('step3.time')}</label>
             <input type="time" value={data.eventTime || ''}
               onChange={(e) => handleChange('eventTime', e.target.value)}
+              onFocus={() => setActiveSection('dateLocation')} onBlur={() => setActiveSection(null)}
               className="input-field" />
           </div>
         </div>
@@ -1194,13 +1212,14 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           <label className="label flex items-center gap-1.5"><MapPin size={13} /> {t('step3.location')} *</label>
           <input type="text" placeholder="Navruz to'yxonasi, Toshkent"
             value={data.location || ''} onChange={(e) => handleChange('location', e.target.value)}
-            onFocus={() => setActiveSection('dateLocation')} onBlur={() => setActiveSection(null)}
+            onFocus={() => setActiveSection('location')} onBlur={() => setActiveSection(null)}
             className="input-field" />
         </div>
         <div>
           <label className="label flex items-center gap-1.5"><Link2 size={13} /> {t('step3.mapLink')}</label>
           <input type="text" placeholder="https://yandex.uz/maps/..."
             value={data.locationUrl || ''} 
+            onFocus={() => setActiveSection('location')} onBlur={() => setActiveSection(null)}
             onChange={(e) => {
               let val = e.target.value;
               const urlMatch = val.match(/(https?:\/\/[^\s]+)/i);
