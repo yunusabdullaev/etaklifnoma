@@ -602,6 +602,340 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           );
         })()}
 
+        {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
+        {data.eventType && (
+          <div className={`glass p-4 border rounded-2xl mb-2 space-y-3 transition-all duration-200 ${activeSection==='heroText' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-sky-500/20 bg-sky-500/5'}`} onFocusCapture={() => setActiveSection('heroText')} onBlurCapture={() => setActiveSection(null)}>
+            <h3 className="text-[13px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
+              {t('step3.heroTextSection')}
+              <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-sky-700/30 px-1.5 py-0.5 rounded">
+                masalan: ПИТКЭРИЎШИЛЭР КЭШЭСИ
+              </span>
+            </h3>
+            <div className="space-y-2">
+              {isUzOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇺🇿 O'zbekcha yozuv</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Bitiruvchilar kechasi"
+                    value={data.customFields?.customEventLabel || ''}
+                    onChange={(e) => handleCustomFieldChange('customEventLabel', e.target.value)}
+                  />
+                </div>
+              )}
+              {isQqOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">{t('step3.qqTextLabel')}</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Pitkeriwshiler keshesi"
+                    value={data.customFields?.customEventLabelQq || ''}
+                    onChange={(e) => handleCustomFieldChange('customEventLabelQq', e.target.value)}
+                  />
+                </div>
+              )}
+              {isRuOn && (
+                <div>
+                  <label className="label mb-1 flex items-center gap-1">🇷🇺 Ruscha yozuv</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    placeholder="masalan: Выпускной вечер"
+                    value={data.customFields?.customEventLabelRu || ''}
+                    onChange={(e) => handleCustomFieldChange('customEventLabelRu', e.target.value)}
+                  />
+                </div>
+              )}
+              {!isUzOn && !isQqOn && !isRuOn && (
+                <p className="text-[11px] text-surface-500">Til sazlamalarini yoqing</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Language Specific Fields Wrapper ── */}
+        <div className="flex flex-col gap-8">
+          {isUzOn && (
+          <div className={`space-y-4 ${orderArr.indexOf('uz') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('uz') }}>
+            <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20 shadow-sm">🇺🇿 {trLocal.uzFields}</h4>
+            <div>
+              <label className="label flex items-center gap-1.5">✏️ {trLocal.uzEventTitle}</label>
+              <input type="text" placeholder="Nikoh marosimi"
+                value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
+                onFocus={() => setActiveSection('heroText')} onBlur={() => setActiveSection(null)}
+                className="input-field" />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="label">👤 {trLocal.uzHostName} *</label>
+                <input type="text" placeholder="Aliyev Jasur"
+                  value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
+                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
+                  className="input-field" />
+              </div>
+              <div>
+                <label className="label">👥 {trLocal.uzGuestName}</label>
+                <input type="text" placeholder="Hurmatli mehmon"
+                  value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
+                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
+                  className="input-field" />
+              </div>
+            </div>
+            
+            <div className="space-y-3 mt-3">
+              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
+              <textarea rows={3} placeholder="Hurmatli mehmonlar, sizni..."
+                value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
+                onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
+                className="input-field resize-none" />
+            </div>
+
+            <div className="mt-4 border-t border-white/5 pt-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="label flex items-center gap-2 mb-0">📅 Dastur (UZ)</label>
+                <input type="text" placeholder="Kecha dasturi" value={data.customFields?.programCustomTitle || ''}
+                  onChange={(e) => handleCustomFieldChange('programCustomTitle', e.target.value)}
+                  className="input-field text-xs py-1 px-3 w-[140px]" />
+              </div>
+              {(() => {
+                const DEFAULT_UZ = [
+                  { time: data.eventTime || '10:00', text: 'Mehmonlarni kutib olish' },
+                  { time: '11:00', text: 'Rasmiy qism' },
+                  { time: '12:00', text: 'Bayram dasturxoni' },
+                  { time: '14:00', text: 'Musiqiy tanaffus' },
+                ];
+                let items = [];
+                try { items = data.customFields?.program ? JSON.parse(data.customFields.program) : []; } catch { items = []; }
+                if (items.length === 0) items = DEFAULT_UZ;
+                const updateProgram = (newItems) => handleCustomFieldChange('program', JSON.stringify(newItems));
+                const moveItem = (idx, dir) => {
+                  const n = [...items];
+                  const to = idx + dir;
+                  if (to < 0 || to >= n.length) return;
+                  [n[idx], n[to]] = [n[to], n[idx]];
+                  updateProgram(n);
+                };
+                return (
+                  <div className="space-y-2">
+                    {items.map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
+                        <div className="flex flex-col gap-0.5">
+                          <button type="button" onClick={() => moveItem(i, -1)} disabled={i === 0}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
+                          <button type="button" onClick={() => moveItem(i, 1)} disabled={i === items.length - 1}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
+                        </div>
+                        <input type="time" value={item.time}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgram(n); }}
+                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
+                        <input type="text" value={item.text}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgram(n); }}
+                          className="input-field flex-1 text-sm" placeholder="Tadbir nomi" />
+                        <button type="button" onClick={() => updateProgram(items.filter((_, j) => j !== i))}
+                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
+                      </div>
+                    ))}
+                    <button type="button"
+                      onClick={() => updateProgram([...items, { time: '', text: '' }])}
+                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
+                      {t('step3.addScheduleItem')}
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
+
+          {/* QQ fields */}
+        {data.customFields?.langQq && (
+          <div className={`space-y-4 ${orderArr.indexOf('qq') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('qq') }}>
+            <h4 className="text-[11px] font-bold text-amber-400 bg-amber-500/10 inline-block px-2.5 py-1 rounded-md border border-amber-500/20 shadow-sm">🇰🇦 {trLocal.qqFields}</h4>
+            <div>
+              <label className="label">✏️ {trLocal.qqEventTitle}</label>
+              <input type="text" placeholder="Nikax márásimi"
+                value={data.customFields?.eventTitleQq || ''}
+                onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
+                className="input-field" />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="label">👤 {trLocal.qqHostName}</label>
+                <input type="text" placeholder="Aliyev Jasur"
+                  value={data.customFields?.hostNameQq || ''}
+                  onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
+                  className="input-field" />
+              </div>
+              <div>
+                <label className="label">👥 {trLocal.qqGuestName}</label>
+                <input type="text" placeholder="Húrmetli mexmanlar"
+                  value={data.customFields?.guestNameQq || ''}
+                  onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
+                  className="input-field" />
+              </div>
+            </div>
+            
+            <div className="space-y-3 mt-3">
+              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
+              <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
+                value={data.customFields?.messageQq || ''}
+                onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
+                className="input-field resize-none" />
+            </div>
+
+            <div className="mt-4 border-t border-white/5 pt-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
+                <input type="text" placeholder="Ilaje bag'darlanması" value={data.customFields?.programCustomTitleQq || ''}
+                  onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
+                  className="input-field text-xs py-1 px-3 w-[140px]" />
+              </div>
+              {(() => {
+                const DEFAULT_QQ = [
+                  { time: data.eventTime || '10:00', text: 'Mexmanlar kútip alıw' },
+                  { time: '11:00', text: 'Rásimiy bólim' },
+                  { time: '12:00', text: 'Ziyapat dástúrxanı' },
+                  { time: '14:00', text: 'Muzıkalı waqıtlar' },
+                ];
+                let items = [];
+                try { items = data.customFields?.programQq ? JSON.parse(data.customFields.programQq) : []; } catch { items = []; }
+                if (items.length === 0) items = DEFAULT_QQ;
+                const updateProgramQq = (newItems) => handleCustomFieldChange('programQq', JSON.stringify(newItems));
+                const moveItemQq = (idx, dir) => {
+                  const n = [...items];
+                  const to = idx + dir;
+                  if (to < 0 || to >= n.length) return;
+                  [n[idx], n[to]] = [n[to], n[idx]];
+                  updateProgramQq(n);
+                };
+                return (
+                  <div className="space-y-2">
+                    {items.map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
+                        <div className="flex flex-col gap-0.5">
+                          <button type="button" onClick={() => moveItemQq(i, -1)} disabled={i === 0}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
+                          <button type="button" onClick={() => moveItemQq(i, 1)} disabled={i === items.length - 1}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
+                        </div>
+                        <input type="time" value={item.time}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
+                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
+                        <input type="text" value={item.text}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
+                          className="input-field flex-1 text-sm" placeholder="Ilaje atı" />
+                        <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
+                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
+                      </div>
+                    ))}
+                    <button type="button"
+                      onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
+                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
+                      + Band qosıw
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
+
+          {/* RU fields */}
+        {data.customFields?.langRu && (
+          <div className={`space-y-4 ${orderArr.indexOf('ru') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('ru') }}>
+            <h4 className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 inline-block px-2.5 py-1 rounded-md border border-indigo-500/20 shadow-sm">🇷🇺 {trLocal.ruFields}</h4>
+            <div>
+              <label className="label">✏️ {trLocal.ruEventTitle}</label>
+              <input type="text" placeholder="Свадебное торжество"
+                value={data.customFields?.eventTitleRu || ''}
+                onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
+                className="input-field" />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="label">👤 {trLocal.ruHostName}</label>
+                <input type="text" placeholder="Абдуллаев Юнус"
+                  value={data.customFields?.hostNameRu || ''}
+                  onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
+                  className="input-field" />
+              </div>
+              <div>
+                <label className="label">👥 {trLocal.ruGuestName}</label>
+                <input type="text" placeholder="Уважаемые гости"
+                  value={data.customFields?.guestNameRu || ''}
+                  onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
+                  className="input-field" />
+              </div>
+            </div>
+            
+            <div className="space-y-3 mt-3">
+              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
+              <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
+                value={data.customFields?.messageRu || ''}
+                onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
+                className="input-field resize-none" />
+            </div>
+
+            <div className="mt-4 border-t border-white/5 pt-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="label flex items-center gap-2 mb-0">📅 Программа (RU)</label>
+                <input type="text" placeholder="Программа вечера" value={data.customFields?.programCustomTitleRu || ''}
+                  onChange={(e) => handleCustomFieldChange('programCustomTitleRu', e.target.value)}
+                  className="input-field text-xs py-1 px-3 w-[140px]" />
+              </div>
+              {(() => {
+                const DEFAULT_RU = [
+                  { time: data.eventTime || '10:00', text: 'Встреча гостей' },
+                  { time: '11:00', text: 'Торжественная часть' },
+                  { time: '12:00', text: 'Праздничный банкет' },
+                  { time: '14:00', text: 'Музыкальная программа' },
+                ];
+                let items = [];
+                try { items = data.customFields?.programRu ? JSON.parse(data.customFields.programRu) : []; } catch { items = []; }
+                if (items.length === 0) items = DEFAULT_RU;
+                const updateProgramRu = (newItems) => handleCustomFieldChange('programRu', JSON.stringify(newItems));
+                const moveItemRu = (idx, dir) => {
+                  const n = [...items];
+                  const to = idx + dir;
+                  if (to < 0 || to >= n.length) return;
+                  [n[idx], n[to]] = [n[to], n[idx]];
+                  updateProgramRu(n);
+                };
+                return (
+                  <div className="space-y-2">
+                    {items.map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
+                        <div className="flex flex-col gap-0.5">
+                          <button type="button" onClick={() => moveItemRu(i, -1)} disabled={i === 0}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
+                          <button type="button" onClick={() => moveItemRu(i, 1)} disabled={i === items.length - 1}
+                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
+                        </div>
+                        <input type="time" value={item.time}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramRu(n); }}
+                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
+                        <input type="text" value={item.text}
+                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramRu(n); }}
+                          className="input-field flex-1 text-sm" placeholder="Событие" />
+                        <button type="button" onClick={() => updateProgramRu(items.filter((_, j) => j !== i))}
+                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
+                      </div>
+                    ))}
+                    <button type="button"
+                      onClick={() => updateProgramRu([...items, { time: '', text: '' }])}
+                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
+                      + Добавить пункт
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
+        </div>
+
         {/* ── Footer kutish xabari — "Sizni kutib qolamiz!" kabi ── */}
         {data.eventType && (
           <div className={`glass p-4 border rounded-2xl mb-2 space-y-3 transition-all duration-200 ${activeSection==='waitingMsg' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-rose-500/20 bg-rose-500/5'}`} onFocusCapture={() => setActiveSection('waitingMsg')} onBlurCapture={() => setActiveSection(null)}>
@@ -659,59 +993,6 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                     onChange={(e) => handleCustomFieldChange('customWaitingMsg', e.target.value)}
                   />
                 </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ── Yuqori yozuv matni (ПИТКЭРИЎШИЛЭР КЭШЭСИ kabi) ── */}
-        {data.eventType && (
-          <div className={`glass p-4 border rounded-2xl mb-2 space-y-3 transition-all duration-200 ${activeSection==='heroText' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-sky-500/20 bg-sky-500/5'}`} onFocusCapture={() => setActiveSection('heroText')} onBlurCapture={() => setActiveSection(null)}>
-            <h3 className="text-[13px] font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
-              {t('step3.heroTextSection')}
-              <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-sky-700/30 px-1.5 py-0.5 rounded">
-                masalan: ПИТКЭРИЎШИЛЭР КЭШЭСИ
-              </span>
-            </h3>
-            <div className="space-y-2">
-              {isUzOn && (
-                <div>
-                  <label className="label mb-1 flex items-center gap-1">🇺🇿 O'zbekcha yozuv</label>
-                  <input
-                    type="text"
-                    className="input-field"
-                    placeholder="masalan: Bitiruvchilar kechasi"
-                    value={data.customFields?.customEventLabel || ''}
-                    onChange={(e) => handleCustomFieldChange('customEventLabel', e.target.value)}
-                  />
-                </div>
-              )}
-              {isQqOn && (
-                <div>
-                  <label className="label mb-1 flex items-center gap-1">{t('step3.qqTextLabel')}</label>
-                  <input
-                    type="text"
-                    className="input-field"
-                    placeholder="masalan: Pitkeriwshiler keshesi"
-                    value={data.customFields?.customEventLabelQq || ''}
-                    onChange={(e) => handleCustomFieldChange('customEventLabelQq', e.target.value)}
-                  />
-                </div>
-              )}
-              {isRuOn && (
-                <div>
-                  <label className="label mb-1 flex items-center gap-1">🇷🇺 Ruscha yozuv</label>
-                  <input
-                    type="text"
-                    className="input-field"
-                    placeholder="masalan: Выпускной вечер"
-                    value={data.customFields?.customEventLabelRu || ''}
-                    onChange={(e) => handleCustomFieldChange('customEventLabelRu', e.target.value)}
-                  />
-                </div>
-              )}
-              {!isUzOn && !isQqOn && !isRuOn && (
-                <p className="text-[11px] text-surface-500">Til sazlamalarini yoqing</p>
               )}
             </div>
           </div>
@@ -840,286 +1121,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           </div>
         )}
 
-        {isUzOn && (
-          <div className={`space-y-4 ${orderArr.indexOf('uz') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('uz') }}>
-            <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20 shadow-sm">🇺🇿 {trLocal.uzFields}</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="label">👤 {trLocal.uzHostName} *</label>
-                <input type="text" placeholder="Aliyev Jasur"
-                  value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
-                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
-                  className="input-field" />
-              </div>
-              <div>
-                <label className="label">👥 {trLocal.uzGuestName}</label>
-                <input type="text" placeholder="Hurmatli mehmon"
-                  value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
-                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
-                  className="input-field" />
-              </div>
-            </div>
-            <div>
-              <label className="label flex items-center gap-1.5">✏️ {trLocal.uzEventTitle}</label>
-              <input type="text" placeholder="Nikoh marosimi"
-                value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
-                onFocus={() => setActiveSection('heroText')} onBlur={() => setActiveSection(null)}
-                className="input-field" />
-            </div>
-            
-            <div className="space-y-3 mt-3">
-              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
-              <textarea rows={3} placeholder="Hurmatli mehmonlar, sizni..."
-                value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
-                onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
-                className="input-field resize-none" />
-            </div>
-
-            <div className="mt-4 border-t border-white/5 pt-4">
-              <div className="flex items-center justify-between mb-3">
-                <label className="label flex items-center gap-2 mb-0">📅 Dastur (UZ)</label>
-                <input type="text" placeholder="Kecha dasturi" value={data.customFields?.programCustomTitle || ''}
-                  onChange={(e) => handleCustomFieldChange('programCustomTitle', e.target.value)}
-                  className="input-field text-xs py-1 px-3 w-[140px]" />
-              </div>
-              {(() => {
-                const DEFAULT_UZ = [
-                  { time: data.eventTime || '10:00', text: 'Mehmonlarni kutib olish' },
-                  { time: '11:00', text: 'Rasmiy qism' },
-                  { time: '12:00', text: 'Bayram dasturxoni' },
-                  { time: '14:00', text: 'Musiqiy tanaffus' },
-                ];
-                let items = [];
-                try { items = data.customFields?.program ? JSON.parse(data.customFields.program) : []; } catch { items = []; }
-                if (items.length === 0) items = DEFAULT_UZ;
-                const updateProgram = (newItems) => handleCustomFieldChange('program', JSON.stringify(newItems));
-                const moveItem = (idx, dir) => {
-                  const n = [...items];
-                  const to = idx + dir;
-                  if (to < 0 || to >= n.length) return;
-                  [n[idx], n[to]] = [n[to], n[idx]];
-                  updateProgram(n);
-                };
-                return (
-                  <div className="space-y-2">
-                    {items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
-                        <div className="flex flex-col gap-0.5">
-                          <button type="button" onClick={() => moveItem(i, -1)} disabled={i === 0}
-                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
-                          <button type="button" onClick={() => moveItem(i, 1)} disabled={i === items.length - 1}
-                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
-                        </div>
-                        <input type="time" value={item.time}
-                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgram(n); }}
-                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
-                        <input type="text" value={item.text}
-                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgram(n); }}
-                          className="input-field flex-1 text-sm" placeholder="Tadbir nomi" />
-                        <button type="button" onClick={() => updateProgram(items.filter((_, j) => j !== i))}
-                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
-                      </div>
-                    ))}
-                    <button type="button"
-                      onClick={() => updateProgram([...items, { time: '', text: '' }])}
-                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
-                      {t('step3.addScheduleItem')}
-                    </button>
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        )}
-
-        {/* QQ fields */}
-        {data.customFields?.langQq && (
-          <div className={`space-y-4 ${orderArr.indexOf('qq') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('qq') }}>
-            <h4 className="text-[11px] font-bold text-amber-400 bg-amber-500/10 inline-block px-2.5 py-1 rounded-md border border-amber-500/20 shadow-sm">🇰🇦 {trLocal.qqFields}</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="label">👤 {trLocal.qqHostName}</label>
-                <input type="text" placeholder="Aliyev Jasur"
-                  value={data.customFields?.hostNameQq || ''}
-                  onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
-                  className="input-field" />
-              </div>
-              <div>
-                <label className="label">👥 {trLocal.qqGuestName}</label>
-                <input type="text" placeholder="Húrmetli mexmanlar"
-                  value={data.customFields?.guestNameQq || ''}
-                  onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
-                  className="input-field" />
-              </div>
-            </div>
-            <div>
-              <label className="label">✏️ {trLocal.qqEventTitle}</label>
-              <input type="text" placeholder="Nikax márásimi"
-                value={data.customFields?.eventTitleQq || ''}
-                onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
-                className="input-field" />
-            </div>
-            
-            <div className="space-y-3 mt-3">
-              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
-              <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
-                value={data.customFields?.messageQq || ''}
-                onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
-                className="input-field resize-none" />
-            </div>
-
-            <div className="mt-4 border-t border-white/5 pt-4">
-              <div className="flex items-center justify-between mb-3">
-                <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
-                <input type="text" placeholder="Ilaje bag'darlanması" value={data.customFields?.programCustomTitleQq || ''}
-                  onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
-                  className="input-field text-xs py-1 px-3 w-[140px]" />
-              </div>
-              {(() => {
-                const DEFAULT_QQ = [
-                  { time: data.eventTime || '10:00', text: 'Mexmanlar kútip alıw' },
-                  { time: '11:00', text: 'Rásimiy bólim' },
-                  { time: '12:00', text: 'Ziyapat dástúrxanı' },
-                  { time: '14:00', text: 'Muzıkalı waqıtlar' },
-                ];
-                let items = [];
-                try { items = data.customFields?.programQq ? JSON.parse(data.customFields.programQq) : []; } catch { items = []; }
-                if (items.length === 0) items = DEFAULT_QQ;
-                const updateProgramQq = (newItems) => handleCustomFieldChange('programQq', JSON.stringify(newItems));
-                const moveItemQq = (idx, dir) => {
-                  const n = [...items];
-                  const to = idx + dir;
-                  if (to < 0 || to >= n.length) return;
-                  [n[idx], n[to]] = [n[to], n[idx]];
-                  updateProgramQq(n);
-                };
-                return (
-                  <div className="space-y-2">
-                    {items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
-                        <div className="flex flex-col gap-0.5">
-                          <button type="button" onClick={() => moveItemQq(i, -1)} disabled={i === 0}
-                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
-                          <button type="button" onClick={() => moveItemQq(i, 1)} disabled={i === items.length - 1}
-                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
-                        </div>
-                        <input type="time" value={item.time}
-                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramQq(n); }}
-                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
-                        <input type="text" value={item.text}
-                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramQq(n); }}
-                          className="input-field flex-1 text-sm" placeholder="Ilaje atı" />
-                        <button type="button" onClick={() => updateProgramQq(items.filter((_, j) => j !== i))}
-                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
-                      </div>
-                    ))}
-                    <button type="button"
-                      onClick={() => updateProgramQq([...items, { time: '', text: '' }])}
-                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
-                      + Band qosıw
-                    </button>
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        )}
-
-        {/* RU fields */}
-        {data.customFields?.langRu && (
-          <div className={`space-y-4 ${orderArr.indexOf('ru') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('ru') }}>
-            <h4 className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 inline-block px-2.5 py-1 rounded-md border border-indigo-500/20 shadow-sm">🇷🇺 {trLocal.ruFields}</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="label">👤 {trLocal.ruHostName}</label>
-                <input type="text" placeholder="Абдуллаев Юнус"
-                  value={data.customFields?.hostNameRu || ''}
-                  onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
-                  className="input-field" />
-              </div>
-              <div>
-                <label className="label">👥 {trLocal.ruGuestName}</label>
-                <input type="text" placeholder="Уважаемые гости"
-                  value={data.customFields?.guestNameRu || ''}
-                  onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
-                  className="input-field" />
-              </div>
-            </div>
-            <div>
-              <label className="label">✏️ {trLocal.ruEventTitle}</label>
-              <input type="text" placeholder="Свадебное торжество"
-                value={data.customFields?.eventTitleRu || ''}
-                onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
-                className="input-field" />
-            </div>
-            
-            <div className="space-y-3 mt-3">
-              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
-              <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
-                value={data.customFields?.messageRu || ''}
-                onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
-                className="input-field resize-none" />
-            </div>
-
-            <div className="mt-4 border-t border-white/5 pt-4">
-              <div className="flex items-center justify-between mb-3">
-                <label className="label flex items-center gap-2 mb-0">📅 Программа (RU)</label>
-                <input type="text" placeholder="Программа вечера" value={data.customFields?.programCustomTitleRu || ''}
-                  onChange={(e) => handleCustomFieldChange('programCustomTitleRu', e.target.value)}
-                  className="input-field text-xs py-1 px-3 w-[140px]" />
-              </div>
-              {(() => {
-                const DEFAULT_RU = [
-                  { time: data.eventTime || '10:00', text: 'Встреча гостей' },
-                  { time: '11:00', text: 'Торжественная часть' },
-                  { time: '12:00', text: 'Праздничный банкет' },
-                  { time: '14:00', text: 'Музыкальная программа' },
-                ];
-                let items = [];
-                try { items = data.customFields?.programRu ? JSON.parse(data.customFields.programRu) : []; } catch { items = []; }
-                if (items.length === 0) items = DEFAULT_RU;
-                const updateProgramRu = (newItems) => handleCustomFieldChange('programRu', JSON.stringify(newItems));
-                const moveItemRu = (idx, dir) => {
-                  const n = [...items];
-                  const to = idx + dir;
-                  if (to < 0 || to >= n.length) return;
-                  [n[idx], n[to]] = [n[to], n[idx]];
-                  updateProgramRu(n);
-                };
-                return (
-                  <div className="space-y-2">
-                    {items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 group bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.06] hover:border-white/10 transition-all">
-                        <div className="flex flex-col gap-0.5">
-                          <button type="button" onClick={() => moveItemRu(i, -1)} disabled={i === 0}
-                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▲</button>
-                          <button type="button" onClick={() => moveItemRu(i, 1)} disabled={i === items.length - 1}
-                            className="text-surface-500 hover:text-white disabled:opacity-20 text-[10px] leading-none">▼</button>
-                        </div>
-                        <input type="time" value={item.time}
-                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], time: e.target.value }; updateProgramRu(n); }}
-                          className="input-field w-[100px] text-center text-sm flex-shrink-0" />
-                        <input type="text" value={item.text}
-                          onChange={(e) => { const n = [...items]; n[i] = { ...n[i], text: e.target.value }; updateProgramRu(n); }}
-                          className="input-field flex-1 text-sm" placeholder="Событие" />
-                        <button type="button" onClick={() => updateProgramRu(items.filter((_, j) => j !== i))}
-                          className="text-surface-600 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-all text-sm w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-400/10 flex-shrink-0">✕</button>
-                      </div>
-                    ))}
-                    <button type="button"
-                      onClick={() => updateProgramRu([...items, { time: '', text: '' }])}
-                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1.5 mt-1 px-3 py-2 rounded-lg border border-dashed border-white/10 hover:border-primary-400/40 w-full justify-center transition-all">
-                      + Добавить пункт
-                    </button>
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
       )}
-
       {/* Template custom fields */}
       {subStep === 2 && templateFields.length > 0 && (
         <div className="glass p-5 space-y-4 mb-4">
