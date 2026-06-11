@@ -90,6 +90,48 @@ const stats = [
   { value: '∞', labelUz: 'Taklifnomalar', labelQq: 'Mırájatlar', labelRu: 'Приглашений', labelEn: 'Invitations' },
 ];
 
+const testimonials = [
+  {
+    name: 'Dilnoza & Sarvar',
+    roleUz: 'Kelin-Kuyov',
+    roleQq: 'Kelin-Kuyew',
+    roleRu: 'Молодожены',
+    roleEn: 'Bride & Groom',
+    avatar: '💍',
+    rating: 5,
+    textUz: 'Taklifnomamiz juda chiroyli chiqdi. Barcha mehmonlarga yoqdi, ayniqsa musiqa va xarita integratsiyasi juda qulay bo\'ldi!',
+    textQq: 'Mırájatımız júdá ájayıp shıqtı. Barlıq mexmanlarǵa jaqtı, ásirese muzıka hám karta integratsiyası júdá qolay boldı!',
+    textRu: 'Наше приглашение получилось невероятно красивым. Все гости были в восторге, особенно от музыки и интерактивной карты!',
+    textEn: 'Our invitation turned out incredibly beautiful. All guests loved it, especially the background music and map integration!',
+  },
+  {
+    name: 'Rustam Abdullayev',
+    roleUz: 'Tug\'ilgan kun sohibi',
+    roleQq: 'Tuwılǵan kún iyesi',
+    roleRu: 'Именинник',
+    roleEn: 'Birthday Host',
+    avatar: '🎂',
+    rating: 5,
+    textUz: '10 daqiqada tug\'ilgan kunim uchun taklifnoma yaratib, barcha do\'stlarimga Telegram orqali jo\'natdim. Juda tez va sifatli xizmat.',
+    textQq: '10 daqıyqada tuwılǵan kúnim ushın mırájat jaratıp, barlıq doslarıma Telegram arqalı jiberdim. Júdá tez hám sapalı xızmet.',
+    textRu: 'За 10 минут создал приглашение на день рождения и разослал всем друзьям в Telegram. Очень быстрый и качественный сервис.',
+    textEn: 'Created a birthday invitation in 10 minutes and sent it to all my friends via Telegram. Very fast and high-quality service.',
+  },
+  {
+    name: 'Madina Ismoilova',
+    roleUz: 'Tadbir tashkilotchisi',
+    roleQq: 'Ilaj shólkemlestiriwshisi',
+    roleRu: 'Организатор событий',
+    roleEn: 'Event Planner',
+    avatar: '✨',
+    rating: 5,
+    textUz: 'Mijozlarim uchun raqamli taklifnomalarni shu saytdan tayyorlayman. Dizaynlar hammasi zamonaviy va mijozlarga juda maqbul keladi.',
+    textQq: 'Klientlerim ushın sanli mırájatlardı usı sayttan tayarlayman. Dizaynlar hámmesi zámanagóy hám klientlerge júdá jaǵadı.',
+    textRu: 'Создаю цифровые приглашения для своих клиентов на этом сайте. Все дизайны современные и очень нравятся заказчикам.',
+    textEn: 'I prepare digital invitations for my clients on this site. The designs are all modern and highly appreciated by clients.',
+  },
+];
+
 export default function LandingPage({ onEnter }) {
   const { lang } = useLang();
   const [hoveredFeature, setHoveredFeature] = useState(null);
@@ -103,6 +145,46 @@ export default function LandingPage({ onEnter }) {
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-primary-500/[0.04] rounded-full blur-[120px]" />
         <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-accent-500/[0.04] rounded-full blur-[120px]" />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-primary-500/[0.02] rounded-full blur-[150px]" />
+
+        {/* Animated Floating Orbs */}
+        <motion.div
+          animate={{
+            x: [0, 80, -40, 0],
+            y: [0, -100, 50, 0],
+            scale: [1, 1.2, 0.9, 1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-[20%] left-[10%] w-[180px] h-[180px] rounded-full bg-primary-500/[0.03] blur-[40px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, -100, 60, 0],
+            y: [0, 80, -70, 0],
+            scale: [1, 0.9, 1.15, 1],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute bottom-[30%] right-[15%] w-[220px] h-[220px] rounded-full bg-accent-500/[0.03] blur-[50px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, 50, -50, 0],
+            y: [0, -60, 80, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-[60%] left-[40%] w-[150px] h-[150px] rounded-full bg-rose-500/[0.02] blur-[45px]"
+        />
       </div>
 
       {/* Settings button (top-right) */}
@@ -346,6 +428,63 @@ export default function LandingPage({ onEnter }) {
                 </motion.div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="relative z-10 py-20 px-4 sm:px-6 border-t border-white/5 bg-surface-950/40">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">
+              {tx('Mijozlarimiz fikrlari', 'Klientlerimiz pikirleri', 'Отзывы наших клиентов', 'What Our Clients Say')}
+            </h2>
+            <p className="text-surface-400 max-w-lg mx-auto">
+              {tx(
+                "eTaklifnoma yordamida o'z tadbirini unutilmas qilgan insonlar",
+                "eTaklifnoma járdeminde óz ilajın umıtılmas etken adamlar",
+                "Люди, которые сделали свои события незабываемыми с помощью eTaklifnoma",
+                "People who made their events unforgettable with eTaklifnoma"
+              )}
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="glass p-6 flex flex-col justify-between hover:border-primary-500/30 transition-all duration-300"
+              >
+                <div>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(t.rating)].map((_, idx) => (
+                      <Star key={idx} size={16} className="fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-surface-300 italic leading-relaxed mb-6">
+                    "{tx(t.textUz, t.textQq, t.textRu, t.textEn)}"
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 border-t border-white/5 pt-4">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-lg">
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-white">{t.name}</h4>
+                    <p className="text-xs text-surface-500">{tx(t.roleUz, t.roleQq, t.roleRu, t.roleEn)}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

@@ -35,7 +35,6 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Indexes
-UserSchema.index({ phone: 1 }, { unique: true });
 UserSchema.index({ createdAt: -1 });
 
 // Instance method: check password

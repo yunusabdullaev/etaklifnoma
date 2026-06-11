@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 
+const compression = require('compression');
+
 const appConfig = require('./config/app');
 const { connectDB } = require('./config/database');
 const routes = require('./routes');
@@ -19,6 +21,7 @@ app.set('trust proxy', 1);
 
 // ── Security & parsing middleware ─────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
+app.use(compression());
 
 app.use(cors({
   origin: [
@@ -71,8 +74,15 @@ app.use('/uploads', express.static(path.join(publicDir, 'uploads'), {
   immutable: true,
 }));
 
+// Serve Vite assets with maximum cache age since they are fingerprinted
+app.use('/assets', express.static(path.join(clientDist, 'assets'), {
+  maxAge: '1y',
+  immutable: true,
+}));
+
+// Serve other files in dist (like favicon, etc.) with lower cache age
 app.use(express.static(clientDist, {
-  maxAge: '1d',
+  maxAge: '1h',
   etag: true,
 }));
 
@@ -96,7 +106,9 @@ app.use((_req, _res, next) => {
 // ── Error handler ─────────────────────────────────────────
 app.use(errorHandler);
 
-// ── Start ─────────────────────────────────────────────────
+// ── Start ─────────────────────────────────────────
+let httpServer;
+
 const start = async () => {
   try {
     await connectDB();
@@ -117,7 +129,7 @@ const start = async () => {
       console.warn('⚠️ Seed check failed:', seedErr.message);
     }
 
-    app.listen(appConfig.port, () => {
+    httpServer = app.listen(appConfig.port, () => {
       console.log(`\n🚀 Taklifnoma Service is running`);
       console.log(`   Environment : ${appConfig.nodeEnv}`);
       console.log(`   Port        : ${appConfig.port}`);
@@ -155,6 +167,16 @@ const start = async () => {
         console.log('🏓 Keep-alive ping enabled (every 14 min)');
       }
     });
+
+    httpServer.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${appConfig.port} band! Boshqa process ishlatmoqda. PORT env o'zgaruvchisini o'zgartiring.`);
+      } else {
+        console.error('❌ Server xatoligi:', err.message);
+      }
+      process.exit(1);
+    });
+
   } catch (error) {
     console.error('❌ Unable to start server:', error.message);
     process.exit(1);
@@ -162,9 +184,34 @@ const start = async () => {
 };
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('🛑 SIGTERM received — shutting down gracefully');
-  process.exit(0);
+const shutdown = (signal) => {
+  console.log(`\n🛑 ${signal} received — shutting down gracefully`);
+  if (httpServer) {
+    httpServer.close(() => {
+      console.log('✅ HTTP server closed');
+      process.exit(0);
+    });
+    // Force exit after 10s if not closed
+    setTimeout(() => {
+      console.warn('⚠️ Forcing exit after timeout');
+      process.exit(1);
+    }, 10000);
+  } else {
+    process.exit(0);
+  }
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+process.on('uncaughtException', (err) => {
+  console.error('💥 Uncaught Exception:', err.message);
+  if (err.stack) console.error(err.stack);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('💥 Unhandled Rejection:', reason);
 });
 
 start();

@@ -303,7 +303,7 @@ export default function App() {
       )}
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-12 pb-20 sm:pb-12">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-12 pb-28 sm:pb-12">
         <AnimatePresence mode="wait">
           {showDashboard ? (
             <motion.div
@@ -346,13 +346,48 @@ export default function App() {
       </main>
 
       {/* Footer — hidden on mobile wizard to avoid overlap with sticky buttons */}
-      <footer className={`relative z-10 border-t border-white/5 mt-auto ${!showDashboard ? 'hidden sm:block' : ''}`}>
+      <footer className={`relative z-10 border-t border-white/5 mt-auto ${!showDashboard ? 'hidden sm:block' : ''} pb-16 sm:pb-0`}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-center">
           <p className="text-xs text-surface-600">
             {t('footer.copyright')}
           </p>
         </div>
       </footer>
+
+      {/* Mobile Sticky Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pt-2 bg-gradient-to-t from-surface-950 via-surface-950/90 to-transparent sm:hidden">
+        <div className="glass flex items-center justify-around py-2.5 px-2 shadow-2xl shadow-primary-500/5 backdrop-blur-lg border border-white/10 rounded-2xl max-w-md mx-auto">
+          <button
+            onClick={() => setView('dashboard')}
+            className={`flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-all ${
+              showDashboard ? 'text-primary-400' : 'text-surface-500 hover:text-surface-300'
+            }`}
+          >
+            <LayoutGrid size={18} className={showDashboard ? 'scale-110 drop-shadow-[0_0_8px_rgba(92,124,250,0.5)]' : ''} />
+            <span className="text-[10px] font-medium">{t('header.cabinet')}</span>
+          </button>
+          
+          <button
+            onClick={() => startWizard()}
+            className={`flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-all ${
+              !showDashboard && !showSupport ? 'text-primary-400' : 'text-surface-500 hover:text-surface-300'
+            }`}
+          >
+            <PlusCircle size={18} className={(!showDashboard && !showSupport) ? 'scale-110 drop-shadow-[0_0_8px_rgba(92,124,250,0.5)]' : ''} />
+            <span className="text-[10px] font-medium">{t('header.create')}</span>
+          </button>
+
+          <button
+            onClick={() => setView('support')}
+            className={`flex flex-col items-center justify-center gap-1 flex-1 py-1 transition-all ${
+              showSupport ? 'text-primary-400' : 'text-surface-500 hover:text-surface-300'
+            }`}
+          >
+            <MessageCircle size={18} className={showSupport ? 'scale-110 drop-shadow-[0_0_8px_rgba(92,124,250,0.5)]' : ''} />
+            <span className="text-[10px] font-medium">{t('header.support')}</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

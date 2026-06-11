@@ -92,7 +92,6 @@ const InvitationSchema = new mongoose.Schema({
 });
 
 // Indexes — critical for performance
-InvitationSchema.index({ slug: 1 }, { unique: true });
 InvitationSchema.index({ userId: 1, createdAt: -1 });
 InvitationSchema.index({ eventTypeId: 1 });
 InvitationSchema.index({ isPublished: 1, slug: 1 });

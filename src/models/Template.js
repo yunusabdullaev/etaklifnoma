@@ -57,7 +57,6 @@ const TemplateSchema = new mongoose.Schema({
 });
 
 // Indexes
-TemplateSchema.index({ slug: 1 }, { unique: true });
 TemplateSchema.index({ eventTypeId: 1, isActive: 1, sortOrder: 1 });
 TemplateSchema.index({ isActive: 1, isPremium: 1 });
 
