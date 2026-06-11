@@ -258,7 +258,18 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
   const orderArr = (data.customFields?.langOrder || 'uz,ru,qq').split(',');
 
   const [playingId, setPlayingId] = useState(null);
+  const [subStep, setSubStep] = useState(1); // 1: Tillar, 2: Matnlar, 3: Vaqt & Joy, 4: Sozlamalar
   const [activeSection, setActiveSection] = useState(null);
+
+  const subSteps = [
+    { id: 1, label: "Tillar", labelRu: "Языки", labelQq: "Tiller", labelEn: "Languages", icon: "🌐" },
+    { id: 2, label: "Matnlar", labelRu: "Тексты", labelQq: "Tekstler", labelEn: "Texts", icon: "✍️" },
+    { id: 3, label: "Vaqt & Joy", labelRu: "Время & Место", labelQq: "Waqıt & Orın", labelEn: "Date & Place", icon: "📅" },
+    { id: 4, label: "Sozlamalar", labelRu: "Настройки", labelQq: "Sazlawlar", labelEn: "Settings", icon: "⚙️" },
+  ];
+  const getSubStepLabel = (s) => {
+    return lang === 'en' ? s.labelEn : lang === 'ru' ? s.labelRu : lang === 'qq' ? s.labelQq : s.label;
+  };
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -389,8 +400,33 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
   const formContent = (
     <div className="space-y-5">
+      {/* Sub-step navigation tab bar */}
+      <div className="grid grid-cols-4 gap-1 sm:gap-2 mb-6 bg-white/[0.03] border border-white/5 rounded-2xl p-1 sm:p-1.5">
+        {subSteps.map((s) => {
+          const isActive = subStep === s.id;
+          return (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => setSubStep(s.id)}
+              className={`flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 py-2 px-1 sm:px-2 rounded-xl text-center transition-all ${
+                isActive
+                  ? 'bg-gradient-to-r from-primary-500/20 to-accent-500/20 border border-primary-500/35 text-primary-300 shadow-lg'
+                  : 'border border-transparent text-surface-500 hover:text-surface-300 hover:bg-white/[0.02]'
+              }`}
+            >
+              <span className={`text-sm ${isActive ? 'scale-110' : ''}`}>{s.icon}</span>
+              <span className="text-[10px] sm:text-xs font-semibold whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
+                {getSubStepLabel(s)}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Language Toggle settings */}
-      <div className="glass p-5 space-y-4">
+      {subStep === 1 && (
+        <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           🌐 {t('step3.langSettings')}
         </h3>
@@ -470,11 +506,12 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             <option value="qq,ru,uz">QQ ➔ RU ➔ UZ</option>
           </select>
         </div>
-
       </div>
+      )}
 
       {/* TEXT FIELDS COMPONENT */}
-      <div className="glass p-5 flex flex-col gap-8">
+      {subStep === 2 && (
+        <div className="glass p-5 flex flex-col gap-8">
         <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
           ✍️ {t('step3.textGroupTitle')}
         </h3>
@@ -1081,16 +1118,11 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           </div>
         )}
       </div>
+      )}
 
-      {/* GLOBAL SETTINGS COMPONENT */}
-      <div className="glass p-5 space-y-6">
-        <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
-          ⚙️ {t('step3.settingsGroupTitle')}
-        </h3>
-        
-        {/* Template custom fields */}
-      {templateFields.length > 0 && (
-        <div className="space-y-4 mb-4">
+      {/* Template custom fields */}
+      {subStep === 2 && templateFields.length > 0 && (
+        <div className="glass p-5 space-y-4 mb-4">
           <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
             <span className="text-base">{data.eventType?.icon}</span> {t('step3.templateFields')}
           </h3>
@@ -1131,8 +1163,10 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         </div>
       )}
 
-            {/* Date & location */}
-      <div className={`space-y-4 transition-all duration-200 rounded-xl p-0 ${activeSection==='dateLocation' ? 'ring-1 ring-indigo-500/30' : ''}`} onFocusCapture={() => setActiveSection('dateLocation')} onBlurCapture={() => setActiveSection(null)}>
+      {/* Date & location */}
+      {subStep === 3 && (
+        <div className="glass p-5 space-y-6">
+          <div className={`space-y-4 transition-all duration-200 rounded-xl p-0 ${activeSection==='dateLocation' ? 'ring-1 ring-indigo-500/30' : ''}`} onFocusCapture={() => setActiveSection('dateLocation')} onBlurCapture={() => setActiveSection(null)}>
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           <Calendar size={13} /> {t('step3.dateLocation')}
         </h3>
@@ -1226,9 +1260,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           </div>
         </div>
       </div>
+      </div>
+      )}
 
-            {/* Extra features: music + telegram */}
-      <div className={`space-y-4 transition-all duration-200 rounded-xl ${activeSection==='music' ? 'ring-1 ring-indigo-500/30' : ''}`} onFocusCapture={() => setActiveSection('music')} onBlurCapture={() => setActiveSection(null)}>
+      {/* Extra features: music + telegram */}
+      {subStep === 4 && (
+        <div className="glass p-5 space-y-6">
+          <div className={`space-y-4 transition-all duration-200 rounded-xl ${activeSection==='music' ? 'ring-1 ring-indigo-500/30' : ''}`} onFocusCapture={() => setActiveSection('music')} onBlurCapture={() => setActiveSection(null)}>
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
           ⚙️ {t('step3.extras')}
         </h3>
@@ -1585,8 +1623,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           })}
         </div>
       </div>
-
-      </div>    </div>
+      </div>
+      )}
+    </div>
   );
 
   return (
@@ -1660,10 +1699,29 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         {/* Tahrirlash rejimi: Saqlash tugmasi */}
         {editingInvitationId ? (
           <div className="flex justify-between items-center gap-3">
-            <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">
-              ← {t('step3.back') || 'Orqaga'}
+            <button
+              onClick={() => {
+                if (subStep === 1) {
+                  onBack();
+                } else {
+                  setSubStep(subStep - 1);
+                }
+              }}
+              className="btn-secondary flex-1 sm:flex-none py-3.5"
+            >
+              ← {subStep === 1 ? (t('step3.back') || 'Orqaga') : (lang === 'en' ? 'Back' : lang === 'ru' ? 'Назад' : lang === 'qq' ? 'Orqaga' : 'Orqaga')}
             </button>
             <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
+              {subStep < 4 && (
+                <button
+                  type="button"
+                  onClick={() => setSubStep(subStep + 1)}
+                  disabled={subStep === 3 && (!data.eventDate || !data.location || (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed))}
+                  className="btn-primary py-3.5 px-6 min-w-[120px]"
+                >
+                  {lang === 'en' ? 'Next' : lang === 'ru' ? 'Далее' : lang === 'qq' ? 'Keyingisi' : 'Keyingisi'} →
+                </button>
+              )}
               {editSaved && (
                 <span className="text-emerald-400 text-sm flex items-center gap-1 animate-fade-in">
                   ✅ Saqlandi!
@@ -1671,7 +1729,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               )}
               <button
                 onClick={handleSaveEdit}
-                disabled={editSaving || !data.eventDate || !data.location}
+                disabled={editSaving || !data.eventDate || !data.location || (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)}
                 className="btn-primary flex items-center justify-center gap-2 min-w-[160px] py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {editSaving ? (
@@ -1684,18 +1742,39 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           </div>
         ) : (
           <div className="flex justify-between items-center gap-3">
-            <button onClick={onBack} className="btn-secondary flex-1 sm:flex-none py-3.5">{t('step3.back')}</button>
-            <div className="flex flex-col sm:flex-row items-center justify-end w-full sm:w-auto relative group">
-              <button onClick={onNext}
-                disabled={
-                  !data.eventDate || 
-                  !data.location || 
-                  (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)
+            <button
+              onClick={() => {
+                if (subStep === 1) {
+                  onBack();
+                } else {
+                  setSubStep(subStep - 1);
                 }
-                className={`btn-primary flex-1 sm:flex-none w-full min-w-[160px] text-center py-3.5 ${(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) ? 'bg-surface-700 text-surface-400 hover:scale-100 cursor-not-allowed' : ''}`}>
-                {t('step3.next')}
+              }}
+              className="btn-secondary flex-1 sm:flex-none py-3.5"
+            >
+              {subStep === 1 ? t('step3.back') : (lang === 'en' ? 'Back' : lang === 'ru' ? 'Назад' : lang === 'qq' ? 'Orqaga' : 'Orqaga')}
+            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-end w-full sm:w-auto relative group">
+              <button
+                onClick={() => {
+                  if (subStep === 4) {
+                    onNext();
+                  } else {
+                    setSubStep(subStep + 1);
+                  }
+                }}
+                disabled={
+                  subStep >= 3 && (
+                    !data.eventDate || 
+                    !data.location || 
+                    (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)
+                  )
+                }
+                className={`btn-primary flex-1 sm:flex-none w-full min-w-[160px] text-center py-3.5 ${(subStep >= 3 && data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) ? 'bg-surface-700 text-surface-400 hover:scale-100 cursor-not-allowed' : ''}`}
+              >
+                {subStep === 4 ? t('step3.next') : (lang === 'en' ? 'Next' : lang === 'ru' ? 'Далее' : lang === 'qq' ? 'Keyingisi' : 'Keyingisi')}
               </button>
-              {(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) && (
+              {subStep >= 3 && (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) && (
                 <span className="absolute -top-10 right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 bg-black/80 backdrop-blur-md text-white text-[10px] whitespace-nowrap px-3 py-1.5 rounded-lg opacity-0 transition-opacity drop-shadow-xl pointer-events-none w-auto delay-200">
                   {trLocal.confirmTip}
                 </span>
