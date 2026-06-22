@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Calendar, User, MessageSquare, Link2, Type, Eye, EyeOff, Loader2, Zap, CheckCircle2, XCircle } from 'lucide-react';
+import { MapPin, Clock, Calendar, User, Users, MessageSquare, Link2, Type, Eye, EyeOff, Loader2, Zap, CheckCircle2, XCircle, Globe, Pencil, PenLine, Cake, Settings, Music, Palette, Mail, Send, Printer, ClipboardList } from 'lucide-react';
 import LivePreview from './LivePreview';
 import { useLang } from '../i18n';
 import { uploadImage, uploadAudio } from '../utils/cloudinary';
@@ -15,15 +15,15 @@ const trStep3 = {
     msg: 'Xabar',
     
     age: 'Yoshi', theme: 'Bayram mavzusi', years: 'Yillar (Masalan: 50)', school: "Ta'lim muassasasi", graduationYear: 'Bitiruv yili', brideName: 'Kelinning ismi', groomName: 'Kuyovning ismi',
-    palette: '🎨 Rang palitrasi',
+    palette: 'Rang palitrasi',
     gold: 'Oltin', silver: 'Kumush', ocean: 'Okean', rose: 'Gul', lavender: 'Lavanda', teal: 'Yashil', amber: 'Sariq', emerald: 'Zumrad',
-    yandexSearch: "📍 Yandex Maps'da qidirish", googleSearch: "📍 Google Maps",
+    yandexSearch: "Yandex Maps'da qidirish", googleSearch: "Google Maps",
     invalidUrl: "Noto'g'ri URL formati. Iltimos xarita linkini to'g'ri kiriting.",
     mapConfirm: "Tanlangan joy ushbu xaritaga mosmi?", confirm: "Tasdiqlash", confirmTip: "Lokal xaritani tasdiqlang!",
     musicUploaded: "Yuklangan musiqa", sizeErr: "Fayl hajmi 10MB dan oshmasligi kerak", uploadErr: "Yuklashda xatolik: ",
     uploadingMusic: "Musiqa yuklanmoqda...", uploadingPhoto: "Rasm yuklanmoqda...",
-    customUrl: "🔗 Maxsus URL manzil (ixtiyoriy)", slugHint: "Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika",
-    rsvpLang: "🌐 RSVP tili", alphabetSwitcher: "🔤 Alifbo tugmasi", alphabetHint: "Mehmonlarga (Lot / Kir) imkonini berish",
+    customUrl: "Maxsus URL manzil (ixtiyoriy)", slugHint: "Faqat lotin harflari, raqamlar va defis (-). Masalan: jasur-malika",
+    rsvpLang: "RSVP tili", alphabetSwitcher: "Alifbo tugmasi", alphabetHint: "Mehmonlarga (Lot / Kir) imkonini berish",
     connectTgFirst: "Avval Telegram botga ulaning!",
     musicLibrary: "Musiqa kutubxonasi", musicSelect: "Tanlash"
   },
@@ -35,15 +35,15 @@ const trStep3 = {
     msg: 'Сообщение',
 
     age: 'Возраст', theme: 'Тема праздника', years: 'Лет (Например: 50)', school: "Учебное заведение", graduationYear: 'Год выпуска', brideName: 'Имя невесты', groomName: 'Имя жениха',
-    palette: '🎨 Цветовая палитра',
+    palette: 'Цветовая палитра',
     gold: 'Золото', silver: 'Серебро', ocean: 'Океан', rose: 'Роза', lavender: 'Лаванда', teal: 'Бирюза', amber: 'Янтарь', emerald: 'Изумруд',
-    yandexSearch: "📍 Искать в Yandex Maps", googleSearch: "📍 Google Maps",
+    yandexSearch: "Искать в Yandex Maps", googleSearch: "Google Maps",
     invalidUrl: "Неверный формат URL. Пожалуйста, введите правильную ссылку на карту.",
     mapConfirm: "Соответствует ли выбранное место этой карте?", confirm: "Подтвердить", confirmTip: "Подтвердите локальную карту!",
     musicUploaded: "Загруженная музыка", sizeErr: "Размер файла не должен превышать 10МБ", uploadErr: "Ошибка загрузки: ",
     uploadingMusic: "Загрузка музыки...", uploadingPhoto: "Загрузка фото...",
-    customUrl: "🔗 Пользовательский URL (необязательно)", slugHint: "Только латинские буквы, цифры и дефис (-). Например: jasur-malika",
-    rsvpLang: "🌐 Язык RSVP", alphabetSwitcher: "🔤 Кнопка алфавита", alphabetHint: "Разрешить гостям переключать (Лат / Кир)",
+    customUrl: "Пользовательский URL (необязательно)", slugHint: "Только латинские буквы, цифры и дефис (-). Например: jasur-malika",
+    rsvpLang: "Язык RSVP", alphabetSwitcher: "Кнопка алфавита", alphabetHint: "Разрешить гостям переключать (Лат / Кир)",
     connectTgFirst: "Сначала подключите Telegram бота!",
     musicLibrary: "Библиотека музыки", musicSelect: "Выбрать"
   },
@@ -55,15 +55,15 @@ const trStep3 = {
     msg: 'Xabar',
 
     age: 'Jası', theme: 'Bayram temasi', years: 'Jıllar (Mısalı: 50)', school: "Oqıw ornı", graduationYear: 'Pitkeriw jılı', brideName: 'Kelinniń atı', groomName: 'Kúyewdiń atı',
-    palette: '🎨 Reńler palitrası',
+    palette: 'Reńler palitrası',
     gold: 'Altın', silver: 'Gúmis', ocean: 'Okean', rose: 'Gúl', lavender: 'Lavanda', teal: 'Máviy', amber: 'Sarı', emerald: 'Zúmret',
-    yandexSearch: "📍 Yandex Maps'tan izlew", googleSearch: "📍 Google Maps",
+    yandexSearch: "Yandex Maps'tan izlew", googleSearch: "Google Maps",
     invalidUrl: "Natuwrı URL formatı. Karta siltemesin tura kiritin'.",
     mapConfirm: "Suraqlı orın usi kartaǵa sáykes pe?", confirm: "Tastıyqlaw", confirmTip: "Lokal kartani tastıyqlan'!",
     musicUploaded: "Júklengen muzıka", sizeErr: "Fayl ólshemi 10MB dan aspawı kerek", uploadErr: "Júklewde qátelik: ",
     uploadingMusic: "Muzıka júklenbekte...", uploadingPhoto: "Súvret júklenbekte...",
-    customUrl: "🔗 Arnawlı URL mánzil (ıqtıyarıy)", slugHint: "Tek latın háripleri, sanlar hám defis (-). Mısalı: jasur-malika",
-    rsvpLang: "🌐 RSVP tili", alphabetSwitcher: "🔤 Alfavit túymesi", alphabetHint: "Miymanlarǵa (Lot / Kir) imkanın beriw",
+    customUrl: "Arnawlı URL mánzil (ıqtıyarıy)", slugHint: "Tek latın háripleri, sanlar hám defis (-). Mısalı: jasur-malika",
+    rsvpLang: "RSVP tili", alphabetSwitcher: "Alfavit túymesi", alphabetHint: "Miymanlarǵa (Lot / Kir) imkanın beriw",
     connectTgFirst: "Dáslep Telegram botqa jalǵań!",
     musicLibrary: "Muzıka kitalapxanasi", musicSelect: "Tan'law"
   },
@@ -75,15 +75,15 @@ const trStep3 = {
     msg: 'Message',
 
     age: 'Age', theme: 'Theme', years: 'Years (e.g. 50)', school: "School", graduationYear: 'Graduation Year', brideName: 'Bride Name', groomName: 'Groom Name',
-    palette: '🎨 Color palette',
+    palette: 'Color palette',
     gold: 'Gold', silver: 'Silver', ocean: 'Ocean', rose: 'Rose', lavender: 'Lavender', teal: 'Teal', amber: 'Amber', emerald: 'Emerald',
-    yandexSearch: "📍 Search in Yandex Maps", googleSearch: "📍 Google Maps",
+    yandexSearch: "Search in Yandex Maps", googleSearch: "Google Maps",
     invalidUrl: "Invalid URL format. Please enter a correct map link.",
     mapConfirm: "Does the selected location match this map?", confirm: "Confirm", confirmTip: "Confirm local map!",
     musicUploaded: "Uploaded music", sizeErr: "File size must not exceed 10MB", uploadErr: "Upload error: ",
     uploadingMusic: "Music uploading...", uploadingPhoto: "Photo uploading...",
-    customUrl: "🔗 Custom URL (optional)", slugHint: "Only latin letters, numbers and hyphen (-). Example: jasur-malika",
-    rsvpLang: "🌐 RSVP Language", alphabetSwitcher: "🔤 Alphabet Switcher", alphabetHint: "Allow guests to switch (Lat / Cyr)",
+    customUrl: "Custom URL (optional)", slugHint: "Only latin letters, numbers and hyphen (-). Example: jasur-malika",
+    rsvpLang: "RSVP Language", alphabetSwitcher: "Alphabet Switcher", alphabetHint: "Allow guests to switch (Lat / Cyr)",
     connectTgFirst: "Please connect Telegram bot first!",
     musicLibrary: "Music Library", musicSelect: "Select"
   }
@@ -540,7 +540,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
       {/* Language Toggle settings */}
          <div className="glass p-5 space-y-4">
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          🌐 {t('step3.langSettings')}
+          <Globe size={14} /> {t('step3.langSettings')}
         </h3>
         <p className="text-[11px] text-surface-500">{t('step3.langDesc')}</p>
 
@@ -623,7 +623,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
       {/* TEXT FIELDS COMPONENT */}
          <div className="glass p-5 flex flex-col gap-8">
         <h3 className="text-[13px] font-bold text-primary-300 uppercase tracking-wider flex items-center gap-2 mb-2 border-b border-primary-500/20 pb-4">
-          ✍️ {t('step3.textGroupTitle')}
+          <PenLine size={14} /> {t('step3.textGroupTitle')}
         </h3>
 
         {/* ── Hero Emoji / Shapka ── */}
@@ -771,7 +771,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           <div className={`space-y-4 ${orderArr.indexOf('uz') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('uz') }}>
             <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20 shadow-sm">🇺🇿 {trLocal.uzFields}</h4>
             <div>
-              <label className="label flex items-center gap-1.5">✏️ {trLocal.uzEventTitle}</label>
+              <label className="label flex items-center gap-1.5"><Pencil size={13} className="text-surface-400" /> {trLocal.uzEventTitle}</label>
               <input type="text" placeholder="Nikoh marosimi"
                 value={data.eventTitle || ''} onChange={(e) => handleChange('eventTitle', e.target.value)}
                 onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
@@ -780,7 +780,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             {/* Age field — only for birthday */}
             {data.eventType?.name === 'birthday' && (
               <div>
-                <label className="label flex items-center gap-1.5">🎂 {trLocal.age || 'Yosh'}</label>
+                <label className="label flex items-center gap-1.5"><Cake size={13} className="text-surface-400" /> {trLocal.age || 'Yosh'}</label>
                 <input type="number" placeholder="7"
                   min="1" max="150"
                   value={data.customFields?.age || ''}
@@ -801,7 +801,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               </div>
             )}
             <div>
-              <label className="label">👥 {trLocal.uzGuestName}</label>
+              <label className="label flex items-center gap-1.5"><Users size={13} className="text-surface-400" /> {trLocal.uzGuestName}</label>
               <input type="text" placeholder="Hurmatli mehmon"
                 value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
                 onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
@@ -809,7 +809,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="space-y-3 mt-3">
-              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
+              <label className="label flex items-center gap-1.5"><MessageSquare size={13} className="text-surface-400" /> {trLocal.msg}</label>
               <textarea rows={3} placeholder="Hurmatli mehmonlar, sizni..."
                 value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
                 onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
@@ -817,7 +817,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="mt-3">
-              <label className="label">👤 {trLocal.uzHostName} *</label>
+              <label className="label flex items-center gap-1.5"><User size={13} className="text-surface-400" /> {trLocal.uzHostName} *</label>
               <input type="text" placeholder="Aliyev Jasur"
                 value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
                 onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
@@ -826,7 +826,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
             <div className="mt-4 border-t border-white/5 pt-4">
               <div className="flex items-center justify-between mb-3">
-                <label className="label flex items-center gap-2 mb-0">📅 Dastur (UZ)</label>
+                <label className="label flex items-center gap-2 mb-0"><ClipboardList size={13} className="text-surface-400" /> Dastur (UZ)</label>
                 <input type="text" placeholder="Kecha dasturi" value={data.customFields?.programCustomTitle || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitle', e.target.value)}
                   onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
@@ -889,7 +889,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           <div className={`space-y-4 ${orderArr.indexOf('qq') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('qq') }}>
             <h4 className="text-[11px] font-bold text-amber-400 bg-amber-500/10 inline-block px-2.5 py-1 rounded-md border border-amber-500/20 shadow-sm">🇰🇦 {trLocal.qqFields}</h4>
             <div>
-              <label className="label">✏️ {trLocal.qqEventTitle}</label>
+              <label className="label flex items-center gap-1.5"><Pencil size={13} className="text-surface-400" /> {trLocal.qqEventTitle}</label>
               <input type="text" placeholder="Nikax márásimi"
                 value={data.customFields?.eventTitleQq || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleQq', e.target.value)}
@@ -897,7 +897,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 className="input-field" />
             </div>
             <div>
-              <label className="label">👥 {trLocal.qqGuestName}</label>
+              <label className="label flex items-center gap-1.5"><Users size={13} className="text-surface-400" /> {trLocal.qqGuestName}</label>
               <input type="text" placeholder="Húrmetli mexmanlar"
                 value={data.customFields?.guestNameQq || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
@@ -906,7 +906,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="space-y-3 mt-3">
-              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
+              <label className="label flex items-center gap-1.5"><MessageSquare size={13} className="text-surface-400" /> {trLocal.msg}</label>
               <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
                 value={data.customFields?.messageQq || ''}
                 onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
@@ -915,7 +915,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="mt-3">
-              <label className="label">👤 {trLocal.qqHostName}</label>
+              <label className="label flex items-center gap-1.5"><User size={13} className="text-surface-400" /> {trLocal.qqHostName}</label>
               <input type="text" placeholder="Aliyev Jasur"
                 value={data.customFields?.hostNameQq || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
@@ -925,7 +925,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
             <div className="mt-4 border-t border-white/5 pt-4">
               <div className="flex items-center justify-between mb-3">
-                <label className="label flex items-center gap-2 mb-0">📅 Bag'darlanma (QQ)</label>
+                <label className="label flex items-center gap-2 mb-0"><ClipboardList size={13} className="text-surface-400" /> Bag'darlanma (QQ)</label>
                 <input type="text" placeholder="Ilaje bag'darlanması" value={data.customFields?.programCustomTitleQq || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitleQq', e.target.value)}
                   onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
@@ -988,7 +988,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           <div className={`space-y-4 ${orderArr.indexOf('ru') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('ru') }}>
             <h4 className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 inline-block px-2.5 py-1 rounded-md border border-indigo-500/20 shadow-sm">🇷🇺 {trLocal.ruFields}</h4>
             <div>
-              <label className="label">✏️ {trLocal.ruEventTitle}</label>
+              <label className="label flex items-center gap-1.5"><Pencil size={13} className="text-surface-400" /> {trLocal.ruEventTitle}</label>
               <input type="text" placeholder="Свадебное торжество"
                 value={data.customFields?.eventTitleRu || ''}
                 onChange={(e) => handleCustomFieldChange('eventTitleRu', e.target.value)}
@@ -996,7 +996,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 className="input-field" />
             </div>
             <div>
-              <label className="label">👥 {trLocal.ruGuestName}</label>
+              <label className="label flex items-center gap-1.5"><Users size={13} className="text-surface-400" /> {trLocal.ruGuestName}</label>
               <input type="text" placeholder="Уважаемые гости"
                 value={data.customFields?.guestNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
@@ -1005,7 +1005,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="space-y-3 mt-3">
-              <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
+              <label className="label flex items-center gap-1.5"><MessageSquare size={13} className="text-surface-400" /> {trLocal.msg}</label>
               <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
                 value={data.customFields?.messageRu || ''}
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
@@ -1014,7 +1014,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </div>
 
             <div className="mt-3">
-              <label className="label">👤 {trLocal.ruHostName}</label>
+              <label className="label flex items-center gap-1.5"><User size={13} className="text-surface-400" /> {trLocal.ruHostName}</label>
               <input type="text" placeholder="Абдуллаев Юнус"
                 value={data.customFields?.hostNameRu || ''}
                 onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
@@ -1024,7 +1024,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
             <div className="mt-4 border-t border-white/5 pt-4">
               <div className="flex items-center justify-between mb-3">
-                <label className="label flex items-center gap-2 mb-0">📅 Программа (RU)</label>
+                <label className="label flex items-center gap-2 mb-0"><ClipboardList size={13} className="text-surface-400" /> Программа (RU)</label>
                 <input type="text" placeholder="Программа вечера" value={data.customFields?.programCustomTitleRu || ''}
                   onChange={(e) => handleCustomFieldChange('programCustomTitleRu', e.target.value)}
                   onFocus={() => setActiveSection('schedule')} onBlur={() => setActiveSection(null)}
@@ -1421,10 +1421,10 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         <div className="glass p-5 space-y-6">
           <div className={`space-y-4 transition-all duration-200 rounded-xl ${activeSection==='music' ? 'ring-1 ring-indigo-500/30' : ''}`} onFocusCapture={() => setActiveSection('music')} onBlurCapture={() => setActiveSection(null)}>
         <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
-          ⚙️ {t('step3.extras')}
+          <Settings size={14} /> {t('step3.extras')}
         </h3>
         <div>
-          <label className="label flex items-center gap-1.5">🎵 {t('step3.music')}</label>
+          <label className="label flex items-center gap-1.5"><Music size={13} className="text-surface-400" /> {t('step3.music')}</label>
           
           {/* Current music indicator */}
           {data.customFields?.musicUrl && (
@@ -1452,7 +1452,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                         {/* Artwork Mock / Decor */}
                         <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent flex items-center justify-center">
                            <div className="w-12 h-12 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center border border-white/10">
-                              <span className="text-xl">🎵</span>
+                              <Music size={20} className="text-primary-300" />
                            </div>
                         </div>
 
@@ -1721,7 +1721,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         <div className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-200 ${activeSection==='wishes' ? 'border-indigo-500/50 bg-indigo-500/8' : 'border-white/[0.06] bg-white/[0.02]'}`} onClick={() => setActiveSection('wishes')}>
           <div>
-            <label className="label flex items-center gap-1.5 !mb-0">💌 {t('step3.wishes')}</label>
+            <label className="label flex items-center gap-1.5 !mb-0"><Mail size={13} className="text-surface-400" /> {t('step3.wishes')}</label>
             <p className="text-[11px] text-surface-500 mt-0.5">{t('step3.wishesHint')}</p>
           </div>
           <button type="button"
@@ -1749,14 +1749,14 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         {/* ─── Floating Elements Toggles ─── */}
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
           <div className="px-3 py-2.5 border-b border-white/[0.04]">
-            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">⚙️ {t('step3.floatingTitle')}</p>
+            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider flex items-center gap-1.5"><Settings size={12} /> {t('step3.floatingTitle')}</p>
           </div>
           {[
-            { key: 'envelopeAnim',  label: `🎭 ${t('step3.envelopeAnim')}`,     hint: t('step3.envelopeHint'), defaultOn: true },
-            { key: 'showShareWa',   label: `💬 ${t('step3.showShareWa')}`, hint: t('step3.showShareWaHint'), defaultOn: false },
-            { key: 'showShareTg',   label: `✈️ ${t('step3.showShareTg')}`, hint: t('step3.showShareTgHint'), defaultOn: false },
-            { key: 'showCalendarBtn', label: `📅 ${t('step3.showCalendar')}`,        hint: t('step3.showCalendarHint'), defaultOn: false },
-            { key: 'showPrintBtn',  label: `🖨️ ${t('step3.showPrint')}`,       hint: t('step3.showPrintHint'), defaultOn: false },
+            { key: 'envelopeAnim',  label: t('step3.envelopeAnim'),     hint: t('step3.envelopeHint'), defaultOn: true },
+            { key: 'showShareWa',   label: t('step3.showShareWa'), hint: t('step3.showShareWaHint'), defaultOn: false },
+            { key: 'showShareTg',   label: t('step3.showShareTg'), hint: t('step3.showShareTgHint'), defaultOn: false },
+            { key: 'showCalendarBtn', label: t('step3.showCalendar'),        hint: t('step3.showCalendarHint'), defaultOn: false },
+            { key: 'showPrintBtn',  label: t('step3.showPrint'),       hint: t('step3.showPrintHint'), defaultOn: false },
             { key: 'enableAlphabetSwitcher', label: trLocal.alphabetSwitcher, hint: trLocal.alphabetHint, defaultOn: false },
           ].map(({ key, label, hint, defaultOn }) => {
             const isOn = data.customFields?.[key] === undefined ? defaultOn : !!data.customFields[key];
