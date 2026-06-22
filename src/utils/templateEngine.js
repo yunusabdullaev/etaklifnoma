@@ -546,7 +546,15 @@ function renderInvitation(invitation, eventType, template) {
 
   // Render template HTML — always use fresh source from templateContent.js
   // (so emoji/label changes in templateContent.js apply without DB update)
-  const freshHtml = FRESH_HTML_BY_EVENT[eventType?.name] || template?.htmlContent || '';
+  let freshHtml = FRESH_HTML_BY_EVENT[eventType?.name];
+  // For 'custom' event type (or unknown), determine HTML from template slug prefix
+  if (!freshHtml && template?.slug) {
+    const slugPrefixMap = { 'toy-': 'wedding', 'tgk-': 'birthday', 'grad-': 'graduation', 'jub-': 'jubilee' };
+    for (const [prefix, evName] of Object.entries(slugPrefixMap)) {
+      if (template.slug.startsWith(prefix)) { freshHtml = FRESH_HTML_BY_EVENT[evName]; break; }
+    }
+  }
+  freshHtml = freshHtml || template?.htmlContent || '';
   let renderedBody = renderString(freshHtml, context);
   // Use fresh CSS from templateContent.js (keyed by slug), fall back to MongoDB
   const freshCss = (template?.slug && FRESH_CSS_BY_SLUG[template.slug]) || template?.cssContent || '';
@@ -863,7 +871,14 @@ function renderInvitation(invitation, eventType, template) {
  */
 function renderPreviewFragment(data, eventType, template) {
   const context = buildContext(data, eventType, template);
-  const freshHtml = FRESH_HTML_BY_EVENT[eventType?.name] || template?.htmlContent || '';
+  let freshHtml = FRESH_HTML_BY_EVENT[eventType?.name];
+  if (!freshHtml && template?.slug) {
+    const slugPrefixMap = { 'toy-': 'wedding', 'tgk-': 'birthday', 'grad-': 'graduation', 'jub-': 'jubilee' };
+    for (const [prefix, evName] of Object.entries(slugPrefixMap)) {
+      if (template.slug.startsWith(prefix)) { freshHtml = FRESH_HTML_BY_EVENT[evName]; break; }
+    }
+  }
+  freshHtml = freshHtml || template?.htmlContent || '';
   const renderedBody = renderString(freshHtml, context);
   const freshCss = (template?.slug && FRESH_CSS_BY_SLUG[template.slug]) || template?.cssContent || '';
   const renderedCss = renderString(freshCss, context, false);
