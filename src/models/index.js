@@ -2,17 +2,6 @@
 
 const mongoose = require('mongoose');
 
-// Global toJSON — add virtual 'id', remove '__v'
-mongoose.set('toJSON', {
-  virtuals: true,
-  versionKey: false,
-  transform: (_doc, ret) => {
-    ret.id = ret._id;
-    delete ret.__v;
-    return ret;
-  },
-});
-
 const UserSchema = require('./User');
 const EventTypeSchema = require('./EventType');
 const TemplateSchema = require('./Template');
@@ -23,6 +12,25 @@ const SupportTicketSchema = require('./SupportTicket');
 const SupportMessageSchema = require('./SupportMessage');
 const BotConnectionSchema = require('./BotConnection');
 const FileSchema = require('./File');
+
+// Apply toJSON config to ALL schemas — add 'id', remove '__v'
+const toJSONOpts = {
+  virtuals: true,
+  versionKey: false,
+  transform: (_doc, ret) => {
+    ret.id = ret._id;
+    delete ret.__v;
+    return ret;
+  },
+};
+[
+  UserSchema, EventTypeSchema, TemplateSchema, InvitationSchema,
+  RsvpSchema, WishSchema, SupportTicketSchema, SupportMessageSchema,
+  BotConnectionSchema, FileSchema,
+].forEach(schema => {
+  schema.set('toJSON', toJSONOpts);
+  schema.set('toObject', toJSONOpts);
+});
 
 const db = {
   mongoose,
