@@ -18,6 +18,13 @@ const SECTION_MAP = {
   guestName:   ['[data-i18n="guestWelcome"]','[data-tp="guestName"]','.guest-name'],
   message:     ['section.greeting-section','.greeting-section','.invitation-message'],
   dressCode:   ['[data-i18n="dressCode"]','.dresscode-badge'],
+  age:         ['.bd-age-badge', '.bd-age-num'],
+  theme:       ['.dresscode-badge'],
+  years:       ['.jub-years-badge', '.jub-years-num'],
+  graduationYear: ['.grad-year-badge', '.grad-year-num'],
+  school:      ['.grad-year-badge', '.info-card'],
+  brideName:   ['.hero-name', '.hero-names'],
+  groomName:   ['.hero-name', '.hero-names'],
 };
 
 const HL_CSS = `

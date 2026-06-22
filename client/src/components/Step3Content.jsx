@@ -340,6 +340,142 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
   }, [data]);
 
+  // Automatically initialize timeline program fields based on the selected event type
+  const hasProgramUz = !!data.customFields?.program;
+  const hasProgramQq = !!data.customFields?.programQq;
+  const hasProgramRu = !!data.customFields?.programRu;
+
+  useEffect(() => {
+    if (!data.template) return;
+
+    const updates = {};
+    let changed = false;
+    const evType = data.eventType?.name || 'wedding';
+    const evTime = data.eventTime || '18:00';
+
+    const getDefaultProgram = (lang) => {
+      if (lang === 'qq') {
+        if (evType === 'birthday') {
+          return [
+            { time: evTime, text: 'Mexmanlar kútip alıw' },
+            { time: '18:30', text: 'Tort márásimi 🎂' },
+            { time: '19:00', text: 'Ziyapat dástúrxanı' },
+            { time: '21:00', text: 'Muzıkalı waqıtlar hám oyınlar 🎶' },
+          ];
+        }
+        if (evType === 'graduation') {
+          return [
+            { time: evTime, text: 'Dizimnen ótiw' },
+            { time: '18:30', text: 'Rásimiy saltanat 🎓' },
+            { time: '19:30', text: 'Ziyapat dástúrxanı' },
+            { time: '21:00', text: 'Diskoteka hám estelik waqıtlar 🎶' },
+          ];
+        }
+        if (evType === 'jubilee') {
+          return [
+            { time: evTime, text: 'Mexmanlar kútip alıw' },
+            { time: '18:30', text: 'Saltanatlı qutlıqlawlar 🎉' },
+            { time: '19:00', text: 'Ziyapat dástúrxanı' },
+            { time: '21:00', text: 'Muzıkalı keshe hám oyınlar 🎶' },
+          ];
+        }
+        return [
+          { time: evTime, text: 'Mexmanlar kútip alıw' },
+          { time: '18:30', text: 'Rásimiy nikax márásimi' },
+          { time: '19:00', text: 'Ziyapat dástúrxanı' },
+          { time: '21:00', text: 'Muzıkalı waqıtlar hám keshe' },
+        ];
+      }
+
+      if (lang === 'ru') {
+        if (evType === 'birthday') {
+          return [
+            { time: evTime, text: 'Встреча гостей' },
+            { time: '18:30', text: 'Церемония с тортом 🎂' },
+            { time: '19:00', text: 'Праздничный банкет' },
+            { time: '21:00', text: 'Музыкальная программа и игры 🎶' },
+          ];
+        }
+        if (evType === 'graduation') {
+          return [
+            { time: evTime, text: 'Регистрация гостей' },
+            { time: '18:30', text: 'Торжественная часть 🎓' },
+            { time: '19:30', text: 'Праздничный банкет' },
+            { time: '21:00', text: 'Дискотека и памятная фотосессия 🎶' },
+          ];
+        }
+        if (evType === 'jubilee') {
+          return [
+            { time: evTime, text: 'Встреча гостей' },
+            { time: '18:30', text: 'Торжественные поздравления 🎉' },
+            { time: '19:00', text: 'Праздничный банкет' },
+            { time: '21:00', text: 'Музыкальный вечер и танцы 🎶' },
+          ];
+        }
+        return [
+          { time: evTime, text: 'Встреча гостей' },
+          { time: '18:30', text: 'Официальная церемония бракосочетания' },
+          { time: '19:00', text: 'Праздничный банкет' },
+          { time: '21:00', text: 'Музыкальная программа и танцы' },
+        ];
+      }
+
+      // UZ
+      if (evType === 'birthday') {
+        return [
+          { time: evTime, text: 'Mehmonlarni kutib olish' },
+          { time: '18:30', text: 'Tort marosimi 🎂' },
+          { time: '19:00', text: 'Ziyofat dasturxoni' },
+          { time: '21:00', text: 'Musiqali lahzalar va o\'yinlar 🎶' },
+        ];
+      }
+      if (evType === 'graduation') {
+        return [
+          { time: evTime, text: 'Ro\'yxatdan o\'tish' },
+          { time: '18:30', text: 'Rasmiy tantana 🎓' },
+          { time: '19:30', text: 'Ziyofat dasturxoni' },
+          { time: '21:00', text: 'Diskoteka va esdalik lahzalar 🎶' },
+        ];
+      }
+      if (evType === 'jubilee') {
+        return [
+          { time: evTime, text: 'Mehmonlarni kutib olish' },
+          { time: '18:30', text: 'Tantanali tabriklar 🎉' },
+          { time: '19:00', text: 'Ziyofat dasturxoni' },
+          { time: '21:00', text: 'Musiqali kecha va raqs 🎶' },
+        ];
+      }
+      return [
+        { time: evTime, text: 'Mehmonlarni kutib olish' },
+        { time: '18:30', text: 'Rasmiy nikoh marosimi' },
+        { time: '19:00', text: 'Ziyofat dasturxoni' },
+        { time: '21:00', text: 'Musiqa va ko\'ngil ochar lahzalar' },
+      ];
+    };
+
+    if (!hasProgramUz) {
+      updates.program = JSON.stringify(getDefaultProgram('uz'));
+      changed = true;
+    }
+    if (!hasProgramQq) {
+      updates.programQq = JSON.stringify(getDefaultProgram('qq'));
+      changed = true;
+    }
+    if (!hasProgramRu) {
+      updates.programRu = JSON.stringify(getDefaultProgram('ru'));
+      changed = true;
+    }
+
+    if (changed) {
+      onUpdate({
+        customFields: {
+          ...data.customFields,
+          ...updates
+        }
+      });
+    }
+  }, [data.template?.id, data.eventTime, data.eventType?.name, hasProgramUz, hasProgramQq, hasProgramRu, onUpdate]);
+
   const discardDraft = () => {
     try { localStorage.removeItem(DRAFT_KEY); } catch {}
     setHasDraftRestored(false);
@@ -667,29 +803,51 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Age field — only for birthday */}
+            {data.eventType?.name === 'birthday' && (
               <div>
-                <label className="label">👤 {trLocal.uzHostName} *</label>
-                <input type="text" placeholder="Aliyev Jasur"
-                  value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
-                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
+                <label className="label flex items-center gap-1.5">🎂 {trLocal.age || 'Yosh'}</label>
+                <input type="number" placeholder="7"
+                  min="1" max="150"
+                  value={data.customFields?.age || ''}
+                  onChange={(e) => {
+                    let val = e.target.value;
+                    if (val !== '') {
+                      let num = parseInt(val, 10);
+                      if (!isNaN(num)) {
+                        if (num <= 0) val = '';
+                        else if (num > 150) val = '150';
+                        else val = num.toString();
+                      }
+                    }
+                    handleCustomFieldChange('age', val);
+                  }}
+                  onFocus={() => setActiveSection('age')} onBlur={() => setActiveSection(null)}
                   className="input-field" />
               </div>
-              <div>
-                <label className="label">👥 {trLocal.uzGuestName}</label>
-                <input type="text" placeholder="Hurmatli mehmon"
-                  value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
-                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
-                  className="input-field" />
-              </div>
+            )}
+            <div>
+              <label className="label">👥 {trLocal.uzGuestName}</label>
+              <input type="text" placeholder="Hurmatli mehmon"
+                value={data.guestName || ''} onChange={(e) => handleChange('guestName', e.target.value)}
+                onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
+                className="input-field" />
             </div>
-            
+
             <div className="space-y-3 mt-3">
               <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
               <textarea rows={3} placeholder="Hurmatli mehmonlar, sizni..."
                 value={data.message || ''} onChange={(e) => handleChange('message', e.target.value)}
                 onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
                 className="input-field resize-none" />
+            </div>
+
+            <div className="mt-3">
+              <label className="label">👤 {trLocal.uzHostName} *</label>
+              <input type="text" placeholder="Aliyev Jasur"
+                value={data.hostName || ''} onChange={(e) => handleChange('hostName', e.target.value)}
+                onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
+                className="input-field" />
             </div>
 
             <div className="mt-4 border-t border-white/5 pt-4">
@@ -764,25 +922,15 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="label">👤 {trLocal.qqHostName}</label>
-                <input type="text" placeholder="Aliyev Jasur"
-                  value={data.customFields?.hostNameQq || ''}
-                  onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
-                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
-                  className="input-field" />
-              </div>
-              <div>
-                <label className="label">👥 {trLocal.qqGuestName}</label>
-                <input type="text" placeholder="Húrmetli mexmanlar"
-                  value={data.customFields?.guestNameQq || ''}
-                  onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
-                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
-                  className="input-field" />
-              </div>
+            <div>
+              <label className="label">👥 {trLocal.qqGuestName}</label>
+              <input type="text" placeholder="Húrmetli mexmanlar"
+                value={data.customFields?.guestNameQq || ''}
+                onChange={(e) => handleCustomFieldChange('guestNameQq', e.target.value)}
+                onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
+                className="input-field" />
             </div>
-            
+
             <div className="space-y-3 mt-3">
               <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
               <textarea rows={3} placeholder="Sizdi márásimimizge shaqıramız..."
@@ -790,6 +938,15 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onChange={(e) => handleCustomFieldChange('messageQq', e.target.value)}
                 onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
                 className="input-field resize-none" />
+            </div>
+
+            <div className="mt-3">
+              <label className="label">👤 {trLocal.qqHostName}</label>
+              <input type="text" placeholder="Aliyev Jasur"
+                value={data.customFields?.hostNameQq || ''}
+                onChange={(e) => handleCustomFieldChange('hostNameQq', e.target.value)}
+                onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
+                className="input-field" />
             </div>
 
             <div className="mt-4 border-t border-white/5 pt-4">
@@ -864,25 +1021,15 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="label">👤 {trLocal.ruHostName}</label>
-                <input type="text" placeholder="Абдуллаев Юнус"
-                  value={data.customFields?.hostNameRu || ''}
-                  onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
-                  onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
-                  className="input-field" />
-              </div>
-              <div>
-                <label className="label">👥 {trLocal.ruGuestName}</label>
-                <input type="text" placeholder="Уважаемые гости"
-                  value={data.customFields?.guestNameRu || ''}
-                  onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
-                  onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
-                  className="input-field" />
-              </div>
+            <div>
+              <label className="label">👥 {trLocal.ruGuestName}</label>
+              <input type="text" placeholder="Уважаемые гости"
+                value={data.customFields?.guestNameRu || ''}
+                onChange={(e) => handleCustomFieldChange('guestNameRu', e.target.value)}
+                onFocus={() => setActiveSection('guestName')} onBlur={() => setActiveSection(null)}
+                className="input-field" />
             </div>
-            
+
             <div className="space-y-3 mt-3">
               <label className="label flex items-center gap-1.5">💬 {trLocal.msg}</label>
               <textarea rows={3} placeholder="Приглашаем вас на наше торжество..."
@@ -890,6 +1037,15 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onChange={(e) => handleCustomFieldChange('messageRu', e.target.value)}
                 onFocus={() => setActiveSection('message')} onBlur={() => setActiveSection(null)}
                 className="input-field resize-none" />
+            </div>
+
+            <div className="mt-3">
+              <label className="label">👤 {trLocal.ruHostName}</label>
+              <input type="text" placeholder="Абдуллаев Юнус"
+                value={data.customFields?.hostNameRu || ''}
+                onChange={(e) => handleCustomFieldChange('hostNameRu', e.target.value)}
+                onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
+                className="input-field" />
             </div>
 
             <div className="mt-4 border-t border-white/5 pt-4">
@@ -1147,7 +1303,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             <span className="text-base">{data.eventType?.icon}</span> {t('step3.templateFields')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {templateFields.map((field) => (
+            {templateFields.filter((field) => field.key !== 'age').map((field) => (
               <div key={field.key} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
                 <label className="label">
                   {trLocal[field.key] || field.label} {field.required && <span className="text-rose-400">*</span>}
@@ -1155,12 +1311,16 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 {field.type === 'textarea' ? (
                   <textarea rows={3} placeholder={trLocal[field.key] || field.label}
                     value={data.customFields?.[field.key] || ''}
+                    onFocus={() => setActiveSection(field.key)}
+                    onBlur={() => setActiveSection(null)}
                     onChange={(e) => handleCustomFieldChange(field.key, e.target.value)}
                     className="input-field resize-none" />
                 ) : (
                   <input type={field.type === 'number' ? 'number' : 'text'}
                     placeholder={trLocal[field.key] || field.label}
                     value={data.customFields?.[field.key] || ''}
+                    onFocus={() => setActiveSection(field.key)}
+                    onBlur={() => setActiveSection(null)}
                     min={field.key === 'age' ? '1' : undefined}
                     max={field.key === 'age' ? '150' : undefined}
                     onChange={(e) => {
