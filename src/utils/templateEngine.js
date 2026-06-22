@@ -638,6 +638,7 @@ function renderInvitation(invitation, eventType, template) {
   </style>
 </head>
 <body>
+  ${(invitation.customFields?.envelopeAnim !== false) ? buildEnvelopeAnimation(eventType) : ''}
   ${(() => {
     // Inject gallery, wishes, rsvp BEFORE the footer section (so footer is always last)
     const gallery = buildPhotoGallery(photos);
@@ -720,7 +721,6 @@ function renderInvitation(invitation, eventType, template) {
   ${buildShareButtons(invitation.customFields)}
   ${(invitation.customFields?.showCalendarBtn === true) ? buildCalendarButton() : ''}
   ${(invitation.customFields?.showPrintBtn === true) ? buildPrintButton() : ''}
-  ${(invitation.customFields?.envelopeAnim !== false) ? buildEnvelopeAnimation(eventType) : ''}
   ${buildColorPaletteCss(invitation.customFields?.colorPalette || 'gold')}
   ${buildLanguageToggle(invitation.customFields)}
   ${buildBrandingFooter()}
