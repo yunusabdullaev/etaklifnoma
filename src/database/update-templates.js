@@ -93,6 +93,7 @@ async function run() {
             structure: config.structure,
             sortOrder: theme.sortOrder,
             isActive: true,
+            isPremium: true,
             eventTypeId: etId,
           });
           console.log(`  ✅ Updated: ${theme.slug}`);
@@ -108,7 +109,7 @@ async function run() {
             structure: config.structure,
             sortOrder: theme.sortOrder,
             isActive: true,
-            isPremium: false,
+            isPremium: true,
           });
           console.log(`  🆕 Created: ${theme.slug}`);
           created++;
@@ -153,6 +154,7 @@ async function run() {
             structure: config.structure,
             sortOrder: 10 + parseInt(design.key),
             isActive: true,
+            isPremium: true,
             eventTypeId: etId,
           });
           console.log(`  ✅ Updated: ${slug}`);
@@ -168,7 +170,7 @@ async function run() {
             structure: config.structure,
             sortOrder: 10 + parseInt(design.key),
             isActive: true,
-            isPremium: false,
+            isPremium: true,
           });
           console.log(`  🆕 Created: ${slug}`);
           created++;
