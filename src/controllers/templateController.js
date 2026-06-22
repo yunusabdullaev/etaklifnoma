@@ -23,15 +23,14 @@ exports.getAll = catchAsync(async (req, res) => {
   // Cache key based on query params (only for non-content requests)
   const cacheKey = !includeContent ? `tpl:${JSON.stringify(filter)}:${page}:${limit}` : null;
   if (cacheKey && _cache[cacheKey] && Date.now() - _cache[cacheKey].ts < CACHE_TTL) {
-    return ApiResponse.paginated(res, _cache[cacheKey].data);
+    return res.status(200).json(_cache[cacheKey].json);
   }
 
   let query = Template.find(filter)
     .populate('eventTypeId', 'id name label icon')
     .sort({ sortOrder: 1, createdAt: -1 })
     .skip(skip)
-    .limit(limit)
-    .lean();
+    .limit(limit);
 
   if (!includeContent) {
     query = query.select('-htmlContent -cssContent');
@@ -43,7 +42,8 @@ exports.getAll = catchAsync(async (req, res) => {
   ]);
 
   const result = { rows, count, page, limit };
-  if (cacheKey) _cache[cacheKey] = { data: result, ts: Date.now() };
+  const jsonBody = { success: true, data: rows, meta: { total: count, page, limit, totalPages: Math.ceil(count / limit) } };
+  if (cacheKey) _cache[cacheKey] = { json: jsonBody, ts: Date.now() };
   ApiResponse.paginated(res, result);
 });
 

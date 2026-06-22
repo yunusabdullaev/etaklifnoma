@@ -2,6 +2,17 @@
 
 const mongoose = require('mongoose');
 
+// Global toJSON — add virtual 'id', remove '__v'
+mongoose.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: (_doc, ret) => {
+    ret.id = ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
+
 const UserSchema = require('./User');
 const EventTypeSchema = require('./EventType');
 const TemplateSchema = require('./Template');
