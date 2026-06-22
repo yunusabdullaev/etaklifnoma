@@ -22,6 +22,21 @@ const FRESH_CSS_BY_SLUG = {};
   if (t.slug && t.css) FRESH_CSS_BY_SLUG[t.slug] = t.css;
 });
 
+// New unique designs (neon, marble, boho, cinema) — add their CSS and HTML too
+const { newDesigns } = require('./templateDesigns');
+const FRESH_HTML_BY_DESIGN_SLUG = {};
+const designPrefixMap = { wedding: 'toy', birthday: 'tgk', graduation: 'grad', jubilee: 'jub' };
+for (const design of newDesigns) {
+  for (const [evName, prefix] of Object.entries(designPrefixMap)) {
+    const slug = `${prefix}-${design.slug}`;
+    if (design.css) FRESH_CSS_BY_SLUG[slug] = design.css;
+    if (design.html) {
+      const html = typeof design.html === 'string' ? design.html : (design.html[evName] || design.html.wedding);
+      FRESH_HTML_BY_DESIGN_SLUG[slug] = html;
+    }
+  }
+}
+
 // ── Uzbek month names ───────────────────────────────────────
 const UZ_MONTHS = [
   'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
@@ -544,10 +559,11 @@ function renderInvitation(invitation, eventType, template) {
     },
   };
 
-  // Render template HTML — always use fresh source from templateContent.js
-  // (so emoji/label changes in templateContent.js apply without DB update)
-  let freshHtml = FRESH_HTML_BY_EVENT[eventType?.name];
-  // For 'custom' event type (or unknown), determine HTML from template slug prefix
+  // Render template HTML — always use fresh source
+  // 1) Try design-specific HTML (neon, marble, boho, cinema)
+  // 2) Then event-type HTML (standard themes)
+  // 3) Then slug-prefix fallback (custom event type using standard themes)
+  let freshHtml = (template?.slug && FRESH_HTML_BY_DESIGN_SLUG[template.slug]) || FRESH_HTML_BY_EVENT[eventType?.name];
   if (!freshHtml && template?.slug) {
     const slugPrefixMap = { 'toy-': 'wedding', 'tgk-': 'birthday', 'grad-': 'graduation', 'jub-': 'jubilee' };
     for (const [prefix, evName] of Object.entries(slugPrefixMap)) {
@@ -871,7 +887,7 @@ function renderInvitation(invitation, eventType, template) {
  */
 function renderPreviewFragment(data, eventType, template) {
   const context = buildContext(data, eventType, template);
-  let freshHtml = FRESH_HTML_BY_EVENT[eventType?.name];
+  let freshHtml = (template?.slug && FRESH_HTML_BY_DESIGN_SLUG[template.slug]) || FRESH_HTML_BY_EVENT[eventType?.name];
   if (!freshHtml && template?.slug) {
     const slugPrefixMap = { 'toy-': 'wedding', 'tgk-': 'birthday', 'grad-': 'graduation', 'jub-': 'jubilee' };
     for (const [prefix, evName] of Object.entries(slugPrefixMap)) {
