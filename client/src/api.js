@@ -15,6 +15,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Normalize _id → id in API responses (safety net)
+function addIdField(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(addIdField);
+  if (obj._id && !obj.id) obj.id = obj._id;
+  return obj;
+}
+api.interceptors.response.use((res) => {
+  if (res.data?.data) {
+    if (Array.isArray(res.data.data)) res.data.data = res.data.data.map(addIdField);
+    else addIdField(res.data.data);
+  }
+  return res;
+});
+
 // ── Event Types ─────────────────────────────────────────
 export const getEventTypes = () => api.get('/event-types').then(r => r.data);
 export const getEventTypeById = (id) => api.get(`/event-types/${id}`).then(r => r.data);
