@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Calendar, User, Users, MessageSquare, Link2, Type, Eye, EyeOff, Loader2, Zap, CheckCircle2, XCircle, Globe, Pencil, PenLine, Cake, Settings, Music, Palette, Mail, Send, Printer, ClipboardList } from 'lucide-react';
+import { MapPin, Clock, Calendar, User, Users, MessageSquare, Link2, Type, Eye, EyeOff, Loader2, Zap, CheckCircle2, XCircle, Globe, Pencil, PenLine, Cake, Settings, Music, Palette, Mail, Send, Printer, ClipboardList, Heart } from 'lucide-react';
 import LivePreview from './LivePreview';
 import { useLang } from '../i18n';
 import { uploadImage, uploadAudio } from '../utils/cloudinary';
@@ -770,6 +770,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           {isUzOn && (
           <div className={`space-y-4 ${orderArr.indexOf('uz') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('uz') }}>
             <h4 className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 inline-block px-2.5 py-1 rounded-md border border-emerald-500/20 shadow-sm">🇺🇿 {trLocal.uzFields}</h4>
+            
+            {/* Event Title — hidden for wedding, shown for others */}
+            {data.eventType?.name !== 'wedding' && (
             <div>
               <label className="label flex items-center gap-1.5"><Pencil size={13} className="text-surface-400" /> {trLocal.uzEventTitle}</label>
               <input type="text" placeholder="Nikoh marosimi"
@@ -777,6 +780,28 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
+            )}
+
+            {/* Bride & Groom Names — only for wedding */}
+            {data.eventType?.name === 'wedding' && (
+            <div className="space-y-3">
+              <div>
+                <label className="label flex items-center gap-1.5"><Heart size={13} className="text-pink-400" /> {trLocal.brideName}</label>
+                <input type="text" placeholder="Malika"
+                  value={data.customFields?.brideName || ''} onChange={(e) => handleCustomFieldChange('brideName', e.target.value)}
+                  onFocus={() => setActiveSection('brideName')} onBlur={() => setActiveSection(null)}
+                  className="input-field" />
+              </div>
+              <div>
+                <label className="label flex items-center gap-1.5"><Heart size={13} className="text-blue-400" /> {trLocal.groomName}</label>
+                <input type="text" placeholder="Jasur"
+                  value={data.customFields?.groomName || ''} onChange={(e) => handleCustomFieldChange('groomName', e.target.value)}
+                  onFocus={() => setActiveSection('groomName')} onBlur={() => setActiveSection(null)}
+                  className="input-field" />
+              </div>
+            </div>
+            )}
+
             {/* Age field — only for birthday */}
             {data.eventType?.name === 'birthday' && (
               <div>
@@ -816,6 +841,8 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 className="input-field resize-none" />
             </div>
 
+            {/* Host name — hidden for wedding */}
+            {data.eventType?.name !== 'wedding' && (
             <div className="mt-3">
               <label className="label flex items-center gap-1.5"><User size={13} className="text-surface-400" /> {trLocal.uzHostName} *</label>
               <input type="text" placeholder="Aliyev Jasur"
@@ -823,6 +850,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
+            )}
 
             <div className="mt-4 border-t border-white/5 pt-4">
               <div className="flex items-center justify-between mb-3">
@@ -888,6 +916,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         {data.customFields?.langQq && (
           <div className={`space-y-4 ${orderArr.indexOf('qq') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('qq') }}>
             <h4 className="text-[11px] font-bold text-amber-400 bg-amber-500/10 inline-block px-2.5 py-1 rounded-md border border-amber-500/20 shadow-sm">🇰🇦 {trLocal.qqFields}</h4>
+            {data.eventType?.name !== 'wedding' && (
             <div>
               <label className="label flex items-center gap-1.5"><Pencil size={13} className="text-surface-400" /> {trLocal.qqEventTitle}</label>
               <input type="text" placeholder="Nikax márásimi"
@@ -896,6 +925,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
+            )}
             <div>
               <label className="label flex items-center gap-1.5"><Users size={13} className="text-surface-400" /> {trLocal.qqGuestName}</label>
               <input type="text" placeholder="Húrmetli mexmanlar"
@@ -914,6 +944,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 className="input-field resize-none" />
             </div>
 
+            {data.eventType?.name !== 'wedding' && (
             <div className="mt-3">
               <label className="label flex items-center gap-1.5"><User size={13} className="text-surface-400" /> {trLocal.qqHostName}</label>
               <input type="text" placeholder="Aliyev Jasur"
@@ -922,6 +953,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
+            )}
 
             <div className="mt-4 border-t border-white/5 pt-4">
               <div className="flex items-center justify-between mb-3">
@@ -987,6 +1019,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         {data.customFields?.langRu && (
           <div className={`space-y-4 ${orderArr.indexOf('ru') !== 0 ? 'pt-6 border-t border-white/5' : ''}`} style={{ order: orderArr.indexOf('ru') }}>
             <h4 className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 inline-block px-2.5 py-1 rounded-md border border-indigo-500/20 shadow-sm">🇷🇺 {trLocal.ruFields}</h4>
+            {data.eventType?.name !== 'wedding' && (
             <div>
               <label className="label flex items-center gap-1.5"><Pencil size={13} className="text-surface-400" /> {trLocal.ruEventTitle}</label>
               <input type="text" placeholder="Свадебное торжество"
@@ -995,6 +1028,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('eventTitle')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
+            )}
             <div>
               <label className="label flex items-center gap-1.5"><Users size={13} className="text-surface-400" /> {trLocal.ruGuestName}</label>
               <input type="text" placeholder="Уважаемые гости"
@@ -1013,6 +1047,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 className="input-field resize-none" />
             </div>
 
+            {data.eventType?.name !== 'wedding' && (
             <div className="mt-3">
               <label className="label flex items-center gap-1.5"><User size={13} className="text-surface-400" /> {trLocal.ruHostName}</label>
               <input type="text" placeholder="Абдуллаев Юнус"
@@ -1021,6 +1056,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 onFocus={() => setActiveSection('hostName')} onBlur={() => setActiveSection(null)}
                 className="input-field" />
             </div>
+            )}
 
             <div className="mt-4 border-t border-white/5 pt-4">
               <div className="flex items-center justify-between mb-3">
