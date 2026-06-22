@@ -16,6 +16,12 @@ const FRESH_HTML_BY_EVENT = {
   jubilee:    tc.jubileePremiumHtml,
 };
 
+// Also read fresh CSS by template slug so theme styles always match the HTML
+const FRESH_CSS_BY_SLUG = {};
+[...(tc.weddingThemes||[]), ...(tc.birthdayThemes||[]), ...(tc.graduationThemes||[]), ...(tc.jubileeThemes||[])].forEach(t => {
+  if (t.slug && t.css) FRESH_CSS_BY_SLUG[t.slug] = t.css;
+});
+
 // ── Uzbek month names ───────────────────────────────────────
 const UZ_MONTHS = [
   'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
@@ -542,7 +548,9 @@ function renderInvitation(invitation, eventType, template) {
   // (so emoji/label changes in templateContent.js apply without DB update)
   const freshHtml = FRESH_HTML_BY_EVENT[eventType?.name] || template?.htmlContent || '';
   let renderedBody = renderString(freshHtml, context);
-  let renderedCss = renderString(template?.cssContent || '', context, false);
+  // Use fresh CSS from templateContent.js (keyed by slug), fall back to MongoDB
+  const freshCss = (template?.slug && FRESH_CSS_BY_SLUG[template.slug]) || template?.cssContent || '';
+  let renderedCss = renderString(freshCss, context, false);
 
 
   // Fix body height constraint — ensure scrolling works for wishes/RSVP sections
@@ -857,7 +865,8 @@ function renderPreviewFragment(data, eventType, template) {
   const context = buildContext(data, eventType, template);
   const freshHtml = FRESH_HTML_BY_EVENT[eventType?.name] || template?.htmlContent || '';
   const renderedBody = renderString(freshHtml, context);
-  const renderedCss = renderString(template?.cssContent || '', context, false);
+  const freshCss = (template?.slug && FRESH_CSS_BY_SLUG[template.slug]) || template?.cssContent || '';
+  const renderedCss = renderString(freshCss, context, false);
   return { html: renderedBody, css: `${getBaseStyles()}\n${renderedCss}` };
 }
 
