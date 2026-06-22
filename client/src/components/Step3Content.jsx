@@ -1111,7 +1111,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Footer kutish xabari — "Sizni kutib qolamiz!" kabi ── */}
         {data.eventType && (
-          <div className={`glass p-4 border rounded-2xl mb-2 space-y-3 transition-all duration-200 ${activeSection==='waitingMsg' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-rose-500/20 bg-rose-500/5'}`} onFocusCapture={() => setActiveSection('waitingMsg')} onBlurCapture={() => setActiveSection(null)}>
+          <div className={`pt-6 border-t border-white/10 space-y-3 transition-all duration-200 ${activeSection==='waitingMsg' ? '' : ''}`} onFocusCapture={() => setActiveSection('waitingMsg')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
               {t('step3.waitingSection')}
               <span className="text-[9px] normal-case font-normal text-surface-500 ml-1 border border-rose-700/30 px-1.5 py-0.5 rounded">
@@ -1173,7 +1173,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
         {/* ── Ichki matnlarni o'zgartirish — barcha event turlari uchun ── */}
         {data.eventType && (
-          <div className={`glass p-5 space-y-4 border rounded-2xl mb-2 transition-all duration-200 ${activeSection==='labels' ? 'border-indigo-500/60 bg-indigo-500/8 ring-1 ring-indigo-500/30' : 'border-cyan-500/20 bg-cyan-500/5'}`} onFocusCapture={() => setActiveSection('labels')} onBlurCapture={() => setActiveSection(null)}>
+          <div className={`pt-6 border-t border-white/10 space-y-4 transition-all duration-200`} onFocusCapture={() => setActiveSection('labels')} onBlurCapture={() => setActiveSection(null)}>
             <h3 className="text-[13px] font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2 border-b border-cyan-500/20 pb-3">
               {t('step3.labelsSection')}
             </h3>
@@ -1294,11 +1294,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           </div>
         )}
 
-        </div>
-      )}
-      {/* Template custom fields */}
-      {subStep === 2 && templateFields.length > 0 && (
-        <div className="glass p-5 space-y-4 mb-4">
+        {/* Template custom fields */}
+        {templateFields.filter((f) => f.key !== 'age').length > 0 && (
+          <div className="pt-6 border-t border-white/10 space-y-4">
           <h3 className="text-xs font-semibold text-surface-300 uppercase tracking-wider flex items-center gap-2">
             <span className="text-base">{data.eventType?.icon}</span> {t('step3.templateFields')}
           </h3>
@@ -1340,6 +1338,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
               </div>
             ))}
           </div>
+          </div>
+        )}
+
         </div>
       )}
 
