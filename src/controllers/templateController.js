@@ -3,6 +3,9 @@ const { Template, EventType } = require('../models');
 const catchAsync = require('../utils/catchAsync');
 const ApiResponse = require('../utils/ApiResponse');
 const AppError = require('../utils/AppError');
+// Simple in-memory cache for template list (5 min TTL)
+const _cache = {};
+const CACHE_TTL = 5 * 60 * 1000;
 
 /**
  * GET /api/templates
@@ -17,11 +20,18 @@ exports.getAll = catchAsync(async (req, res) => {
   if (req.query.eventTypeId) filter.eventTypeId = req.query.eventTypeId;
   if (req.query.isPremium !== undefined) filter.isPremium = req.query.isPremium === 'true';
 
+  // Cache key based on query params (only for non-content requests)
+  const cacheKey = !includeContent ? `tpl:${JSON.stringify(filter)}:${page}:${limit}` : null;
+  if (cacheKey && _cache[cacheKey] && Date.now() - _cache[cacheKey].ts < CACHE_TTL) {
+    return ApiResponse.paginated(res, _cache[cacheKey].data);
+  }
+
   let query = Template.find(filter)
     .populate('eventTypeId', 'id name label icon')
     .sort({ sortOrder: 1, createdAt: -1 })
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .lean();
 
   if (!includeContent) {
     query = query.select('-htmlContent -cssContent');
@@ -32,7 +42,9 @@ exports.getAll = catchAsync(async (req, res) => {
     Template.countDocuments(filter),
   ]);
 
-  ApiResponse.paginated(res, { rows, count, page, limit });
+  const result = { rows, count, page, limit };
+  if (cacheKey) _cache[cacheKey] = { data: result, ts: Date.now() };
+  ApiResponse.paginated(res, result);
 });
 
 /**

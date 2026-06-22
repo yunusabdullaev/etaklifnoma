@@ -52,17 +52,24 @@ export default function LivePreview({ data, className = '', activeSection = null
   const debounceRef = useRef(null);
   const hlTimerRef = useRef(null);
   const activeSectionRef = useRef(null);
+  const abortRef = useRef(null);
   // Keep latest data accessible without re-creating callbacks
   const dataRef = useRef(data);
   useEffect(() => { dataRef.current = data; }, [data]);
 
   const fetchPreview = useCallback(async (d) => {
     if (!d.templateId) return;
+    // Abort previous in-flight request
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true); setError(null);
     try {
       const res = await fetch(`${API}/api/preview/full`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           templateId: d.templateId, eventTypeId: d.eventTypeId,
           hostName: d.hostName||'', guestName: d.guestName||'',
@@ -79,7 +86,9 @@ export default function LivePreview({ data, className = '', activeSection = null
           `<script>window.__IS_PREVIEW__=true;(function(){var g=Storage.prototype.getItem,s=Storage.prototype.setItem;Storage.prototype.getItem=function(k){if(k&&k.startsWith('env_seen_'))return null;return g.call(this,k);};Storage.prototype.setItem=function(k,v){if(k&&k.startsWith('env_seen_'))return;return s.call(this,k,v);};})();<\/script>`;
         setHtmlContent(html.replace('</head>', inject + '</head>'));
       } else setError("Bo'sh javob");
-    } catch { setError("Xatolik"); }
+    } catch (err) {
+      if (err.name !== 'AbortError') setError("Xatolik");
+    }
     finally { setLoading(false); }
   }, [API]);
 
@@ -150,11 +159,11 @@ export default function LivePreview({ data, className = '', activeSection = null
     applyHighlight(activeSection);
   }, [activeSection, applyHighlight]);
 
-  // Debounced preview refresh
+  // Debounced preview refresh (600ms to reduce API calls during typing)
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => fetchPreview(data), 400);
-    return () => clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchPreview(data), 600);
+    return () => { clearTimeout(debounceRef.current); };
   }, [
     data.templateId, data.hostName, data.guestName, data.eventTitle,
     data.eventDate, data.eventTime, data.location, data.locationUrl,

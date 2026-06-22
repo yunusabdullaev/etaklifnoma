@@ -68,6 +68,10 @@ exports.preview = catchAsync(async (req, res) => {
 /**
  * POST /api/preview/full
  */
+// Cache template+eventType lookups (2 min TTL)
+const _tplCache = {};
+const _TPL_TTL = 2 * 60 * 1000;
+
 exports.fullPreview = catchAsync(async (req, res) => {
   const { templateId } = req.body;
 
@@ -75,8 +79,18 @@ exports.fullPreview = catchAsync(async (req, res) => {
   let eventType = null;
 
   if (templateId) {
-    template = await Template.findById(templateId).populate('eventTypeId');
-    if (template) eventType = template.eventTypeId;
+    // Check cache first
+    const cached = _tplCache[templateId];
+    if (cached && Date.now() - cached.ts < _TPL_TTL) {
+      template = cached.tpl;
+      eventType = cached.et;
+    } else {
+      template = await Template.findById(templateId).populate('eventTypeId');
+      if (template) {
+        eventType = template.eventTypeId;
+        _tplCache[templateId] = { tpl: template, et: eventType, ts: Date.now() };
+      }
+    }
   }
 
   if (!eventType && req.body.eventTypeId) {

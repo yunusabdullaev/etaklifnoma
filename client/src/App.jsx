@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState, useCallback, useEffect } from 'react';
+import { Suspense, lazy, useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import StepIndicator from './components/StepIndicator';
 import SettingsDropdown from './components/SettingsDropdown';
@@ -45,9 +45,49 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const [view, setView] = useState('dashboard'); // 'dashboard' | 'wizard' | 'support'
-  const [editingInvitationId, setEditingInvitationId] = useState(null); // tahrirlash rejimida invitation ID
+  const [view, setView] = useState('dashboard');
+  const [editingInvitationId, setEditingInvitationId] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
   const GLOBAL_DRAFT_KEY = 'etaklifnoma_wizard_draft';
+  const skipNextPushRef = useRef(false);
+
+  // ── Browser History API ────────────────────────────
+  useEffect(() => {
+    if (!authChecked) return;
+    if (skipNextPushRef.current) { skipNextPushRef.current = false; return; }
+    const state = user
+      ? { view, step, loggedIn: true }
+      : { view: showAuth ? 'auth' : 'landing', loggedIn: false };
+    const url = user
+      ? (view === 'dashboard' ? '/' : view === 'support' ? '/support' : `/create/${step}`)
+      : (showAuth ? '/auth' : '/');
+    window.history.pushState(state, '', url);
+  }, [view, step, user, showAuth, authChecked]);
+
+  useEffect(() => {
+    const handlePopState = (e) => {
+      const state = e.state;
+      if (!state) return;
+      skipNextPushRef.current = true;
+      if (!state.loggedIn) {
+        setShowAuth(state.view === 'auth');
+        return;
+      }
+      if (state.view === 'dashboard') {
+        setView('dashboard');
+      } else if (state.view === 'support') {
+        setView('support');
+      } else if (state.view === 'wizard') {
+        setView('wizard');
+        setStep(state.step || 1);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    window.history.replaceState(
+      { view: 'landing', loggedIn: false }, '', window.location.pathname
+    );
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Global wizard draft auto-save
   useEffect(() => {
@@ -55,7 +95,6 @@ export default function App() {
       localStorage.setItem(GLOBAL_DRAFT_KEY, JSON.stringify({ step, data }));
     }
   }, [step, data, view, user]);
-  const [showAuth, setShowAuth] = useState(false); // landing → auth transition
 
   // Scroll to top on step change
   useEffect(() => {
