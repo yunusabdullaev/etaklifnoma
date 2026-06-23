@@ -260,6 +260,9 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
   const [playingId, setPlayingId] = useState(null);
   const [subStep, setSubStep] = useState(1); // 1: Tillar, 2: Matnlar, 3: Vaqt & Joy, 4: Sozlamalar
   const [activeSection, setActiveSection] = useState(null);
+  const [showErrors, setShowErrors] = useState(false);
+  const dateRef = useRef(null);
+  const locationRef = useRef(null);
 
   const subSteps = [
     { id: 1, label: "Tillar", labelRu: "Языки", labelQq: "Tiller", labelEn: "Languages", icon: "🌐" },
@@ -1172,12 +1175,13 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="label">{t('step3.date')} *</label>
-            <input type="date" value={data.eventDate || ''}
+            <input ref={dateRef} type="date" value={data.eventDate || ''}
               min={new Date().toISOString().split('T')[0]}
               max={new Date(Date.now() + 89 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-              onChange={(e) => handleChange('eventDate', e.target.value)}
+              onChange={(e) => { handleChange('eventDate', e.target.value); if (e.target.value) setShowErrors(false); }}
               onFocus={() => setActiveSection('dateLocation')} onBlur={() => setActiveSection(null)}
-              className="input-field" />
+              className={`input-field ${showErrors && !data.eventDate ? 'border-red-500 ring-2 ring-red-500/30 bg-red-500/5 animate-pulse' : ''}`} />
+            {showErrors && !data.eventDate && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><XCircle size={12} /> {lang === 'ru' ? 'Обязательное поле' : 'Majburiy maydon'}</p>}
           </div>
           <div>
             <label className="label flex items-center gap-1.5"><Clock size={13} /> {t('step3.time')}</label>
@@ -1189,10 +1193,11 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
         </div>
         <div>
           <label className="label flex items-center gap-1.5"><MapPin size={13} /> {t('step3.location')} *</label>
-          <input type="text" placeholder="Navruz to'yxonasi, Toshkent"
-            value={data.location || ''} onChange={(e) => handleChange('location', e.target.value)}
+          <input ref={locationRef} type="text" placeholder="Navruz to'yxonasi, Toshkent"
+            value={data.location || ''} onChange={(e) => { handleChange('location', e.target.value); if (e.target.value) setShowErrors(false); }}
             onFocus={() => setActiveSection('location')} onBlur={() => setActiveSection(null)}
-            className="input-field" />
+            className={`input-field ${showErrors && !data.location ? 'border-red-500 ring-2 ring-red-500/30 bg-red-500/5 animate-pulse' : ''}`} />
+          {showErrors && !data.location && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><XCircle size={12} /> {lang === 'ru' ? 'Обязательное поле' : 'Majburiy maydon'}</p>}
         </div>
         <div>
           <label className="label flex items-center gap-1.5"><Link2 size={13} /> {t('step3.mapLink')}</label>
@@ -1902,9 +1907,24 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                 </span>
               )}
               <button
-                onClick={handleSaveEdit}
-                disabled={editSaving || !data.eventDate || !data.location || (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)}
-                className="btn-primary flex items-center justify-center gap-2 min-w-[160px] py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => {
+                  const hasDate = !!data.eventDate;
+                  const hasLoc = !!data.location;
+                  const urlNeedsConfirm = data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed;
+                  if (!hasDate || !hasLoc || urlNeedsConfirm) {
+                    setShowErrors(true);
+                    setSubStep(3);
+                    setTimeout(() => {
+                      const target = !hasDate ? dateRef.current : !hasLoc ? locationRef.current : null;
+                      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                    return;
+                  }
+                  setShowErrors(false);
+                  handleSaveEdit();
+                }}
+                disabled={editSaving}
+                className={`btn-primary flex items-center justify-center gap-2 min-w-[160px] py-3.5 disabled:opacity-50 disabled:cursor-not-allowed ${(!data.eventDate || !data.location) ? 'opacity-70' : ''}`}
               >
                 {editSaving ? (
                   <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saqlanmoqda...</>
@@ -1924,13 +1944,23 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
             </button>
             <div className="flex flex-col sm:flex-row items-center justify-end w-full sm:w-auto relative group">
               <button
-                onClick={() => onNext()}
-                disabled={
-                  !data.eventDate || 
-                  !data.location || 
-                  (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)
-                }
-                className={`btn-primary flex-1 sm:flex-none w-full min-w-[160px] text-center py-3.5 ${(data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed) ? 'bg-surface-700 text-surface-400 hover:scale-100 cursor-not-allowed' : ''}`}
+                onClick={() => {
+                  const hasDate = !!data.eventDate;
+                  const hasLoc = !!data.location;
+                  const urlNeedsConfirm = data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed;
+                  if (!hasDate || !hasLoc || urlNeedsConfirm) {
+                    setShowErrors(true);
+                    setSubStep(3);
+                    setTimeout(() => {
+                      const target = !hasDate ? dateRef.current : !hasLoc ? locationRef.current : null;
+                      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                    return;
+                  }
+                  setShowErrors(false);
+                  onNext();
+                }}
+                className={`btn-primary flex-1 sm:flex-none w-full min-w-[160px] text-center py-3.5 ${(!data.eventDate || !data.location || (data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && !locConfirmed)) ? 'opacity-70' : ''}`}
               >
                 {t('step3.next')}
               </button>
