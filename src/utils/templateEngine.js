@@ -1073,7 +1073,7 @@ function buildWishesForm(chatId, invitationSlug) {
   return `
   <section class="section wishes-section" id="wishes" data-section="wishes">
     <div class="container">
-      <h2 class="section-heading" style="margin-bottom:12px">💌 Tilak va tabriklar</h2>
+      <h2 class="section-heading" style="margin-bottom:12px" data-i18n="wishesTitle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Tilak va tabriklar</h2>
       <p class="wishes-subtitle">Tilak va tabriklaringizni qoldiring</p>
       <form class="wishes-form" id="wishesForm" onsubmit="sendWish(event)">
         <input type="text" name="name" placeholder="Ismingiz" required class="wishes-input" />
@@ -2034,7 +2034,7 @@ function buildRsvpForm(slug, lang = 'uz') {
     <div style="max-width:460px;margin:0 auto;padding:0 24px">
       <div style="margin-bottom:28px">
         <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:16px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(76,175,80,0.05));display:flex;align-items:center;justify-content:center;border:1px solid rgba(76,175,80,0.2)">
-          <span style="font-size:28px">💌</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </div>
         <h2 style="font-family:var(--ff-serif);font-size:1.8rem;font-weight:700;color:var(--greeting-text);margin:0 0 8px">${t.title}</h2>
         <p style="font-size:0.9rem;color:var(--greeting-text);opacity:0.75;margin:0;font-family:var(--ff-serif)">${t.subtitle}</p>
