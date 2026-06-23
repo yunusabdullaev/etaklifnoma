@@ -263,6 +263,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
   const [showErrors, setShowErrors] = useState(false);
   const dateRef = useRef(null);
   const locationRef = useRef(null);
+  const locConfirmRef = useRef(null);
 
   const subSteps = [
     { id: 1, label: "Tillar", labelRu: "Языки", labelQq: "Tiller", labelEn: "Languages", icon: "🌐" },
@@ -1234,13 +1235,14 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
           {data.locationUrl && /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z0-9]{2,}(\/.*)?$/i.test(data.locationUrl) && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-3 mb-2 bg-surface-900 border border-white/10 rounded-xl overflow-hidden shadow-lg">
                <iframe src={getMapEmbedUrl(data.locationUrl, data.location)} width="100%" height="160" frameBorder="0" />
-               <div onClick={() => setLocConfirmed(!locConfirmed)} className="p-3 bg-surface-800 flex items-center justify-between cursor-pointer hover:bg-surface-800/80 transition-colors">
-                 <p className="text-[11px] sm:text-xs text-white font-medium">{trLocal.mapConfirm}</p>
+               <div ref={locConfirmRef} onClick={() => { setLocConfirmed(!locConfirmed); setShowErrors(false); }} className={`p-3 flex items-center justify-between cursor-pointer transition-all duration-300 ${showErrors && !locConfirmed ? 'bg-red-500/15 ring-2 ring-red-500/40 animate-pulse' : 'bg-surface-800 hover:bg-surface-800/80'}`}>
+                 <p className={`text-[11px] sm:text-xs font-medium ${showErrors && !locConfirmed ? 'text-red-300' : 'text-white'}`}>{trLocal.mapConfirm} {showErrors && !locConfirmed ? ' ⚠️' : ''}</p>
                  <label className="flex items-center gap-2 pointer-events-none">
-                   <input type="checkbox" checked={locConfirmed} readOnly className="w-4 h-4 rounded bg-surface-900 border-white/20" />
-                   <span className={`text-[10px] sm:text-[11px] uppercase tracking-wider font-bold transition-colors ${locConfirmed ? 'text-primary-400' : 'text-surface-500'}`}>{trLocal.confirm}</span>
+                   <input type="checkbox" checked={locConfirmed} readOnly className={`w-4 h-4 rounded ${showErrors && !locConfirmed ? 'border-red-500 bg-red-500/20' : 'bg-surface-900 border-white/20'}`} />
+                   <span className={`text-[10px] sm:text-[11px] uppercase tracking-wider font-bold transition-colors ${locConfirmed ? 'text-primary-400' : showErrors ? 'text-red-400' : 'text-surface-500'}`}>{trLocal.confirm}</span>
                  </label>
                </div>
+               {showErrors && !locConfirmed && <p className="text-red-400 text-xs px-3 py-1.5 flex items-center gap-1 bg-red-500/5"><XCircle size={12} /> {lang === 'ru' ? 'Подтвердите карту' : 'Xaritani tasdiqlang'}</p>}
             </motion.div>
           )}
 
@@ -1915,7 +1917,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                     setShowErrors(true);
                     setSubStep(3);
                     setTimeout(() => {
-                      const target = !hasDate ? dateRef.current : !hasLoc ? locationRef.current : null;
+                      const target = !hasDate ? dateRef.current : !hasLoc ? locationRef.current : urlNeedsConfirm ? locConfirmRef.current : null;
                       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 100);
                     return;
@@ -1952,7 +1954,7 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
                     setShowErrors(true);
                     setSubStep(3);
                     setTimeout(() => {
-                      const target = !hasDate ? dateRef.current : !hasLoc ? locationRef.current : null;
+                      const target = !hasDate ? dateRef.current : !hasLoc ? locationRef.current : urlNeedsConfirm ? locConfirmRef.current : null;
                       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 100);
                     return;
