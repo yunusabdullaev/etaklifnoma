@@ -878,6 +878,50 @@ function renderInvitation(invitation, eventType, template) {
     }
   })();
   <\/script>
+  <script>
+  (function(){
+    var el = document.getElementById('countdown-timer');
+    if (!el) return;
+    var dateStr = el.getAttribute('data-date');
+    var timeStr = el.getAttribute('data-time') || '00:00';
+    if (!dateStr) return;
+    var parts = dateStr.split('-');
+    var tparts = timeStr.split(':');
+    var targetDate = new Date(
+      parseInt(parts[0]),
+      parseInt(parts[1]) - 1,
+      parseInt(parts[2]),
+      parseInt(tparts[0]) || 0,
+      parseInt(tparts[1]) || 0
+    );
+    var daysEl = document.getElementById('cd-days');
+    var hoursEl = document.getElementById('cd-hours');
+    var minsEl = document.getElementById('cd-minutes') || document.getElementById('cd-mins');
+    var secsEl = document.getElementById('cd-seconds') || document.getElementById('cd-secs');
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function tick() {
+      var now = new Date();
+      var diff = targetDate - now;
+      if (diff <= 0) {
+        if (daysEl) daysEl.textContent = '00';
+        if (hoursEl) hoursEl.textContent = '00';
+        if (minsEl) minsEl.textContent = '00';
+        if (secsEl) secsEl.textContent = '00';
+        return;
+      }
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor((diff % 86400000) / 3600000);
+      var m = Math.floor((diff % 3600000) / 60000);
+      var s = Math.floor((diff % 60000) / 1000);
+      if (daysEl) daysEl.textContent = pad(d);
+      if (hoursEl) hoursEl.textContent = pad(h);
+      if (minsEl) minsEl.textContent = pad(m);
+      if (secsEl) secsEl.textContent = pad(s);
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+  <\/script>
 </body>
 </html>`;
 }
