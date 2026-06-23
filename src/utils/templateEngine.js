@@ -896,8 +896,8 @@ function renderInvitation(invitation, eventType, template) {
     );
     var daysEl = document.getElementById('cd-days');
     var hoursEl = document.getElementById('cd-hours');
-    var minsEl = document.getElementById('cd-minutes') || document.getElementById('cd-mins');
-    var secsEl = document.getElementById('cd-seconds') || document.getElementById('cd-secs');
+    var minsEl = document.getElementById('cd-min') || document.getElementById('cd-minutes') || document.getElementById('cd-mins');
+    var secsEl = document.getElementById('cd-sec') || document.getElementById('cd-seconds') || document.getElementById('cd-secs');
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
     function tick() {
       var now = new Date();
