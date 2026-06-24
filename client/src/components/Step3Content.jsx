@@ -1867,27 +1867,55 @@ export default function Step3Content({ data, onUpdate, onNext, onBack, editingIn
 
       <div className={`flex gap-6 ${showPreview ? 'flex-col lg:flex-row' : 'flex-col'}`}>
         {/* Form column */}
-        <div className={`w-full ${showPreview ? 'lg:block lg:w-1/2' : 'max-w-2xl mx-auto'}`}>
+        <div className={`w-full ${showPreview ? 'lg:w-1/2' : 'max-w-2xl mx-auto'}`}>
           {formContent}
         </div>
 
-        {/* Live preview column */}
+        {/* Live preview — desktop: side-by-side, mobile: fullscreen overlay */}
         {showPreview && (
-          <div className="w-full lg:w-1/2">
-            <div className="sticky top-4 self-start">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-surface-400 uppercase tracking-wider font-medium">
-                  {t('step3.preview')}
-                </span>
+          <>
+            {/* Desktop preview (hidden on mobile) */}
+            <div className="hidden lg:block w-full lg:w-1/2">
+              <div className="sticky top-4 self-start">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs text-surface-400 uppercase tracking-wider font-medium">
+                    {t('step3.preview')}
+                  </span>
+                </div>
+                <LivePreview
+                  data={data}
+                  activeSection={activeSection}
+                  className="h-[calc(100vh-110px)] rounded-2xl border border-white/10 overflow-hidden"
+                />
               </div>
-              <LivePreview
-                data={data}
-                activeSection={activeSection}
-                className="h-[calc(100vh-110px)] rounded-2xl border border-white/10 overflow-hidden"
-              />
             </div>
-          </div>
+
+            {/* Mobile preview overlay (hidden on desktop) */}
+            <div className="fixed inset-0 z-50 bg-surface-950/95 backdrop-blur-xl lg:hidden flex flex-col animate-fade-in">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-sm text-white font-medium">{t('step3.preview')}</span>
+                </div>
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 text-white text-sm font-medium
+                    hover:bg-white/20 active:scale-95 transition-all"
+                >
+                  <XCircle size={16} />
+                  {t('step3.hide')}
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <LivePreview
+                  data={data}
+                  activeSection={activeSection}
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
+          </>
         )}
       </div>
 
